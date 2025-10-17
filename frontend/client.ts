@@ -39,6 +39,7 @@ export class Client {
     public readonly intervention: intervention.ServiceClient
     public readonly report: report.ServiceClient
     public readonly screening: screening.ServiceClient
+    public readonly user: user.ServiceClient
     private readonly options: ClientOptions
     private readonly target: string
 
@@ -59,6 +60,7 @@ export class Client {
         this.intervention = new intervention.ServiceClient(base)
         this.report = new report.ServiceClient(base)
         this.screening = new screening.ServiceClient(base)
+        this.user = new user.ServiceClient(base)
     }
 
     /**
@@ -367,6 +369,29 @@ export namespace screening {
             // Now make the actual call to the API
             const resp = await this.baseClient.callTypedAPI(`/screening/task`, {method: "POST", body: JSON.stringify(params)})
             return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_screening_submit_task_submitTask>
+        }
+    }
+}
+
+/**
+ * Import the endpoint handlers to derive the types for the client.
+ */
+import { getMe as api_user_get_me_getMe } from "~backend/user/get_me";
+
+export namespace user {
+
+    export class ServiceClient {
+        private baseClient: BaseClient
+
+        constructor(baseClient: BaseClient) {
+            this.baseClient = baseClient
+            this.getMe = this.getMe.bind(this)
+        }
+
+        public async getMe(): Promise<ResponseType<typeof api_user_get_me_getMe>> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/user/me`, {method: "GET", body: undefined})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_user_get_me_getMe>
         }
     }
 }
