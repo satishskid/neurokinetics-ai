@@ -50,7 +50,7 @@ export const upsertEducation = api<UpsertEducationRequest, EducationResource>(
           category = ${req.category},
           content = ${req.content},
           age_range = ${req.ageRange ?? null},
-          references = ${refsJSON},
+          refs = ${refsJSON},
           keywords = ${keywordsArr},
           last_updated = CURRENT_DATE
         WHERE id = ${req.id}
@@ -60,7 +60,7 @@ export const upsertEducation = api<UpsertEducationRequest, EducationResource>(
           category,
           content,
           age_range as "ageRange",
-          patient_education.references,
+          patient_education.refs as "references",
           last_updated as "lastUpdated",
           keywords
       `;
@@ -70,7 +70,7 @@ export const upsertEducation = api<UpsertEducationRequest, EducationResource>(
 
     const inserted = await db.queryRow<EducationResource>`
       INSERT INTO patient_education (
-        title, category, content, age_range, references, last_updated, keywords
+        title, category, content, age_range, refs, last_updated, keywords
       )
       VALUES (
         ${req.title}, ${req.category}, ${req.content}, ${req.ageRange ?? null}, ${refsJSON}, CURRENT_DATE, ${keywordsArr}
@@ -81,7 +81,7 @@ export const upsertEducation = api<UpsertEducationRequest, EducationResource>(
         category,
         content,
         age_range as "ageRange",
-        patient_education.references,
+        patient_education.refs as "references",
         last_updated as "lastUpdated",
         keywords
     `;

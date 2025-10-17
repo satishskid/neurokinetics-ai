@@ -45,7 +45,7 @@ export const searchProtocols = api<SearchProtocolsRequest, SearchProtocolsRespon
         title, 
         category, 
         content, 
-        clinical_protocols.references, 
+        clinical_protocols.refs as "references", 
         evidence_level as "evidenceLevel",
         last_updated as "lastUpdated"
       FROM clinical_protocols

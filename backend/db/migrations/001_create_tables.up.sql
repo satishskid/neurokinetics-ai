@@ -133,7 +133,7 @@ CREATE TABLE care_buddy_messages (
   role TEXT NOT NULL CHECK (role IN ('user', 'assistant')),
   content TEXT NOT NULL,
   context_data JSONB,
-  references JSONB,
+  refs JSONB,
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -143,7 +143,7 @@ CREATE TABLE clinical_protocols (
   title TEXT NOT NULL,
   category TEXT NOT NULL,
   content TEXT NOT NULL,
-  references JSONB,
+  refs JSONB,
   evidence_level TEXT CHECK (evidence_level IN ('high', 'moderate', 'low')),
   last_updated DATE NOT NULL,
   keywords TEXT[],
@@ -158,7 +158,7 @@ CREATE TABLE patient_education (
   content TEXT NOT NULL,
   age_range TEXT,
   difficulty_level TEXT CHECK (difficulty_level IN ('beginner', 'intermediate', 'advanced')),
-  references JSONB,
+  refs JSONB,
   last_updated DATE NOT NULL,
   keywords TEXT[],
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP

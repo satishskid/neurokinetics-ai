@@ -56,9 +56,9 @@ export const sendMessage = api<SendMessageRequest, SendMessageResponse>(
     );
     
     const assistantMessage = await db.queryRow<Message>`
-      INSERT INTO care_buddy_messages (conversation_id, role, content, care_buddy_messages.references)
+      INSERT INTO care_buddy_messages (conversation_id, role, content, refs)
       VALUES (${req.conversationId}, 'assistant', ${response}, ${JSON.stringify(references)})
-      RETURNING id, role, content, care_buddy_messages.references, created_at as "createdAt"
+      RETURNING id, role, content, refs as "references", created_at as "createdAt"
     `;
     
     if (!assistantMessage) {

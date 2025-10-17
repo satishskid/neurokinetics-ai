@@ -27,7 +27,7 @@ export const getConversation = api<GetConversationRequest, ConversationHistory>(
   { expose: true, method: "GET", path: "/carebuddy/conversation/:conversationId", auth: true },
   async (req) => {
     const messages = await db.queryAll<Message>`
-      SELECT id, role, content, care_buddy_messages.references, created_at as "createdAt"
+      SELECT id, role, content, care_buddy_messages.refs as "references", created_at as "createdAt"
       FROM care_buddy_messages
       WHERE conversation_id = ${req.conversationId}
       ORDER BY created_at ASC

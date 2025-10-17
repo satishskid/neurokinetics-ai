@@ -54,7 +54,7 @@ export const upsertProtocol = api<UpsertProtocolRequest, Protocol>(
           category = ${req.category},
           content = ${req.content},
           evidence_level = ${req.evidenceLevel ?? null},
-          references = ${refsJSON},
+          refs = ${refsJSON},
           keywords = ${keywordsArr},
           last_updated = CURRENT_DATE
         WHERE id = ${req.id}
@@ -63,7 +63,7 @@ export const upsertProtocol = api<UpsertProtocolRequest, Protocol>(
           title,
           category,
           content,
-          clinical_protocols.references,
+          clinical_protocols.refs as "references",
           evidence_level as "evidenceLevel",
           last_updated as "lastUpdated",
           keywords
@@ -74,7 +74,7 @@ export const upsertProtocol = api<UpsertProtocolRequest, Protocol>(
 
     const inserted = await db.queryRow<Protocol>`
       INSERT INTO clinical_protocols (
-        title, category, content, evidence_level, references, last_updated, keywords
+        title, category, content, evidence_level, refs, last_updated, keywords
       )
       VALUES (
         ${req.title}, ${req.category}, ${req.content}, ${req.evidenceLevel ?? null}, ${refsJSON}, CURRENT_DATE, ${keywordsArr}
@@ -84,7 +84,7 @@ export const upsertProtocol = api<UpsertProtocolRequest, Protocol>(
         title,
         category,
         content,
-        clinical_protocols.references,
+        clinical_protocols.refs as "references",
         evidence_level as "evidenceLevel",
         last_updated as "lastUpdated",
         keywords

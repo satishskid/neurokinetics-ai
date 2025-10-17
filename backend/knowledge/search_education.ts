@@ -45,7 +45,7 @@ export const searchEducation = api<SearchEducationRequest, SearchEducationRespon
         category, 
         content, 
         age_range as "ageRange",
-        patient_education.references, 
+        patient_education.refs as "references", 
         last_updated as "lastUpdated"
       FROM patient_education
       WHERE 
