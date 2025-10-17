@@ -124,9 +124,15 @@ export default function ProviderDashboard() {
               <h1 className="text-3xl font-bold text-slate-900 dark:text-white">Provider Dashboard</h1>
               <p className="text-slate-600 dark:text-slate-400 mt-1">Clinical overview and intervention management</p>
             </div>
-            <Button onClick={() => navigate('/dashboard')}>
-              Switch to Parent View
-            </Button>
+            <div className="flex gap-3">
+              <Button onClick={() => navigate('/knowledge')} variant="outline">
+                <FileText className="h-4 w-4 mr-2" />
+                Clinical Library
+              </Button>
+              <Button onClick={() => navigate('/dashboard')}>
+                Switch to Parent View
+              </Button>
+            </div>
           </div>
         </div>
       </div>

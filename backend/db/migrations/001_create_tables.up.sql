@@ -117,22 +117,50 @@ CREATE TABLE progress_entries (
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- Copilot conversations
-CREATE TABLE copilot_conversations (
+-- Care Buddy conversations
+CREATE TABLE care_buddy_conversations (
   id BIGSERIAL PRIMARY KEY,
   user_id TEXT NOT NULL,
   child_id BIGINT REFERENCES children(id) ON DELETE CASCADE,
-  user_type TEXT NOT NULL CHECK (user_type IN ('parent', 'physician')),
+  user_role TEXT NOT NULL CHECK (user_role IN ('parent', 'provider', 'admin')),
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
--- Copilot messages
-CREATE TABLE copilot_messages (
+-- Care Buddy messages
+CREATE TABLE care_buddy_messages (
   id BIGSERIAL PRIMARY KEY,
-  conversation_id BIGINT NOT NULL REFERENCES copilot_conversations(id) ON DELETE CASCADE,
+  conversation_id BIGINT NOT NULL REFERENCES care_buddy_conversations(id) ON DELETE CASCADE,
   role TEXT NOT NULL CHECK (role IN ('user', 'assistant')),
   content TEXT NOT NULL,
   context_data JSONB,
+  references JSONB,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Clinical protocols library for providers
+CREATE TABLE clinical_protocols (
+  id BIGSERIAL PRIMARY KEY,
+  title TEXT NOT NULL,
+  category TEXT NOT NULL,
+  content TEXT NOT NULL,
+  references JSONB,
+  evidence_level TEXT CHECK (evidence_level IN ('high', 'moderate', 'low')),
+  last_updated DATE NOT NULL,
+  keywords TEXT[],
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Patient education library for parents
+CREATE TABLE patient_education (
+  id BIGSERIAL PRIMARY KEY,
+  title TEXT NOT NULL,
+  category TEXT NOT NULL,
+  content TEXT NOT NULL,
+  age_range TEXT,
+  difficulty_level TEXT CHECK (difficulty_level IN ('beginner', 'intermediate', 'advanced')),
+  references JSONB,
+  last_updated DATE NOT NULL,
+  keywords TEXT[],
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -145,5 +173,9 @@ CREATE INDEX idx_screening_sessions_user_id ON screening_sessions(user_id);
 CREATE INDEX idx_assessment_results_child_id ON assessment_results(child_id);
 CREATE INDEX idx_intervention_plans_child_id ON intervention_plans(child_id);
 CREATE INDEX idx_progress_entries_plan_id ON progress_entries(intervention_plan_id);
-CREATE INDEX idx_copilot_conversations_user_id ON copilot_conversations(user_id);
-CREATE INDEX idx_copilot_messages_conversation_id ON copilot_messages(conversation_id);
+CREATE INDEX idx_care_buddy_conversations_user_id ON care_buddy_conversations(user_id);
+CREATE INDEX idx_care_buddy_messages_conversation_id ON care_buddy_messages(conversation_id);
+CREATE INDEX idx_clinical_protocols_category ON clinical_protocols(category);
+CREATE INDEX idx_clinical_protocols_keywords ON clinical_protocols USING GIN(keywords);
+CREATE INDEX idx_patient_education_category ON patient_education(category);
+CREATE INDEX idx_patient_education_keywords ON patient_education USING GIN(keywords);

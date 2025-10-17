@@ -36,9 +36,13 @@ export default function DashboardPage() {
               </div>
             </div>
             <div className="flex gap-3">
-              <Button onClick={() => navigate('/copilot')} variant="outline" className="rounded-full">
+              <Button onClick={() => navigate('/knowledge')} variant="outline" className="rounded-full">
+                <FileText className="h-4 w-4 mr-2" />
+                Resources
+              </Button>
+              <Button onClick={() => navigate('/carebuddy')} variant="outline" className="rounded-full">
                 <MessageSquare className="h-4 w-4 mr-2" />
-                AI Copilot
+                Care Buddy
               </Button>
               <Button onClick={() => setIsAddChildOpen(true)} className="rounded-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
                 <Plus className="h-4 w-4 mr-2" />

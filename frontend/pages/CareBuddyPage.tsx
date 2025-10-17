@@ -12,10 +12,15 @@ interface Message {
   id: number;
   role: 'user' | 'assistant';
   content: string;
+  references?: Array<{
+    title: string;
+    source: string;
+    url?: string;
+  }>;
   createdAt: Date;
 }
 
-export default function CopilotPage() {
+export default function CareBuddyPage() {
   const navigate = useNavigate();
   const backend = useBackend();
   const { toast } = useToast();
@@ -26,9 +31,7 @@ export default function CopilotPage() {
 
   const startConversationMutation = useMutation({
     mutationFn: async () =>
-      backend.copilot.startConversation({
-        userType: 'parent',
-      }),
+      backend.carebuddy.startConversation({}),
     onSuccess: (data) => {
       setConversationId(data.id);
     },
@@ -44,7 +47,7 @@ export default function CopilotPage() {
 
   const sendMessageMutation = useMutation({
     mutationFn: async (content: string) =>
-      backend.copilot.sendMessage({
+      backend.carebuddy.sendMessage({
         conversationId: conversationId!,
         content,
       }),
@@ -85,25 +88,29 @@ export default function CopilotPage() {
             <ArrowLeft className="h-5 w-5" />
           </Button>
           <div>
-            <h1 className="text-3xl font-bold">AI Copilot</h1>
-            <p className="text-muted-foreground">24/7 autism support assistant</p>
+            <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">Care Buddy</h1>
+            <p className="text-slate-600 dark:text-slate-400">Your 24/7 autism support companion</p>
           </div>
         </div>
 
         <Card className="max-w-4xl mx-auto h-[600px] flex flex-col">
-          <CardHeader className="border-b">
+          <CardHeader className="border-b bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30">
             <CardTitle className="flex items-center gap-2">
-              <Bot className="h-5 w-5 text-blue-600" />
-              NeuroKinetics Assistant
+              <Bot className="h-5 w-5 text-blue-600 dark:text-blue-400" />
+              Care Buddy
             </CardTitle>
           </CardHeader>
           <CardContent className="flex-1 overflow-y-auto p-4 space-y-4">
             {messages.length === 0 && (
-              <div className="text-center text-muted-foreground py-8">
-                <Bot className="h-16 w-16 mx-auto mb-4 text-blue-600" />
-                <p>Hello! I'm your autism support assistant.</p>
-                <p className="text-sm mt-2">
-                  Ask me about interventions, progress tracking, or understanding assessment results.
+              <div className="text-center text-slate-600 dark:text-slate-400 py-12">
+                <div className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
+                  <Bot className="h-10 w-10 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2 text-slate-900 dark:text-white">Hello! I'm Care Buddy</h3>
+                <p className="mb-2">Your trusted companion for autism support and guidance.</p>
+                <p className="text-sm">
+                  I can help with interventions, answer questions about your child's development,<br />
+                  provide evidence-based resources, and support you every step of the way.
                 </p>
               </div>
             )}
@@ -121,13 +128,31 @@ export default function CopilotPage() {
                   </div>
                 )}
                 <div
-                  className={`rounded-lg p-3 max-w-[80%] ${
+                  className={`rounded-2xl p-4 max-w-[80%] ${
                     message.role === 'assistant'
-                      ? 'bg-muted'
-                      : 'bg-blue-600 text-white'
+                      ? 'bg-slate-100 dark:bg-gray-800 border border-slate-200 dark:border-gray-700'
+                      : 'bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg'
                   }`}
                 >
-                  <p className="text-sm whitespace-pre-wrap">{message.content}</p>
+                  <p className="text-sm whitespace-pre-wrap leading-relaxed">{message.content}</p>
+                  {message.references && message.references.length > 0 && (
+                    <div className="mt-4 pt-3 border-t border-slate-300 dark:border-gray-600">
+                      <p className="text-xs font-semibold mb-2 text-slate-700 dark:text-slate-300">References:</p>
+                      <div className="space-y-1">
+                        {message.references.map((ref, idx) => (
+                          <div key={idx} className="text-xs text-slate-600 dark:text-slate-400">
+                            <span className="font-medium">{ref.title}</span>
+                            <span className="text-slate-500 dark:text-slate-500"> — {ref.source}</span>
+                            {ref.url && (
+                              <a href={ref.url} target="_blank" rel="noopener noreferrer" className="ml-1 text-blue-600 dark:text-blue-400 hover:underline">
+                                [Link]
+                              </a>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
                 {message.role === 'user' && (
                   <div className="h-8 w-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center flex-shrink-0">
@@ -141,13 +166,14 @@ export default function CopilotPage() {
           <div className="border-t p-4">
             <div className="flex gap-2">
               <Input
-                placeholder="Ask about interventions, progress, or resources..."
+                placeholder="Ask me anything about autism care and support..."
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && handleSend()}
                 disabled={!conversationId}
+                className="rounded-full"
               />
-              <Button onClick={handleSend} disabled={!conversationId || !input.trim()}>
+              <Button onClick={handleSend} disabled={!conversationId || !input.trim()} className="rounded-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
                 <Send className="h-4 w-4" />
               </Button>
             </div>

@@ -180,7 +180,7 @@ export default function LandingPage() {
                   <div>
                     <CardTitle className="text-2xl mb-2">AI-Powered Support</CardTitle>
                     <p className="text-slate-600 dark:text-slate-300 text-base">
-                      Our clinical AI copilot provides 24/7 guidance based on current research, clinical guidelines, and personalized child data. It helps parents implement interventions effectively and connects them with appropriate professional resources.
+                      Our Care Buddy AI provides 24/7 personalized guidance based on current research, clinical guidelines, and your child's data. It helps parents implement interventions effectively and connects them with appropriate professional resources through evidence-based recommendations.
                     </p>
                   </div>
                 </div>

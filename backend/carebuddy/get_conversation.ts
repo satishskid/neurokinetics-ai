@@ -9,6 +9,11 @@ interface Message {
   id: number;
   role: string;
   content: string;
+  references?: Array<{
+    title: string;
+    source: string;
+    url?: string;
+  }>;
   createdAt: Date;
 }
 
@@ -19,11 +24,11 @@ interface ConversationHistory {
 
 // Retrieves conversation history.
 export const getConversation = api<GetConversationRequest, ConversationHistory>(
-  { expose: true, method: "GET", path: "/copilot/conversation/:conversationId", auth: true },
+  { expose: true, method: "GET", path: "/carebuddy/conversation/:conversationId", auth: true },
   async (req) => {
     const messages = await db.queryAll<Message>`
-      SELECT id, role, content, created_at as "createdAt"
-      FROM copilot_messages
+      SELECT id, role, content, care_buddy_messages.references, created_at as "createdAt"
+      FROM care_buddy_messages
       WHERE conversation_id = ${req.conversationId}
       ORDER BY created_at ASC
     `;

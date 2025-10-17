@@ -8,7 +8,8 @@ import ProviderDashboard from './pages/ProviderDashboard';
 import ScreeningPage from './pages/ScreeningPage';
 import ResultsPage from './pages/ResultsPage';
 import InterventionPage from './pages/InterventionPage';
-import CopilotPage from './pages/CopilotPage';
+import CareBuddyPage from './pages/CareBuddyPage';
+import KnowledgeLibraryPage from './pages/KnowledgeLibraryPage';
 
 const PUBLISHABLE_KEY = "pk_test_dmVyaWZpZWQtcGlnbGV0LTE0LmNsZXJrLmFjY291bnRzLmRldiQ";
 const queryClient = new QueryClient({
@@ -31,7 +32,8 @@ function AppInner() {
           <Route path="/screening/:childId" element={<ScreeningPage />} />
           <Route path="/results/:assessmentId" element={<ResultsPage />} />
           <Route path="/intervention/:childId" element={<InterventionPage />} />
-          <Route path="/copilot" element={<CopilotPage />} />
+          <Route path="/carebuddy" element={<CareBuddyPage />} />
+          <Route path="/knowledge" element={<KnowledgeLibraryPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         <Toaster />

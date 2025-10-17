@@ -4,27 +4,25 @@ import db from "../db";
 
 interface StartConversationRequest {
   childId?: number;
-  userType: "parent" | "physician";
 }
 
 interface Conversation {
   id: number;
   userId: string;
   childId?: number;
-  userType: string;
+  userRole: string;
   createdAt: Date;
 }
 
-// Starts a new conversation with the AI copilot.
 export const startConversation = api<StartConversationRequest, Conversation>(
-  { expose: true, method: "POST", path: "/copilot/conversation/start", auth: true },
+  { expose: true, method: "POST", path: "/carebuddy/conversation/start", auth: true },
   async (req) => {
     const auth = getAuthData()!;
     const conversation = await db.queryRow<Conversation>`
-      INSERT INTO copilot_conversations (user_id, child_id, user_type)
-      VALUES (${auth.userID}, ${req.childId || null}, ${req.userType})
+      INSERT INTO care_buddy_conversations (user_id, child_id, user_role)
+      VALUES (${auth.userID}, ${req.childId || null}, ${auth.role})
       RETURNING id, user_id as "userId", child_id as "childId", 
-                user_type as "userType", created_at as "createdAt"
+                user_role as "userRole", created_at as "createdAt"
     `;
     
     if (!conversation) {
