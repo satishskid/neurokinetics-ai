@@ -8,12 +8,12 @@ export default function LandingPage() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
-      <nav className="sticky top-0 z-50 backdrop-blur-xl bg-white/70 dark:bg-gray-950/70 border-b border-slate-200/50 dark:border-gray-800/50">
+    <div className="min-h-screen bg-background">
+      <nav className="sticky top-0 z-50 backdrop-blur-md bg-white/80 dark:bg-gray-950/80 border-b border-border">
         <div className="container mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Brain className="h-8 w-8 text-blue-600 dark:text-blue-400" />
-            <span className="text-xl font-semibold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+            <span className="text-xl font-semibold text-foreground">
               NeuroKinetics AI
             </span>
           </div>
@@ -31,7 +31,7 @@ export default function LandingPage() {
           </div>
           
           <h1 className="text-6xl md:text-7xl font-bold tracking-tight">
-            <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
+            <span className="text-primary">
               Early Detection
             </span>
             <br />
@@ -45,7 +45,7 @@ export default function LandingPage() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-6">
             <SignedOut>
               <SignInButton mode="modal">
-                <Button size="lg" className="text-lg px-10 py-6 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all">
+                <Button size="lg" className="text-lg px-10 py-6 rounded-lg shadow-sm transition">
                   Get Started
                 </Button>
               </SignInButton>
@@ -54,7 +54,7 @@ export default function LandingPage() {
               <Button 
                 size="lg" 
                 onClick={() => navigate('/dashboard')}
-                className="text-lg px-10 py-6 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transition-all"
+                className="text-lg px-10 py-6 rounded-lg shadow-sm transition"
               >
                 Go to Dashboard
               </Button>
@@ -62,7 +62,7 @@ export default function LandingPage() {
             <Button 
               size="lg" 
               variant="outline"
-              className="text-lg px-10 py-6 rounded-full border-2"
+              className="text-lg px-10 py-6 rounded-lg border"
               onClick={() => document.getElementById('science')?.scrollIntoView({ behavior: 'smooth' })}
             >
               Learn More
@@ -73,7 +73,7 @@ export default function LandingPage() {
 
       <section className="container mx-auto px-6 py-16">
         <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-          <Card className="border-0 bg-gradient-to-br from-blue-50 to-blue-100/50 dark:from-blue-950/30 dark:to-blue-900/20 shadow-lg hover:shadow-xl transition-all">
+          <Card className="border bg-card shadow-sm hover:shadow-md transition">
             <CardHeader className="text-center pb-4">
               <div className="mx-auto w-14 h-14 rounded-2xl bg-blue-600/10 dark:bg-blue-400/10 flex items-center justify-center mb-4">
                 <Users className="h-7 w-7 text-blue-600 dark:text-blue-400" />
@@ -85,7 +85,7 @@ export default function LandingPage() {
             </CardContent>
           </Card>
 
-          <Card className="border-0 bg-gradient-to-br from-purple-50 to-purple-100/50 dark:from-purple-950/30 dark:to-purple-900/20 shadow-lg hover:shadow-xl transition-all">
+          <Card className="border bg-card shadow-sm hover:shadow-md transition">
             <CardHeader className="text-center pb-4">
               <div className="mx-auto w-14 h-14 rounded-2xl bg-purple-600/10 dark:bg-purple-400/10 flex items-center justify-center mb-4">
                 <Stethoscope className="h-7 w-7 text-purple-600 dark:text-purple-400" />
@@ -97,7 +97,7 @@ export default function LandingPage() {
             </CardContent>
           </Card>
 
-          <Card className="border-0 bg-gradient-to-br from-pink-50 to-pink-100/50 dark:from-pink-950/30 dark:to-pink-900/20 shadow-lg hover:shadow-xl transition-all">
+          <Card className="border bg-card shadow-sm hover:shadow-md transition">
             <CardHeader className="text-center pb-4">
               <div className="mx-auto w-14 h-14 rounded-2xl bg-pink-600/10 dark:bg-pink-400/10 flex items-center justify-center mb-4">
                 <Lock className="h-7 w-7 text-pink-600 dark:text-pink-400" />
@@ -247,7 +247,7 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <footer className="bg-slate-100 dark:bg-gray-900 border-t border-slate-200 dark:border-gray-800 py-12">
+      <footer className="bg-secondary dark:bg-gray-900 border-t border-border py-12">
         <div className="container mx-auto px-6 text-center text-slate-600 dark:text-slate-400">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Brain className="h-6 w-6 text-blue-600 dark:text-blue-400" />

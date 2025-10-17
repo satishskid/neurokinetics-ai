@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useBackend } from '@/lib/useBackend';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,6 +7,10 @@ import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { ArrowLeft, Search, FileText, BookOpen, ExternalLink } from 'lucide-react';
+import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Select, SelectTrigger, SelectContent, SelectItem, SelectValue } from '@/components/ui/select';
+import { useToast } from '@/components/ui/use-toast';
 
 export default function KnowledgeLibraryPage() {
   const navigate = useNavigate();
@@ -14,7 +18,37 @@ export default function KnowledgeLibraryPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState<any[]>([]);
+  const { toast } = useToast();
+  const [role, setRole] = useState<string | undefined>();
+  const [showEduForm, setShowEduForm] = useState(false);
+  const [showProtocolForm, setShowProtocolForm] = useState(false);
+  const [edu, setEdu] = useState({
+    title: '',
+    category: '',
+    content: '',
+    ageRange: '',
+    keywordsText: '',
+    references: [{ title: '', source: '', url: '' }],
+  });
+  const [protocol, setProtocol] = useState({
+    title: '',
+    category: '',
+    content: '',
+    evidenceLevel: '',
+    keywordsText: '',
+    references: [{ title: '', authors: '', journal: '', year: '', doi: '' }],
+  });
 
+  useEffect(() => {
+    (async () => {
+      try {
+        const me = await backend.user.getMe();
+        setRole(me.role);
+      } catch (_) {
+        // ignore
+      }
+    })();
+  }, [backend]);
   const categories = {
     protocols: [
       'Assessment & Diagnosis',
@@ -50,6 +84,64 @@ export default function KnowledgeLibraryPage() {
       console.error('Search failed:', error);
     } finally {
       setIsSearching(false);
+    }
+  };
+
+  const updateEduRef = (idx: number, field: 'title'|'source'|'url', value: string) => {
+    const refs = [...edu.references];
+    refs[idx] = { ...refs[idx], [field]: value };
+    setEdu({ ...edu, references: refs });
+  };
+
+  const updateProtocolRef = (idx: number, field: 'title'|'authors'|'journal'|'year'|'doi', value: string) => {
+    const refs = [...protocol.references];
+    refs[idx] = { ...refs[idx], [field]: value };
+    setProtocol({ ...protocol, references: refs });
+  };
+
+  const handleUpsertEducation = async () => {
+    try {
+      const references = edu.references
+        .filter(r => r.title || r.source || r.url)
+        .map(r => ({ title: r.title, source: r.source, url: r.url || undefined }));
+      const keywords = edu.keywordsText.split(',').map(s => s.trim()).filter(Boolean);
+      await backend.knowledge.upsertEducation({
+        title: edu.title,
+        category: edu.category,
+        content: edu.content,
+        ageRange: edu.ageRange || undefined,
+        references: references.length ? references : undefined,
+        keywords: keywords.length ? keywords : undefined,
+      });
+      toast({ title: 'Education resource saved' });
+      setEdu({ title: '', category: '', content: '', ageRange: '', keywordsText: '', references: [{ title: '', source: '', url: '' }] });
+      setShowEduForm(false);
+      handleSearch('education');
+    } catch (err: any) {
+      toast({ title: 'Failed to save education resource', description: err?.message, variant: 'destructive' });
+    }
+  };
+
+  const handleUpsertProtocol = async () => {
+    try {
+      const references = protocol.references
+        .filter(r => r.title || r.authors || r.journal || r.year || r.doi)
+        .map(r => ({ title: r.title, authors: r.authors, journal: r.journal, year: Number(r.year) || undefined, doi: r.doi || undefined }));
+      const keywords = protocol.keywordsText.split(',').map(s => s.trim()).filter(Boolean);
+      await backend.knowledge.upsertProtocol({
+        title: protocol.title,
+        category: protocol.category,
+        content: protocol.content,
+        evidenceLevel: protocol.evidenceLevel || undefined,
+        references: references.length ? references : undefined,
+        keywords: keywords.length ? keywords : undefined,
+      });
+      toast({ title: 'Protocol saved' });
+      setProtocol({ title: '', category: '', content: '', evidenceLevel: '', keywordsText: '', references: [{ title: '', authors: '', journal: '', year: '', doi: '' }] });
+      setShowProtocolForm(false);
+      handleSearch('protocols');
+    } catch (err: any) {
+      toast({ title: 'Failed to save protocol', description: err?.message, variant: 'destructive' });
     }
   };
 
@@ -134,6 +226,64 @@ export default function KnowledgeLibraryPage() {
                     ))}
                   </div>
                 </div>
+
+                {(role === 'admin' || role === 'provider' || role === 'doctor') && (
+                  <div className="space-y-4 border rounded-xl p-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-semibold">Add or Update Education Resource</h3>
+                      <Button variant="outline" onClick={() => setShowEduForm(v => !v)}>
+                        {showEduForm ? 'Hide Form' : 'Show Form'}
+                      </Button>
+                    </div>
+                    {showEduForm && (
+                      <div className="grid gap-4">
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <div>
+                            <Label>Title</Label>
+                            <Input value={edu.title} onChange={(e) => setEdu({ ...edu, title: e.target.value })} />
+                          </div>
+                          <div>
+                            <Label>Category</Label>
+                            <Select value={edu.category} onValueChange={(v) => setEdu({ ...edu, category: v })}>
+                              <SelectTrigger className="w-full"><SelectValue placeholder="Select category" /></SelectTrigger>
+                              <SelectContent>
+                                {categories.education.map((cat) => (
+                                  <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="md:col-span-2">
+                            <Label>Content</Label>
+                            <Textarea rows={6} value={edu.content} onChange={(e) => setEdu({ ...edu, content: e.target.value })} />
+                          </div>
+                          <div>
+                            <Label>Age Range</Label>
+                            <Input value={edu.ageRange} onChange={(e) => setEdu({ ...edu, ageRange: e.target.value })} />
+                          </div>
+                          <div className="md:col-span-2">
+                            <Label>Keywords (comma-separated)</Label>
+                            <Input value={edu.keywordsText} onChange={(e) => setEdu({ ...edu, keywordsText: e.target.value })} />
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <Label>References</Label>
+                          {edu.references.map((ref, idx) => (
+                            <div key={idx} className="grid md:grid-cols-3 gap-3">
+                              <Input placeholder="Title" value={ref.title} onChange={(e) => updateEduRef(idx, 'title', e.target.value)} />
+                              <Input placeholder="Source" value={ref.source} onChange={(e) => updateEduRef(idx, 'source', e.target.value)} />
+                              <Input placeholder="URL (optional)" value={ref.url} onChange={(e) => updateEduRef(idx, 'url', e.target.value)} />
+                            </div>
+                          ))}
+                          <div className="flex gap-2">
+                            <Button variant="outline" onClick={() => setEdu({ ...edu, references: [...edu.references, { title: '', source: '', url: '' }] })}>Add Reference</Button>
+                            <Button onClick={handleUpsertEducation}>Save Resource</Button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {searchResults.length > 0 && (
                   <div className="space-y-4">
@@ -233,6 +383,73 @@ export default function KnowledgeLibraryPage() {
                     ))}
                   </div>
                 </div>
+
+                {(role === 'admin' || role === 'provider' || role === 'doctor') && (
+                  <div className="space-y-4 border rounded-xl p-4">
+                    <div className="flex items-center justify-between">
+                      <h3 className="font-semibold">Add or Update Clinical Protocol</h3>
+                      <Button variant="outline" onClick={() => setShowProtocolForm(v => !v)}>
+                        {showProtocolForm ? 'Hide Form' : 'Show Form'}
+                      </Button>
+                    </div>
+                    {showProtocolForm && (
+                      <div className="grid gap-4">
+                        <div className="grid md:grid-cols-2 gap-4">
+                          <div>
+                            <Label>Title</Label>
+                            <Input value={protocol.title} onChange={(e) => setProtocol({ ...protocol, title: e.target.value })} />
+                          </div>
+                          <div>
+                            <Label>Category</Label>
+                            <Select value={protocol.category} onValueChange={(v) => setProtocol({ ...protocol, category: v })}>
+                              <SelectTrigger className="w-full"><SelectValue placeholder="Select category" /></SelectTrigger>
+                              <SelectContent>
+                                {categories.protocols.map((cat) => (
+                                  <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="md:col-span-2">
+                            <Label>Content</Label>
+                            <Textarea rows={6} value={protocol.content} onChange={(e) => setProtocol({ ...protocol, content: e.target.value })} />
+                          </div>
+                          <div>
+                            <Label>Evidence Level</Label>
+                            <Select value={protocol.evidenceLevel} onValueChange={(v) => setProtocol({ ...protocol, evidenceLevel: v })}>
+                              <SelectTrigger className="w-full"><SelectValue placeholder="Select level" /></SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="high">High</SelectItem>
+                                <SelectItem value="moderate">Moderate</SelectItem>
+                                <SelectItem value="low">Low</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          </div>
+                          <div className="md:col-span-2">
+                            <Label>Keywords (comma-separated)</Label>
+                            <Input value={protocol.keywordsText} onChange={(e) => setProtocol({ ...protocol, keywordsText: e.target.value })} />
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          <Label>References</Label>
+                          {protocol.references.map((ref, idx) => (
+                            <div key={idx} className="grid md:grid-cols-5 gap-3">
+                              <Input placeholder="Title" value={ref.title} onChange={(e) => updateProtocolRef(idx, 'title', e.target.value)} />
+                              <Input placeholder="Authors" value={ref.authors} onChange={(e) => updateProtocolRef(idx, 'authors', e.target.value)} />
+                              <Input placeholder="Journal" value={ref.journal} onChange={(e) => updateProtocolRef(idx, 'journal', e.target.value)} />
+                              <Input placeholder="Year" value={ref.year} onChange={(e) => updateProtocolRef(idx, 'year', e.target.value)} />
+                              <Input placeholder="DOI (optional)" value={ref.doi} onChange={(e) => updateProtocolRef(idx, 'doi', e.target.value)} />
+                            </div>
+                          ))}
+                          <div className="flex gap-2">
+                            <Button variant="outline" onClick={() => setProtocol({ ...protocol, references: [...protocol.references, { title: '', authors: '', journal: '', year: '', doi: '' }] })}>Add Reference</Button>
+                            <Button onClick={handleUpsertProtocol}>Save Protocol</Button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
 
                 {searchResults.length > 0 && (
                   <div className="space-y-4">

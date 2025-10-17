@@ -8,6 +8,10 @@ import { Progress } from '@/components/ui/progress';
 import { useToast } from '@/components/ui/use-toast';
 import { Loader2 } from 'lucide-react';
 import AssessmentAnimation from '@/components/AssessmentAnimation';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Badge } from '@/components/ui/badge';
 
 export default function ScreeningPage() {
   const { childId } = useParams<{ childId: string }>();
@@ -17,6 +21,12 @@ export default function ScreeningPage() {
   const [sessionId, setSessionId] = useState<number | null>(null);
   const [currentTaskIndex, setCurrentTaskIndex] = useState(0);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  // personalization controls
+  const [complexity, setComplexity] = useState<'basic' | 'standard' | 'advanced'>('standard');
+  const [pace, setPace] = useState<'slow' | 'normal' | 'fast'>('normal');
+  const [audioCues, setAudioCues] = useState(false);
+  const [showInstructions, setShowInstructions] = useState(true);
+  const [guidelineAnchor, setGuidelineAnchor] = useState<'AAP' | 'IAP' | 'NIH' | 'WHO'>('AAP');
 
   const { data: child } = useQuery({
     queryKey: ['child', childId],
@@ -138,6 +148,69 @@ export default function ScreeningPage() {
               </div>
             </CardHeader>
             <CardContent>
+              {/* Personalization controls for doctors/providers */}
+              <div className="mb-6 space-y-4">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Badge variant="outline">Standards: AAP • IAP • NIH</Badge>
+                    <Badge variant="secondary">Age: {child.ageMonths} months</Badge>
+                  </div>
+                  <div className="text-sm text-muted-foreground">Personalize assessment flow</div>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-end">
+                  <div className="space-y-2">
+                    <Label>Complexity</Label>
+                    <Select value={complexity} onValueChange={(v) => setComplexity(v as 'basic' | 'standard' | 'advanced')}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select complexity" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="basic">Basic</SelectItem>
+                        <SelectItem value="standard">Standard</SelectItem>
+                        <SelectItem value="advanced">Advanced</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Pace</Label>
+                    <Select value={pace} onValueChange={(v) => setPace(v as 'slow' | 'normal' | 'fast')}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Select pace" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="slow">Slow</SelectItem>
+                        <SelectItem value="normal">Normal</SelectItem>
+                        <SelectItem value="fast">Fast</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Guideline Anchor</Label>
+                    <Select value={guidelineAnchor} onValueChange={(v) => setGuidelineAnchor(v as 'AAP' | 'IAP' | 'NIH' | 'WHO')}>
+                      <SelectTrigger className="w-full">
+                        <SelectValue placeholder="Choose guideline" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="AAP">AAP</SelectItem>
+                        <SelectItem value="IAP">IAP</SelectItem>
+                        <SelectItem value="NIH">NIH</SelectItem>
+                        <SelectItem value="WHO">WHO</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="flex items-center gap-2">
+                      <Checkbox id="audioCues" checked={audioCues} onCheckedChange={(c) => setAudioCues(!!c)} />
+                      <Label htmlFor="audioCues">Audio cues</Label>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Checkbox id="showInstructions" checked={showInstructions} onCheckedChange={(c) => setShowInstructions(!!c)} />
+                      <Label htmlFor="showInstructions">On-screen guidance</Label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {isAnalyzing ? (
                 <div className="py-20 text-center space-y-6">
                   <div className="relative">
@@ -155,6 +228,11 @@ export default function ScreeningPage() {
                 <AssessmentAnimation
                   ageMonths={child.ageMonths}
                   taskType={taskTypes[currentTaskIndex]}
+                  complexity={complexity}
+                  pace={pace}
+                  audioCues={audioCues}
+                  showInstructions={showInstructions}
+                  guidelineAnchor={guidelineAnchor}
                   onComplete={() => {
                     handleTaskComplete({
                       type: taskTypes[currentTaskIndex],

@@ -66,7 +66,7 @@ export default function ResultsPage() {
           <Card>
             <CardHeader>
               <CardDescription>ASD Probability</CardDescription>
-              <CardTitle className="text-3xl text-blue-600">
+              <CardTitle className="text-3xl text-primary">
                 {assessment.asdProbability.toFixed(1)}%
               </CardTitle>
             </CardHeader>
@@ -103,6 +103,7 @@ export default function ResultsPage() {
             <TabsTrigger value="clinical">Clinical Report</TabsTrigger>
             <TabsTrigger value="parent">Parent Summary</TabsTrigger>
             <TabsTrigger value="resources">Resources</TabsTrigger>
+            <TabsTrigger value="analysis">Analysis</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
@@ -137,9 +138,9 @@ export default function ResultsPage() {
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2">
-                  {assessment.redFlags.map((flag, index) => (
+                  {assessment.redFlags.map((flag: string, index: number) => (
                     <li key={index} className="flex items-start gap-2">
-                      <span className="text-red-500 mt-1">•</span>
+                      <span className="text-red-500/70 mt-1">•</span>
                       <span className="text-sm">{flag}</span>
                     </li>
                   ))}
@@ -153,8 +154,8 @@ export default function ResultsPage() {
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {assessment.keyObservations.map((obs, index) => (
-                    <div key={index} className="border-l-2 border-blue-500 pl-3">
+                  {assessment.keyObservations.map((obs: { timestamp: string; behavior: string }, index: number) => (
+                    <div key={index} className="border-l border-primary/50 pl-3">
                       <p className="text-sm font-medium">{obs.timestamp}</p>
                       <p className="text-sm text-muted-foreground">{obs.behavior}</p>
                     </div>
@@ -204,7 +205,7 @@ export default function ResultsPage() {
 
           <TabsContent value="resources">
             <div className="space-y-4">
-              {report.educationalResources.map((resource, index) => (
+              {report.educationalResources.map((resource: { title: string; url: string; description: string }, index: number) => (
                 <Card key={index}>
                   <CardHeader>
                     <CardTitle className="text-lg flex items-center justify-between">
@@ -221,6 +222,62 @@ export default function ResultsPage() {
               ))}
             </div>
           </TabsContent>
+
+          <TabsContent value="analysis" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Analysis Summary</CardTitle>
+                <CardDescription>Detailed scoring metadata</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <div>
+                    <p className="text-sm text-muted-foreground">Tasks Analyzed</p>
+                    <p className="text-lg font-medium">{(assessment as any).analysisData?.tasksAnalyzed ?? 0}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Avg. Engagement</p>
+                    <p className="text-lg font-medium">{(((assessment as any).analysisData?.engagementAverage ?? 0.5) * 100).toFixed(0)}%</p>
+                  </div>
+                </div>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  <div>
+                    <p className="text-sm text-muted-foreground">Calibration</p>
+                    <p className="text-lg font-medium">{(assessment as any).analysisData?.calibrationVersion ?? '—'}</p>
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Notes</p>
+                    <p className="text-sm">{(assessment as any).analysisData?.notes ?? '—'}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Domain Scores (raw)</CardTitle>
+                <CardDescription>From analysisData.domainScores</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <DomainScore
+                  label="Social Communication"
+                  score={(assessment as any).analysisData?.domainScores?.social ?? assessment.socialCommunicationScore}
+                />
+                <DomainScore
+                  label="Repetitive Behaviors"
+                  score={(assessment as any).analysisData?.domainScores?.repetitive ?? assessment.repetitiveBehaviorsScore}
+                />
+                <DomainScore
+                  label="Sensory Processing"
+                  score={(assessment as any).analysisData?.domainScores?.sensory ?? assessment.sensoryProcessingScore}
+                />
+                <DomainScore
+                  label="Motor Coordination"
+                  score={(assessment as any).analysisData?.domainScores?.motor ?? assessment.motorCoordinationScore}
+                />
+              </CardContent>
+            </Card>
+          </TabsContent>
         </Tabs>
       </div>
     </div>
@@ -233,7 +290,7 @@ interface DomainScoreProps {
 }
 
 function DomainScore({ label, score }: DomainScoreProps) {
-  const color = score < 40 ? 'bg-red-500' : score < 60 ? 'bg-yellow-500' : 'bg-green-500';
+  const color = score < 40 ? 'bg-red-500/70' : score < 60 ? 'bg-amber-400/70' : 'bg-green-500/70';
   
   return (
     <div>
