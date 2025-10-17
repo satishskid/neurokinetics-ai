@@ -23,7 +23,7 @@ const queryClient = new QueryClient({
 
 function AppInner() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/frontend">
       <div className="min-h-screen bg-background">
         <Routes>
           <Route path="/" element={<LandingPage />} />

@@ -1217,4 +1217,9 @@ export namespace knowledge {
     }
 }
 
-export default new Client(import.meta.env.VITE_CLIENT_TARGET, { requestInit: { credentials: "include" } });
+const __envTarget = import.meta.env.VITE_CLIENT_TARGET;
+const __target = (__envTarget && __envTarget !== "auto")
+  ? __envTarget
+  : (typeof window !== "undefined" ? window.location.origin : Local);
+
+export default new Client(__target, { requestInit: { credentials: "include" } });
