@@ -2,8 +2,9 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ClerkProvider } from '@clerk/clerk-react';
 import { Toaster } from '@/components/ui/toaster';
-import HomePage from './pages/HomePage';
+import LandingPage from './pages/LandingPage';
 import DashboardPage from './pages/DashboardPage';
+import ProviderDashboard from './pages/ProviderDashboard';
 import ScreeningPage from './pages/ScreeningPage';
 import ResultsPage from './pages/ResultsPage';
 import InterventionPage from './pages/InterventionPage';
@@ -24,8 +25,9 @@ function AppInner() {
     <BrowserRouter>
       <div className="min-h-screen bg-background">
         <Routes>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/" element={<LandingPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
+          <Route path="/provider" element={<ProviderDashboard />} />
           <Route path="/screening/:childId" element={<ScreeningPage />} />
           <Route path="/results/:assessmentId" element={<ResultsPage />} />
           <Route path="/intervention/:childId" element={<InterventionPage />} />

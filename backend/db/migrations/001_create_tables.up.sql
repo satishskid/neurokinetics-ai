@@ -1,3 +1,15 @@
+-- Users table with role-based access
+CREATE TABLE users (
+  id TEXT PRIMARY KEY,
+  clerk_id TEXT UNIQUE NOT NULL,
+  email TEXT NOT NULL,
+  role TEXT NOT NULL CHECK (role IN ('parent', 'provider', 'admin')),
+  full_name TEXT,
+  organization TEXT,
+  created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Children profiles
 CREATE TABLE children (
   id BIGSERIAL PRIMARY KEY,
@@ -125,6 +137,8 @@ CREATE TABLE copilot_messages (
 );
 
 -- Create indexes for better query performance
+CREATE INDEX idx_users_clerk_id ON users(clerk_id);
+CREATE INDEX idx_users_role ON users(role);
 CREATE INDEX idx_children_user_id ON children(user_id);
 CREATE INDEX idx_screening_sessions_child_id ON screening_sessions(child_id);
 CREATE INDEX idx_screening_sessions_user_id ON screening_sessions(user_id);

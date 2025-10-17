@@ -15,6 +15,7 @@ export interface AuthData {
   userID: string;
   imageUrl: string;
   email: string | null;
+  role: "parent" | "provider" | "admin";
 }
 
 export const auth = authHandler<AuthParams, AuthData>(async (data) => {
@@ -30,10 +31,13 @@ export const auth = authHandler<AuthParams, AuthData>(async (data) => {
     });
 
     const user = await clerkClient.users.getUser(verifiedToken.sub);
+    const role = (user.publicMetadata?.role as "parent" | "provider" | "admin") || "parent";
+    
     return {
       userID: user.id,
       imageUrl: user.imageUrl,
       email: user.emailAddresses[0]?.emailAddress ?? null,
+      role,
     };
   } catch (err) {
     throw APIError.unauthenticated("invalid token", err as Error);
