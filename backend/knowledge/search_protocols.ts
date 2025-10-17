@@ -39,13 +39,21 @@ export const searchProtocols = api<SearchProtocolsRequest, SearchProtocolsRespon
 
     const limit = req.limit || 10;
     
-    let protocols = await db.queryAll<Protocol>`
+    let protocols = await db.queryAll<{
+      id: number;
+      title: string;
+      category: string;
+      content: string;
+      refs: Array<{ title: string; authors: string; journal: string; year: number; doi?: string }> | null;
+      evidenceLevel: string;
+      lastUpdated: string;
+    }>`
       SELECT 
         id, 
         title, 
         category, 
         content, 
-        clinical_protocols.refs as "references", 
+        refs, 
         evidence_level as "evidenceLevel",
         last_updated as "lastUpdated"
       FROM clinical_protocols
@@ -66,6 +74,16 @@ export const searchProtocols = api<SearchProtocolsRequest, SearchProtocolsRespon
       LIMIT ${limit}
     `;
 
-    return { protocols };
+    const mapped: Protocol[] = protocols.map(r => ({
+      id: r.id,
+      title: r.title,
+      category: r.category,
+      content: r.content,
+      references: r.refs ?? [],
+      evidenceLevel: r.evidenceLevel,
+      lastUpdated: r.lastUpdated,
+    }));
+
+    return { protocols: mapped };
   }
 );

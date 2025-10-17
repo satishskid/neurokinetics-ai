@@ -38,14 +38,22 @@ export const searchEducation = api<SearchEducationRequest, SearchEducationRespon
 
     const limit = req.limit || 10;
     
-    let resources = await db.queryAll<EducationResource>`
+    let resources = await db.queryAll<{
+      id: number;
+      title: string;
+      category: string;
+      content: string;
+      ageRange?: string;
+      refs: Array<{ title: string; source: string; url?: string }> | null;
+      lastUpdated: string;
+    }>`
       SELECT 
         id, 
         title, 
         category, 
         content, 
         age_range as "ageRange",
-        patient_education.refs as "references", 
+        refs, 
         last_updated as "lastUpdated"
       FROM patient_education
       WHERE 
@@ -60,6 +68,16 @@ export const searchEducation = api<SearchEducationRequest, SearchEducationRespon
       LIMIT ${limit}
     `;
 
-    return { resources };
+    const mapped: EducationResource[] = resources.map(r => ({
+      id: r.id,
+      title: r.title,
+      category: r.category,
+      content: r.content,
+      ageRange: r.ageRange,
+      references: r.refs ?? [],
+      lastUpdated: r.lastUpdated,
+    }));
+
+    return { resources: mapped };
   }
 );

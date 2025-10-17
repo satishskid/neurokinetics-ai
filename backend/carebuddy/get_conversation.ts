@@ -26,12 +26,26 @@ interface ConversationHistory {
 export const getConversation = api<GetConversationRequest, ConversationHistory>(
   { expose: true, method: "GET", path: "/carebuddy/conversation/:conversationId", auth: true },
   async (req) => {
-    const messages = await db.queryAll<Message>`
-      SELECT id, role, content, care_buddy_messages.refs as "references", created_at as "createdAt"
+    const rows = await db.queryAll<{
+      id: number;
+      role: string;
+      content: string;
+      refs: Array<{ title: string; source: string; url?: string }> | null;
+      createdAt: Date;
+    }>`
+      SELECT id, role, content, refs, created_at as "createdAt"
       FROM care_buddy_messages
       WHERE conversation_id = ${req.conversationId}
       ORDER BY created_at ASC
     `;
+    
+    const messages: Message[] = rows.map(r => ({
+      id: r.id,
+      role: r.role,
+      content: r.content,
+      createdAt: r.createdAt,
+      references: r.refs ?? undefined,
+    }));
     
     return { conversationId: req.conversationId, messages };
   }

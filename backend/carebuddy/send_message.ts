@@ -55,22 +55,37 @@ export const sendMessage = api<SendMessageRequest, SendMessageResponse>(
       conversation.childId
     );
     
-    const assistantMessage = await db.queryRow<Message>`
+    const assistantMessageRow = await db.queryRow<{
+      id: number;
+      role: string;
+      content: string;
+      refs: Array<{ title: string; source: string; url?: string }>;
+      createdAt: Date;
+    }>`
       INSERT INTO care_buddy_messages (conversation_id, role, content, refs)
       VALUES (${req.conversationId}, 'assistant', ${response}, ${JSON.stringify(references)})
-      RETURNING id, role, content, refs as "references", created_at as "createdAt"
+      RETURNING id, role, content, refs, created_at as "createdAt"
     `;
+    
+    if (!assistantMessageRow) {
+      throw new Error("Failed to save assistant message");
+    }
+    
+    const assistantMessage: Message = {
+      id: assistantMessageRow.id,
+      role: assistantMessageRow.role,
+      content: assistantMessageRow.content,
+      createdAt: assistantMessageRow.createdAt,
+      references: references
+    };
     
     if (!assistantMessage) {
       throw new Error("Failed to save assistant message");
     }
     
-    return { 
-      userMessage, 
-      assistantMessage: {
-        ...assistantMessage,
-        references: references
-      }
+    return {
+      userMessage,
+      assistantMessage
     };
   }
 );

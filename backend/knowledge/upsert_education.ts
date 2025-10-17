@@ -43,7 +43,16 @@ export const upsertEducation = api<UpsertEducationRequest, EducationResource>(
     const keywordsArr = req.keywords ?? null;
 
     if (req.id) {
-      const updated = await db.queryRow<EducationResource>`
+      const updatedRow = await db.queryRow<{
+        id: number;
+        title: string;
+        category: string;
+        content: string;
+        ageRange?: string;
+        refs: Array<{ title: string; source: string; url?: string }> | null;
+        lastUpdated: string;
+        keywords: string[] | null;
+      }>`
         UPDATE patient_education
         SET 
           title = ${req.title},
@@ -60,15 +69,34 @@ export const upsertEducation = api<UpsertEducationRequest, EducationResource>(
           category,
           content,
           age_range as "ageRange",
-          patient_education.refs as "references",
+          refs,
           last_updated as "lastUpdated",
           keywords
       `;
-      if (!updated) throw new Error("Education resource not found or update failed");
+      if (!updatedRow) throw new Error("Education resource not found or update failed");
+      const updated: EducationResource = {
+        id: updatedRow.id,
+        title: updatedRow.title,
+        category: updatedRow.category,
+        content: updatedRow.content,
+        ageRange: updatedRow.ageRange,
+        references: updatedRow.refs ?? [],
+        lastUpdated: updatedRow.lastUpdated,
+        keywords: updatedRow.keywords,
+      };
       return updated;
     }
 
-    const inserted = await db.queryRow<EducationResource>`
+    const insertedRow = await db.queryRow<{
+      id: number;
+      title: string;
+      category: string;
+      content: string;
+      ageRange?: string;
+      refs: Array<{ title: string; source: string; url?: string }> | null;
+      lastUpdated: string;
+      keywords: string[] | null;
+    }>`
       INSERT INTO patient_education (
         title, category, content, age_range, refs, last_updated, keywords
       )
@@ -81,12 +109,22 @@ export const upsertEducation = api<UpsertEducationRequest, EducationResource>(
         category,
         content,
         age_range as "ageRange",
-        patient_education.refs as "references",
+        refs,
         last_updated as "lastUpdated",
         keywords
     `;
 
-    if (!inserted) throw new Error("Failed to insert education resource");
+    if (!insertedRow) throw new Error("Failed to insert education resource");
+    const inserted: EducationResource = {
+      id: insertedRow.id,
+      title: insertedRow.title,
+      category: insertedRow.category,
+      content: insertedRow.content,
+      ageRange: insertedRow.ageRange,
+      references: insertedRow.refs ?? [],
+      lastUpdated: insertedRow.lastUpdated,
+      keywords: insertedRow.keywords,
+    };
     return inserted;
   }
 );

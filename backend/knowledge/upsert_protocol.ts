@@ -47,7 +47,16 @@ export const upsertProtocol = api<UpsertProtocolRequest, Protocol>(
     const keywordsArr = req.keywords ?? null;
 
     if (req.id) {
-      const updated = await db.queryRow<Protocol>`
+      const updatedRow = await db.queryRow<{
+        id: number;
+        title: string;
+        category: string;
+        content: string;
+        refs: Array<{ title: string; authors: string; journal: string; year: number; doi?: string }> | null;
+        evidenceLevel: string | null;
+        lastUpdated: string;
+        keywords: string[] | null;
+      }>`
         UPDATE clinical_protocols
         SET 
           title = ${req.title},
@@ -63,16 +72,35 @@ export const upsertProtocol = api<UpsertProtocolRequest, Protocol>(
           title,
           category,
           content,
-          clinical_protocols.refs as "references",
+          refs,
           evidence_level as "evidenceLevel",
           last_updated as "lastUpdated",
           keywords
       `;
-      if (!updated) throw new Error("Protocol not found or update failed");
+      if (!updatedRow) throw new Error("Protocol not found or update failed");
+      const updated: Protocol = {
+        id: updatedRow.id,
+        title: updatedRow.title,
+        category: updatedRow.category,
+        content: updatedRow.content,
+        references: updatedRow.refs ?? [],
+        evidenceLevel: updatedRow.evidenceLevel ?? null,
+        lastUpdated: updatedRow.lastUpdated,
+        keywords: updatedRow.keywords,
+      };
       return updated;
     }
 
-    const inserted = await db.queryRow<Protocol>`
+    const insertedRow = await db.queryRow<{
+      id: number;
+      title: string;
+      category: string;
+      content: string;
+      refs: Array<{ title: string; authors: string; journal: string; year: number; doi?: string }> | null;
+      evidenceLevel: string | null;
+      lastUpdated: string;
+      keywords: string[] | null;
+    }>`
       INSERT INTO clinical_protocols (
         title, category, content, evidence_level, refs, last_updated, keywords
       )
@@ -84,13 +112,23 @@ export const upsertProtocol = api<UpsertProtocolRequest, Protocol>(
         title,
         category,
         content,
-        clinical_protocols.refs as "references",
+        refs,
         evidence_level as "evidenceLevel",
         last_updated as "lastUpdated",
         keywords
     `;
 
-    if (!inserted) throw new Error("Failed to insert protocol");
+    if (!insertedRow) throw new Error("Failed to insert protocol");
+    const inserted: Protocol = {
+      id: insertedRow.id,
+      title: insertedRow.title,
+      category: insertedRow.category,
+      content: insertedRow.content,
+      references: insertedRow.refs ?? [],
+      evidenceLevel: insertedRow.evidenceLevel ?? null,
+      lastUpdated: insertedRow.lastUpdated,
+      keywords: insertedRow.keywords,
+    };
     return inserted;
   }
 );
