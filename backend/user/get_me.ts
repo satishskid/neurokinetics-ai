@@ -5,7 +5,7 @@ export interface UserInfo {
   id: string;
   email: string | null;
   imageUrl: string;
-  role: "parent" | "provider" | "admin";
+  role: "parent" | "provider" | "admin" | "doctor";
 }
 
 export const getMe = api<void, UserInfo>(

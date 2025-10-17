@@ -77,7 +77,7 @@ export const sendMessage = api<SendMessageRequest, SendMessageResponse>(
 
 async function generateContextualResponse(
   content: string,
-  userRole: "parent" | "provider" | "admin",
+  userRole: "parent" | "provider" | "admin" | "doctor",
   childId?: number
 ): Promise<{ response: string; references: Array<{ title: string; source: string; url?: string }> }> {
   const references: Array<{ title: string; source: string; url?: string }> = [];
@@ -107,7 +107,7 @@ Focus on: daily care strategies, understanding behaviors, implementing intervent
         { title: "Parent's Guide to Autism", source: "CDC Autism Resources" }
       );
     }
-  } else if (userRole === "provider") {
+  } else if (userRole === "provider" || userRole === "doctor") {
     metaPrompt = `You are Care Buddy, a clinical AI assistant for healthcare providers working with autism.
 Provide evidence-based, clinical-grade information with proper citations.
 Reference DSM-5 criteria, peer-reviewed research, and clinical guidelines.
