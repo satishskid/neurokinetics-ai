@@ -15,7 +15,6 @@ interface EducationResource {
   category: string;
   content: string;
   ageRange?: string;
-  difficultyLevel: string;
   references: Array<{
     title: string;
     source: string;
@@ -46,7 +45,6 @@ export const searchEducation = api<SearchEducationRequest, SearchEducationRespon
         category, 
         content, 
         age_range as "ageRange",
-        difficulty_level as "difficultyLevel",
         patient_education.references, 
         last_updated as "lastUpdated"
       FROM patient_education

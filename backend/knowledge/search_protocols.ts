@@ -33,7 +33,7 @@ export const searchProtocols = api<SearchProtocolsRequest, SearchProtocolsRespon
   async (req) => {
     const auth = getAuthData()!;
     
-    if (auth.role !== "provider" && auth.role !== "admin") {
+    if (auth.role !== "provider" && auth.role !== "admin" && auth.role !== "doctor") {
       throw new Error("Access denied. Clinical protocols are available to providers only.");
     }
 

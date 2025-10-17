@@ -15,7 +15,7 @@ export interface AuthData {
   userID: string;
   imageUrl: string;
   email: string | null;
-  role: "parent" | "provider" | "admin";
+  role: "parent" | "provider" | "admin" | "doctor";
 }
 
 export const auth = authHandler<AuthParams, AuthData>(async (data) => {
@@ -31,8 +31,15 @@ export const auth = authHandler<AuthParams, AuthData>(async (data) => {
     });
 
     const user = await clerkClient.users.getUser(verifiedToken.sub);
-    const role = (user.publicMetadata?.role as "parent" | "provider" | "admin") || "parent";
-    
+    const publicRole = user.publicMetadata?.role as
+      | "parent"
+      | "provider"
+      | "admin"
+      | "doctor"
+      | undefined;
+    // Normalize doctor to provider-equivalent access for clinical endpoints
+    const role: "parent" | "provider" | "admin" | "doctor" = publicRole ?? "parent";
+
     return {
       userID: user.id,
       imageUrl: user.imageUrl,

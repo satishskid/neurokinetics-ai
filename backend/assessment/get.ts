@@ -21,6 +21,7 @@ interface AssessmentResult {
   redFlags: string[];
   keyObservations: Array<{ timestamp: string; behavior: string }>;
   recommendation: string;
+  analysisData: Record<string, any>;
   createdAt: Date;
 }
 
@@ -39,7 +40,7 @@ export const get = api<GetAssessmentRequest, AssessmentResult>(
         sensory_processing_score as "sensoryProcessingScore",
         motor_coordination_score as "motorCoordinationScore",
         red_flags as "redFlags", key_observations as "keyObservations",
-        recommendation, created_at as "createdAt"
+        recommendation, analysis_data as "analysisData", created_at as "createdAt"
       FROM assessment_results
       WHERE id = ${req.id} AND user_id = ${auth.userID}
     `;
