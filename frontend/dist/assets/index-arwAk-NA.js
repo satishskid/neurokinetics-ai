@@ -1,23 +1,3 @@
-var __defProp = Object.defineProperty;
-var __typeError = (msg) => {
-  throw TypeError(msg);
-};
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField = (obj, key, value) => __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-var __accessCheck = (obj, member, msg) => member.has(obj) || __typeError("Cannot " + msg);
-var __privateGet = (obj, member, getter) => (__accessCheck(obj, member, "read from private field"), getter ? getter.call(obj) : member.get(obj));
-var __privateAdd = (obj, member, value) => member.has(obj) ? __typeError("Cannot add the same private member more than once") : member instanceof WeakSet ? member.add(obj) : member.set(obj, value);
-var __privateSet = (obj, member, value, setter) => (__accessCheck(obj, member, "write to private field"), setter ? setter.call(obj, value) : member.set(obj, value), value);
-var __privateMethod = (obj, member, method) => (__accessCheck(obj, member, "access private method"), method);
-var __privateWrapper = (obj, member, setter, getter) => ({
-  set _(value) {
-    __privateSet(obj, member, value, setter);
-  },
-  get _() {
-    return __privateGet(obj, member, getter);
-  }
-});
-var _provider, _providerCalled, _a, _focused, _cleanup, _setup, _b, _online, _cleanup2, _setup2, _c, _gcTimeout, _d, _initialState, _revertState, _cache, _client, _retryer, _defaultOptions, _abortSignalConsumed, _Query_instances, dispatch_fn, _e, _client2, _currentQuery, _currentQueryInitialState, _currentResult, _currentResultState, _currentResultOptions, _currentThenable, _selectError, _selectFn, _selectResult, _lastQueryWithDefinedData, _staleTimeoutId, _refetchIntervalId, _currentRefetchInterval, _trackedProps, _QueryObserver_instances, executeFetch_fn, updateStaleTimeout_fn, computeRefetchInterval_fn, updateRefetchInterval_fn, updateTimers_fn, clearStaleTimeout_fn, clearRefetchInterval_fn, updateQuery_fn, notify_fn, _f, _client3, _observers, _mutationCache, _retryer2, _Mutation_instances, dispatch_fn2, _g, _mutations, _scopes, _mutationId, _h, _client4, _currentResult2, _currentMutation, _mutateOptions, _MutationObserver_instances, updateResult_fn, notify_fn2, _i, _queries, _j, _queryCache, _mutationCache2, _defaultOptions2, _queryDefaults, _mutationDefaults, _mountCount, _unsubscribeFocus, _unsubscribeOnline, _k, _l, _m;
 function _mergeNamespaces(n, m) {
   for (var i = 0; i < m.length; i++) {
     const e = m[i];
@@ -39,36 +19,28 @@ function _mergeNamespaces(n, m) {
 }
 (function polyfill() {
   const relList = document.createElement("link").relList;
-  if (relList && relList.supports && relList.supports("modulepreload")) {
-    return;
-  }
-  for (const link of document.querySelectorAll('link[rel="modulepreload"]')) {
-    processPreload(link);
-  }
+  if (relList && relList.supports && relList.supports("modulepreload")) return;
+  for (const link of document.querySelectorAll('link[rel="modulepreload"]')) processPreload(link);
   new MutationObserver((mutations) => {
     for (const mutation of mutations) {
-      if (mutation.type !== "childList") {
-        continue;
-      }
-      for (const node of mutation.addedNodes) {
-        if (node.tagName === "LINK" && node.rel === "modulepreload")
-          processPreload(node);
-      }
+      if (mutation.type !== "childList") continue;
+      for (const node of mutation.addedNodes) if (node.tagName === "LINK" && node.rel === "modulepreload") processPreload(node);
     }
-  }).observe(document, { childList: true, subtree: true });
+  }).observe(document, {
+    childList: true,
+    subtree: true
+  });
   function getFetchOpts(link) {
     const fetchOpts = {};
     if (link.integrity) fetchOpts.integrity = link.integrity;
     if (link.referrerPolicy) fetchOpts.referrerPolicy = link.referrerPolicy;
-    if (link.crossOrigin === "use-credentials")
-      fetchOpts.credentials = "include";
+    if (link.crossOrigin === "use-credentials") fetchOpts.credentials = "include";
     else if (link.crossOrigin === "anonymous") fetchOpts.credentials = "omit";
     else fetchOpts.credentials = "same-origin";
     return fetchOpts;
   }
   function processPreload(link) {
-    if (link.ep)
-      return;
+    if (link.ep) return;
     link.ep = true;
     const fetchOpts = getFetchOpts(link);
     fetch(link.href, fetchOpts);
@@ -12853,8 +12825,7 @@ function flattenRoutes(routes, branches = [], parentsMeta = [], parentPath = "",
     });
   };
   routes.forEach((route, index2) => {
-    var _a2;
-    if (route.path === "" || !((_a2 = route.path) == null ? void 0 : _a2.includes("?"))) {
+    if (route.path === "" || !route.path?.includes("?")) {
       flattenRoute(route, index2);
     } else {
       for (let exploded of explodeOptionalSegments(route.path)) {
@@ -13305,7 +13276,6 @@ function useRoutes(routes, locationArg) {
   return useRoutesImpl(routes, locationArg);
 }
 function useRoutesImpl(routes, locationArg, dataRouterState, unstable_onError, future) {
-  var _a2;
   invariant(
     useInRouterContext(),
     // TODO: This error is probably because they somehow have 2 versions of the
@@ -13334,7 +13304,7 @@ Please change the parent <Route path="${parentPath}"> to <Route path="${parentPa
   if (locationArg) {
     let parsedLocationArg = typeof locationArg === "string" ? parsePath(locationArg) : locationArg;
     invariant(
-      parentPathnameBase === "/" || ((_a2 = parsedLocationArg.pathname) == null ? void 0 : _a2.startsWith(parentPathnameBase)),
+      parentPathnameBase === "/" || parsedLocationArg.pathname?.startsWith(parentPathnameBase),
       `When overriding the location using \`<Routes location>\` or \`useRoutes(routes, location)\`, the location pathname must begin with the portion of the URL pathname that was matched by all parent routes. The current pathname base is "${parentPathnameBase}" but pathname "${parsedLocationArg.pathname}" was given in the \`location\` prop.`
     );
     location = parsedLocationArg;
@@ -13497,10 +13467,10 @@ function _renderMatches(matches, parentMatches = [], dataRouterState = null, uns
     }
   }
   let renderedMatches = matches;
-  let errors = dataRouterState == null ? void 0 : dataRouterState.errors;
+  let errors = dataRouterState?.errors;
   if (errors != null) {
     let errorIndex = renderedMatches.findIndex(
-      (m) => m.route.id && (errors == null ? void 0 : errors[m.route.id]) !== void 0
+      (m) => m.route.id && errors?.[m.route.id] !== void 0
     );
     invariant(
       errorIndex >= 0,
@@ -13637,7 +13607,6 @@ function useRouteId() {
   );
 }
 function useRouteError() {
-  var _a2;
   let error = reactExports.useContext(RouteErrorContext);
   let state = useDataRouterState(
     "useRouteError"
@@ -13650,7 +13619,7 @@ function useRouteError() {
   if (error !== void 0) {
     return error;
   }
-  return (_a2 = state.errors) == null ? void 0 : _a2[routeId];
+  return state.errors?.[routeId];
 }
 function useNavigateStable() {
   let { router } = useDataRouterContext(
@@ -14028,12 +13997,11 @@ function getNewMatchesForLinks(page, nextMatches, currentMatches, manifest, loca
     return match.route.id !== currentMatches[index2].route.id;
   };
   let matchPathChanged = (match, index2) => {
-    var _a2;
     return (
       // param change, /users/123 -> /users/456
       currentMatches[index2].pathname !== match.pathname || // splat param changed, which is not present in match.path
       // e.g. /files/images/avatar.jpg -> files/finances.xls
-      ((_a2 = currentMatches[index2].route.path) == null ? void 0 : _a2.endsWith("*")) && currentMatches[index2].params["*"] !== match.params["*"]
+      currentMatches[index2].route.path?.endsWith("*") && currentMatches[index2].params["*"] !== match.params["*"]
     );
   };
   if (mode === "assets") {
@@ -14043,7 +14011,6 @@ function getNewMatchesForLinks(page, nextMatches, currentMatches, manifest, loca
   }
   if (mode === "data") {
     return nextMatches.filter((match, index2) => {
-      var _a2;
       let manifestRoute = manifest.routes[match.route.id];
       if (!manifestRoute || !manifestRoute.hasLoader) {
         return false;
@@ -14057,7 +14024,7 @@ function getNewMatchesForLinks(page, nextMatches, currentMatches, manifest, loca
             location.pathname + location.search + location.hash,
             window.origin
           ),
-          currentParams: ((_a2 = currentMatches[0]) == null ? void 0 : _a2.params) || {},
+          currentParams: currentMatches[0]?.params || {},
           nextUrl: new URL(page, window.origin),
           nextParams: match.params,
           defaultShouldRevalidate: true
@@ -14275,12 +14242,11 @@ function PrefetchPageLinksImpl({
     let routesParams = /* @__PURE__ */ new Set();
     let foundOptOutRoute = false;
     nextMatches.forEach((m) => {
-      var _a2;
       let manifestRoute = manifest.routes[m.route.id];
       if (!manifestRoute || !manifestRoute.hasLoader) {
         return;
       }
-      if (!newMatchesForData.some((m2) => m2.route.id === m.route.id) && m.route.id in loaderData && ((_a2 = routeModules[m.route.id]) == null ? void 0 : _a2.shouldRevalidate)) {
+      if (!newMatchesForData.some((m2) => m2.route.id === m.route.id) && m.route.id in loaderData && routeModules[m.route.id]?.shouldRevalidate) {
         foundOptOutRoute = true;
       } else if (manifestRoute.hasClientLoader) {
         foundOptOutRoute = true;
@@ -14541,7 +14507,7 @@ var Form = reactExports.forwardRef(
       if (event.defaultPrevented) return;
       event.preventDefault();
       let submitter = event.nativeEvent.submitter;
-      let submitMethod = (submitter == null ? void 0 : submitter.getAttribute("formmethod")) || method;
+      let submitMethod = submitter?.getAttribute("formmethod") || method;
       submit(submitter || event.currentTarget, {
         fetcherKey,
         method: submitMethod,
@@ -14741,33 +14707,31 @@ var defaultTimeoutProvider = {
   setInterval: (callback, delay) => setInterval(callback, delay),
   clearInterval: (intervalId) => clearInterval(intervalId)
 };
-var TimeoutManager = (_a = class {
-  constructor() {
-    // We cannot have TimeoutManager<T> as we must instantiate it with a concrete
-    // type at app boot; and if we leave that type, then any new timer provider
-    // would need to support ReturnType<typeof setTimeout>, which is infeasible.
-    //
-    // We settle for type safety for the TimeoutProvider type, and accept that
-    // this class is unsafe internally to allow for extension.
-    __privateAdd(this, _provider, defaultTimeoutProvider);
-    __privateAdd(this, _providerCalled, false);
-  }
+var TimeoutManager = class {
+  // We cannot have TimeoutManager<T> as we must instantiate it with a concrete
+  // type at app boot; and if we leave that type, then any new timer provider
+  // would need to support ReturnType<typeof setTimeout>, which is infeasible.
+  //
+  // We settle for type safety for the TimeoutProvider type, and accept that
+  // this class is unsafe internally to allow for extension.
+  #provider = defaultTimeoutProvider;
+  #providerCalled = false;
   setTimeoutProvider(provider) {
-    __privateSet(this, _provider, provider);
+    this.#provider = provider;
   }
   setTimeout(callback, delay) {
-    return __privateGet(this, _provider).setTimeout(callback, delay);
+    return this.#provider.setTimeout(callback, delay);
   }
   clearTimeout(timeoutId) {
-    __privateGet(this, _provider).clearTimeout(timeoutId);
+    this.#provider.clearTimeout(timeoutId);
   }
   setInterval(callback, delay) {
-    return __privateGet(this, _provider).setInterval(callback, delay);
+    return this.#provider.setInterval(callback, delay);
   }
   clearInterval(intervalId) {
-    __privateGet(this, _provider).clearInterval(intervalId);
+    this.#provider.clearInterval(intervalId);
   }
-}, _provider = new WeakMap(), _providerCalled = new WeakMap(), _a);
+};
 var timeoutManager = new TimeoutManager();
 function systemSetTimeoutZero(callback) {
   setTimeout(callback, 0);
@@ -14851,7 +14815,7 @@ function matchMutation(filters, mutation) {
   return true;
 }
 function hashQueryKeyByOptions(queryKey, options) {
-  const hashFn = (options == null ? void 0 : options.queryKeyHashFn) || hashKey;
+  const hashFn = options?.queryKeyHashFn || hashKey;
   return hashFn(queryKey);
 }
 function hashKey(queryKey) {
@@ -14967,7 +14931,7 @@ function addToStart(items, item, max2 = 0) {
 }
 var skipToken = Symbol();
 function ensureQueryFn(options, fetchOptions) {
-  if (!options.queryFn && (fetchOptions == null ? void 0 : fetchOptions.initialPromise)) {
+  if (!options.queryFn && fetchOptions?.initialPromise) {
     return () => fetchOptions.initialPromise;
   }
   if (!options.queryFn || options.queryFn === skipToken) {
@@ -14981,13 +14945,13 @@ function shouldThrowError(throwOnError, params) {
   }
   return !!throwOnError;
 }
-var FocusManager = (_b = class extends Subscribable {
+var FocusManager = class extends Subscribable {
+  #focused;
+  #cleanup;
+  #setup;
   constructor() {
     super();
-    __privateAdd(this, _focused);
-    __privateAdd(this, _cleanup);
-    __privateAdd(this, _setup);
-    __privateSet(this, _setup, (onFocus) => {
+    this.#setup = (onFocus) => {
       if (!isServer$1 && window.addEventListener) {
         const listener = () => onFocus();
         window.addEventListener("visibilitychange", listener, false);
@@ -14996,36 +14960,34 @@ var FocusManager = (_b = class extends Subscribable {
         };
       }
       return;
-    });
+    };
   }
   onSubscribe() {
-    if (!__privateGet(this, _cleanup)) {
-      this.setEventListener(__privateGet(this, _setup));
+    if (!this.#cleanup) {
+      this.setEventListener(this.#setup);
     }
   }
   onUnsubscribe() {
-    var _a2;
     if (!this.hasListeners()) {
-      (_a2 = __privateGet(this, _cleanup)) == null ? void 0 : _a2.call(this);
-      __privateSet(this, _cleanup, void 0);
+      this.#cleanup?.();
+      this.#cleanup = void 0;
     }
   }
   setEventListener(setup) {
-    var _a2;
-    __privateSet(this, _setup, setup);
-    (_a2 = __privateGet(this, _cleanup)) == null ? void 0 : _a2.call(this);
-    __privateSet(this, _cleanup, setup((focused) => {
+    this.#setup = setup;
+    this.#cleanup?.();
+    this.#cleanup = setup((focused) => {
       if (typeof focused === "boolean") {
         this.setFocused(focused);
       } else {
         this.onFocus();
       }
-    }));
+    });
   }
   setFocused(focused) {
-    const changed = __privateGet(this, _focused) !== focused;
+    const changed = this.#focused !== focused;
     if (changed) {
-      __privateSet(this, _focused, focused);
+      this.#focused = focused;
       this.onFocus();
     }
   }
@@ -15036,13 +14998,12 @@ var FocusManager = (_b = class extends Subscribable {
     });
   }
   isFocused() {
-    var _a2;
-    if (typeof __privateGet(this, _focused) === "boolean") {
-      return __privateGet(this, _focused);
+    if (typeof this.#focused === "boolean") {
+      return this.#focused;
     }
-    return ((_a2 = globalThis.document) == null ? void 0 : _a2.visibilityState) !== "hidden";
+    return globalThis.document?.visibilityState !== "hidden";
   }
-}, _focused = new WeakMap(), _cleanup = new WeakMap(), _setup = new WeakMap(), _b);
+};
 var focusManager = new FocusManager();
 function pendingThenable() {
   let resolve;
@@ -15153,13 +15114,13 @@ function createNotifyManager() {
   };
 }
 var notifyManager = createNotifyManager();
-var OnlineManager = (_c = class extends Subscribable {
+var OnlineManager = class extends Subscribable {
+  #online = true;
+  #cleanup;
+  #setup;
   constructor() {
     super();
-    __privateAdd(this, _online, true);
-    __privateAdd(this, _cleanup2);
-    __privateAdd(this, _setup2);
-    __privateSet(this, _setup2, (onOnline) => {
+    this.#setup = (onOnline) => {
       if (!isServer$1 && window.addEventListener) {
         const onlineListener = () => onOnline(true);
         const offlineListener = () => onOnline(false);
@@ -15171,39 +15132,37 @@ var OnlineManager = (_c = class extends Subscribable {
         };
       }
       return;
-    });
+    };
   }
   onSubscribe() {
-    if (!__privateGet(this, _cleanup2)) {
-      this.setEventListener(__privateGet(this, _setup2));
+    if (!this.#cleanup) {
+      this.setEventListener(this.#setup);
     }
   }
   onUnsubscribe() {
-    var _a2;
     if (!this.hasListeners()) {
-      (_a2 = __privateGet(this, _cleanup2)) == null ? void 0 : _a2.call(this);
-      __privateSet(this, _cleanup2, void 0);
+      this.#cleanup?.();
+      this.#cleanup = void 0;
     }
   }
   setEventListener(setup) {
-    var _a2;
-    __privateSet(this, _setup2, setup);
-    (_a2 = __privateGet(this, _cleanup2)) == null ? void 0 : _a2.call(this);
-    __privateSet(this, _cleanup2, setup(this.setOnline.bind(this)));
+    this.#setup = setup;
+    this.#cleanup?.();
+    this.#cleanup = setup(this.setOnline.bind(this));
   }
   setOnline(online2) {
-    const changed = __privateGet(this, _online) !== online2;
+    const changed = this.#online !== online2;
     if (changed) {
-      __privateSet(this, _online, online2);
+      this.#online = online2;
       this.listeners.forEach((listener) => {
         listener(online2);
       });
     }
   }
   isOnline() {
-    return __privateGet(this, _online);
+    return this.#online;
   }
-}, _online = new WeakMap(), _cleanup2 = new WeakMap(), _setup2 = new WeakMap(), _c);
+};
 var onlineManager = new OnlineManager();
 function defaultRetryDelay(failureCount) {
   return Math.min(1e3 * 2 ** failureCount, 3e4);
@@ -15214,8 +15173,8 @@ function canFetch(networkMode) {
 var CancelledError = class extends Error {
   constructor(options) {
     super("CancelledError");
-    this.revert = options == null ? void 0 : options.revert;
-    this.silent = options == null ? void 0 : options.silent;
+    this.revert = options?.revert;
+    this.silent = options?.silent;
   }
 };
 function createRetryer(config) {
@@ -15225,11 +15184,10 @@ function createRetryer(config) {
   const thenable = pendingThenable();
   const isResolved = () => thenable.status !== "pending";
   const cancel = (cancelOptions) => {
-    var _a2;
     if (!isResolved()) {
       const error = new CancelledError(cancelOptions);
       reject(error);
-      (_a2 = config.onCancel) == null ? void 0 : _a2.call(config, error);
+      config.onCancel?.(error);
     }
   };
   const cancelRetry = () => {
@@ -15242,30 +15200,28 @@ function createRetryer(config) {
   const canStart = () => canFetch(config.networkMode) && config.canRun();
   const resolve = (value) => {
     if (!isResolved()) {
-      continueFn == null ? void 0 : continueFn();
+      continueFn?.();
       thenable.resolve(value);
     }
   };
   const reject = (value) => {
     if (!isResolved()) {
-      continueFn == null ? void 0 : continueFn();
+      continueFn?.();
       thenable.reject(value);
     }
   };
   const pause = () => {
     return new Promise((continueResolve) => {
-      var _a2;
       continueFn = (value) => {
         if (isResolved() || canContinue()) {
           continueResolve(value);
         }
       };
-      (_a2 = config.onPause) == null ? void 0 : _a2.call(config);
+      config.onPause?.();
     }).then(() => {
-      var _a2;
       continueFn = void 0;
       if (!isResolved()) {
-        (_a2 = config.onContinue) == null ? void 0 : _a2.call(config);
+        config.onContinue?.();
       }
     });
   };
@@ -15281,7 +15237,6 @@ function createRetryer(config) {
       promiseOrValue = Promise.reject(error);
     }
     Promise.resolve(promiseOrValue).then(resolve).catch((error) => {
-      var _a2;
       if (isResolved()) {
         return;
       }
@@ -15294,7 +15249,7 @@ function createRetryer(config) {
         return;
       }
       failureCount++;
-      (_a2 = config.onFail) == null ? void 0 : _a2.call(config, failureCount, error);
+      config.onFail?.(failureCount, error);
       sleep$1(delay).then(() => {
         return canContinue() ? void 0 : pause();
       }).then(() => {
@@ -15311,7 +15266,7 @@ function createRetryer(config) {
     status: () => thenable.status,
     cancel,
     continue: () => {
-      continueFn == null ? void 0 : continueFn();
+      continueFn?.();
       return thenable;
     },
     cancelRetry,
@@ -15327,19 +15282,17 @@ function createRetryer(config) {
     }
   };
 }
-var Removable = (_d = class {
-  constructor() {
-    __privateAdd(this, _gcTimeout);
-  }
+var Removable = class {
+  #gcTimeout;
   destroy() {
     this.clearGcTimeout();
   }
   scheduleGc() {
     this.clearGcTimeout();
     if (isValidTimeout(this.gcTime)) {
-      __privateSet(this, _gcTimeout, timeoutManager.setTimeout(() => {
+      this.#gcTimeout = timeoutManager.setTimeout(() => {
         this.optionalRemove();
-      }, this.gcTime));
+      }, this.gcTime);
     }
   }
   updateGcTime(newGcTime) {
@@ -15349,44 +15302,42 @@ var Removable = (_d = class {
     );
   }
   clearGcTimeout() {
-    if (__privateGet(this, _gcTimeout)) {
-      timeoutManager.clearTimeout(__privateGet(this, _gcTimeout));
-      __privateSet(this, _gcTimeout, void 0);
+    if (this.#gcTimeout) {
+      timeoutManager.clearTimeout(this.#gcTimeout);
+      this.#gcTimeout = void 0;
     }
   }
-}, _gcTimeout = new WeakMap(), _d);
-var Query = (_e = class extends Removable {
+};
+var Query = class extends Removable {
+  #initialState;
+  #revertState;
+  #cache;
+  #client;
+  #retryer;
+  #defaultOptions;
+  #abortSignalConsumed;
   constructor(config) {
     super();
-    __privateAdd(this, _Query_instances);
-    __privateAdd(this, _initialState);
-    __privateAdd(this, _revertState);
-    __privateAdd(this, _cache);
-    __privateAdd(this, _client);
-    __privateAdd(this, _retryer);
-    __privateAdd(this, _defaultOptions);
-    __privateAdd(this, _abortSignalConsumed);
-    __privateSet(this, _abortSignalConsumed, false);
-    __privateSet(this, _defaultOptions, config.defaultOptions);
+    this.#abortSignalConsumed = false;
+    this.#defaultOptions = config.defaultOptions;
     this.setOptions(config.options);
     this.observers = [];
-    __privateSet(this, _client, config.client);
-    __privateSet(this, _cache, __privateGet(this, _client).getQueryCache());
+    this.#client = config.client;
+    this.#cache = this.#client.getQueryCache();
     this.queryKey = config.queryKey;
     this.queryHash = config.queryHash;
-    __privateSet(this, _initialState, getDefaultState$1(this.options));
-    this.state = config.state ?? __privateGet(this, _initialState);
+    this.#initialState = getDefaultState$1(this.options);
+    this.state = config.state ?? this.#initialState;
     this.scheduleGc();
   }
   get meta() {
     return this.options.meta;
   }
   get promise() {
-    var _a2;
-    return (_a2 = __privateGet(this, _retryer)) == null ? void 0 : _a2.promise;
+    return this.#retryer?.promise;
   }
   setOptions(options) {
-    this.options = { ...__privateGet(this, _defaultOptions), ...options };
+    this.options = { ...this.#defaultOptions, ...options };
     this.updateGcTime(this.options.gcTime);
     if (this.state && this.state.data === void 0) {
       const defaultState = getDefaultState$1(this.options);
@@ -15395,32 +15346,31 @@ var Query = (_e = class extends Removable {
           updatedAt: defaultState.dataUpdatedAt,
           manual: true
         });
-        __privateSet(this, _initialState, defaultState);
+        this.#initialState = defaultState;
       }
     }
   }
   optionalRemove() {
     if (!this.observers.length && this.state.fetchStatus === "idle") {
-      __privateGet(this, _cache).remove(this);
+      this.#cache.remove(this);
     }
   }
   setData(newData, options) {
     const data = replaceData(this.state.data, newData, this.options);
-    __privateMethod(this, _Query_instances, dispatch_fn).call(this, {
+    this.#dispatch({
       data,
       type: "success",
-      dataUpdatedAt: options == null ? void 0 : options.updatedAt,
-      manual: options == null ? void 0 : options.manual
+      dataUpdatedAt: options?.updatedAt,
+      manual: options?.manual
     });
     return data;
   }
   setState(state, setStateOptions) {
-    __privateMethod(this, _Query_instances, dispatch_fn).call(this, { type: "setState", state, setStateOptions });
+    this.#dispatch({ type: "setState", state, setStateOptions });
   }
   cancel(options) {
-    var _a2, _b2;
-    const promise = (_a2 = __privateGet(this, _retryer)) == null ? void 0 : _a2.promise;
-    (_b2 = __privateGet(this, _retryer)) == null ? void 0 : _b2.cancel(options);
+    const promise = this.#retryer?.promise;
+    this.#retryer?.cancel(options);
     return promise ? promise.then(noop$4).catch(noop$4) : Promise.resolve();
   }
   destroy() {
@@ -15429,7 +15379,7 @@ var Query = (_e = class extends Removable {
   }
   reset() {
     this.destroy();
-    this.setState(__privateGet(this, _initialState));
+    this.setState(this.#initialState);
   }
   isActive() {
     return this.observers.some(
@@ -15471,38 +15421,36 @@ var Query = (_e = class extends Removable {
     return !timeUntilStale(this.state.dataUpdatedAt, staleTime);
   }
   onFocus() {
-    var _a2;
     const observer = this.observers.find((x) => x.shouldFetchOnWindowFocus());
-    observer == null ? void 0 : observer.refetch({ cancelRefetch: false });
-    (_a2 = __privateGet(this, _retryer)) == null ? void 0 : _a2.continue();
+    observer?.refetch({ cancelRefetch: false });
+    this.#retryer?.continue();
   }
   onOnline() {
-    var _a2;
     const observer = this.observers.find((x) => x.shouldFetchOnReconnect());
-    observer == null ? void 0 : observer.refetch({ cancelRefetch: false });
-    (_a2 = __privateGet(this, _retryer)) == null ? void 0 : _a2.continue();
+    observer?.refetch({ cancelRefetch: false });
+    this.#retryer?.continue();
   }
   addObserver(observer) {
     if (!this.observers.includes(observer)) {
       this.observers.push(observer);
       this.clearGcTimeout();
-      __privateGet(this, _cache).notify({ type: "observerAdded", query: this, observer });
+      this.#cache.notify({ type: "observerAdded", query: this, observer });
     }
   }
   removeObserver(observer) {
     if (this.observers.includes(observer)) {
       this.observers = this.observers.filter((x) => x !== observer);
       if (!this.observers.length) {
-        if (__privateGet(this, _retryer)) {
-          if (__privateGet(this, _abortSignalConsumed)) {
-            __privateGet(this, _retryer).cancel({ revert: true });
+        if (this.#retryer) {
+          if (this.#abortSignalConsumed) {
+            this.#retryer.cancel({ revert: true });
           } else {
-            __privateGet(this, _retryer).cancelRetry();
+            this.#retryer.cancelRetry();
           }
         }
         this.scheduleGc();
       }
-      __privateGet(this, _cache).notify({ type: "observerRemoved", query: this, observer });
+      this.#cache.notify({ type: "observerRemoved", query: this, observer });
     }
   }
   getObserversCount() {
@@ -15510,20 +15458,19 @@ var Query = (_e = class extends Removable {
   }
   invalidate() {
     if (!this.state.isInvalidated) {
-      __privateMethod(this, _Query_instances, dispatch_fn).call(this, { type: "invalidate" });
+      this.#dispatch({ type: "invalidate" });
     }
   }
   async fetch(options, fetchOptions) {
-    var _a2, _b2, _c2, _d2, _e2, _f2, _g2, _h2, _i2, _j2, _k2, _l2;
     if (this.state.fetchStatus !== "idle" && // If the promise in the retyer is already rejected, we have to definitely
     // re-start the fetch; there is a chance that the query is still in a
     // pending state when that happens
-    ((_a2 = __privateGet(this, _retryer)) == null ? void 0 : _a2.status()) !== "rejected") {
-      if (this.state.data !== void 0 && (fetchOptions == null ? void 0 : fetchOptions.cancelRefetch)) {
+    this.#retryer?.status() !== "rejected") {
+      if (this.state.data !== void 0 && fetchOptions?.cancelRefetch) {
         this.cancel({ silent: true });
-      } else if (__privateGet(this, _retryer)) {
-        __privateGet(this, _retryer).continueRetry();
-        return __privateGet(this, _retryer).promise;
+      } else if (this.#retryer) {
+        this.#retryer.continueRetry();
+        return this.#retryer.promise;
       }
     }
     if (options) {
@@ -15540,7 +15487,7 @@ var Query = (_e = class extends Removable {
       Object.defineProperty(object, "signal", {
         enumerable: true,
         get: () => {
-          __privateSet(this, _abortSignalConsumed, true);
+          this.#abortSignalConsumed = true;
           return abortController.signal;
         }
       });
@@ -15549,7 +15496,7 @@ var Query = (_e = class extends Removable {
       const queryFn = ensureQueryFn(this.options, fetchOptions);
       const createQueryFnContext = () => {
         const queryFnContext2 = {
-          client: __privateGet(this, _client),
+          client: this.#client,
           queryKey: this.queryKey,
           meta: this.meta
         };
@@ -15557,7 +15504,7 @@ var Query = (_e = class extends Removable {
         return queryFnContext2;
       };
       const queryFnContext = createQueryFnContext();
-      __privateSet(this, _abortSignalConsumed, false);
+      this.#abortSignalConsumed = false;
       if (this.options.persister) {
         return this.options.persister(
           queryFn,
@@ -15572,7 +15519,7 @@ var Query = (_e = class extends Removable {
         fetchOptions,
         options: this.options,
         queryKey: this.queryKey,
-        client: __privateGet(this, _client),
+        client: this.#client,
         state: this.state,
         fetchFn
       };
@@ -15580,47 +15527,46 @@ var Query = (_e = class extends Removable {
       return context2;
     };
     const context = createFetchContext();
-    (_b2 = this.options.behavior) == null ? void 0 : _b2.onFetch(context, this);
-    __privateSet(this, _revertState, this.state);
-    if (this.state.fetchStatus === "idle" || this.state.fetchMeta !== ((_c2 = context.fetchOptions) == null ? void 0 : _c2.meta)) {
-      __privateMethod(this, _Query_instances, dispatch_fn).call(this, { type: "fetch", meta: (_d2 = context.fetchOptions) == null ? void 0 : _d2.meta });
+    this.options.behavior?.onFetch(context, this);
+    this.#revertState = this.state;
+    if (this.state.fetchStatus === "idle" || this.state.fetchMeta !== context.fetchOptions?.meta) {
+      this.#dispatch({ type: "fetch", meta: context.fetchOptions?.meta });
     }
-    __privateSet(this, _retryer, createRetryer({
-      initialPromise: fetchOptions == null ? void 0 : fetchOptions.initialPromise,
+    this.#retryer = createRetryer({
+      initialPromise: fetchOptions?.initialPromise,
       fn: context.fetchFn,
       onCancel: (error) => {
         if (error instanceof CancelledError && error.revert) {
           this.setState({
-            ...__privateGet(this, _revertState),
+            ...this.#revertState,
             fetchStatus: "idle"
           });
         }
         abortController.abort();
       },
       onFail: (failureCount, error) => {
-        __privateMethod(this, _Query_instances, dispatch_fn).call(this, { type: "failed", failureCount, error });
+        this.#dispatch({ type: "failed", failureCount, error });
       },
       onPause: () => {
-        __privateMethod(this, _Query_instances, dispatch_fn).call(this, { type: "pause" });
+        this.#dispatch({ type: "pause" });
       },
       onContinue: () => {
-        __privateMethod(this, _Query_instances, dispatch_fn).call(this, { type: "continue" });
+        this.#dispatch({ type: "continue" });
       },
       retry: context.options.retry,
       retryDelay: context.options.retryDelay,
       networkMode: context.options.networkMode,
       canRun: () => true
-    }));
+    });
     try {
-      const data = await __privateGet(this, _retryer).start();
+      const data = await this.#retryer.start();
       if (data === void 0) {
         if (false) ;
         throw new Error(`${this.queryHash} data is undefined`);
       }
       this.setData(data);
-      (_f2 = (_e2 = __privateGet(this, _cache).config).onSuccess) == null ? void 0 : _f2.call(_e2, data, this);
-      (_h2 = (_g2 = __privateGet(this, _cache).config).onSettled) == null ? void 0 : _h2.call(
-        _g2,
+      this.#cache.config.onSuccess?.(data, this);
+      this.#cache.config.onSettled?.(
         data,
         this.state.error,
         this
@@ -15629,7 +15575,7 @@ var Query = (_e = class extends Removable {
     } catch (error) {
       if (error instanceof CancelledError) {
         if (error.silent) {
-          return __privateGet(this, _retryer).promise;
+          return this.#retryer.promise;
         } else if (error.revert) {
           if (this.state.data === void 0) {
             throw error;
@@ -15637,17 +15583,15 @@ var Query = (_e = class extends Removable {
           return this.state.data;
         }
       }
-      __privateMethod(this, _Query_instances, dispatch_fn).call(this, {
+      this.#dispatch({
         type: "error",
         error
       });
-      (_j2 = (_i2 = __privateGet(this, _cache).config).onError) == null ? void 0 : _j2.call(
-        _i2,
+      this.#cache.config.onError?.(
         error,
         this
       );
-      (_l2 = (_k2 = __privateGet(this, _cache).config).onSettled) == null ? void 0 : _l2.call(
-        _k2,
+      this.#cache.config.onSettled?.(
         this.state.data,
         error,
         this
@@ -15657,80 +15601,81 @@ var Query = (_e = class extends Removable {
       this.scheduleGc();
     }
   }
-}, _initialState = new WeakMap(), _revertState = new WeakMap(), _cache = new WeakMap(), _client = new WeakMap(), _retryer = new WeakMap(), _defaultOptions = new WeakMap(), _abortSignalConsumed = new WeakMap(), _Query_instances = new WeakSet(), dispatch_fn = function(action) {
-  const reducer2 = (state) => {
-    switch (action.type) {
-      case "failed":
-        return {
-          ...state,
-          fetchFailureCount: action.failureCount,
-          fetchFailureReason: action.error
-        };
-      case "pause":
-        return {
-          ...state,
-          fetchStatus: "paused"
-        };
-      case "continue":
-        return {
-          ...state,
-          fetchStatus: "fetching"
-        };
-      case "fetch":
-        return {
-          ...state,
-          ...fetchState(state.data, this.options),
-          fetchMeta: action.meta ?? null
-        };
-      case "success":
-        const newState = {
-          ...state,
-          data: action.data,
-          dataUpdateCount: state.dataUpdateCount + 1,
-          dataUpdatedAt: action.dataUpdatedAt ?? Date.now(),
-          error: null,
-          isInvalidated: false,
-          status: "success",
-          ...!action.manual && {
+  #dispatch(action) {
+    const reducer2 = (state) => {
+      switch (action.type) {
+        case "failed":
+          return {
+            ...state,
+            fetchFailureCount: action.failureCount,
+            fetchFailureReason: action.error
+          };
+        case "pause":
+          return {
+            ...state,
+            fetchStatus: "paused"
+          };
+        case "continue":
+          return {
+            ...state,
+            fetchStatus: "fetching"
+          };
+        case "fetch":
+          return {
+            ...state,
+            ...fetchState(state.data, this.options),
+            fetchMeta: action.meta ?? null
+          };
+        case "success":
+          const newState = {
+            ...state,
+            data: action.data,
+            dataUpdateCount: state.dataUpdateCount + 1,
+            dataUpdatedAt: action.dataUpdatedAt ?? Date.now(),
+            error: null,
+            isInvalidated: false,
+            status: "success",
+            ...!action.manual && {
+              fetchStatus: "idle",
+              fetchFailureCount: 0,
+              fetchFailureReason: null
+            }
+          };
+          this.#revertState = action.manual ? newState : void 0;
+          return newState;
+        case "error":
+          const error = action.error;
+          return {
+            ...state,
+            error,
+            errorUpdateCount: state.errorUpdateCount + 1,
+            errorUpdatedAt: Date.now(),
+            fetchFailureCount: state.fetchFailureCount + 1,
+            fetchFailureReason: error,
             fetchStatus: "idle",
-            fetchFailureCount: 0,
-            fetchFailureReason: null
-          }
-        };
-        __privateSet(this, _revertState, action.manual ? newState : void 0);
-        return newState;
-      case "error":
-        const error = action.error;
-        return {
-          ...state,
-          error,
-          errorUpdateCount: state.errorUpdateCount + 1,
-          errorUpdatedAt: Date.now(),
-          fetchFailureCount: state.fetchFailureCount + 1,
-          fetchFailureReason: error,
-          fetchStatus: "idle",
-          status: "error"
-        };
-      case "invalidate":
-        return {
-          ...state,
-          isInvalidated: true
-        };
-      case "setState":
-        return {
-          ...state,
-          ...action.state
-        };
-    }
-  };
-  this.state = reducer2(this.state);
-  notifyManager.batch(() => {
-    this.observers.forEach((observer) => {
-      observer.onQueryUpdate();
+            status: "error"
+          };
+        case "invalidate":
+          return {
+            ...state,
+            isInvalidated: true
+          };
+        case "setState":
+          return {
+            ...state,
+            ...action.state
+          };
+      }
+    };
+    this.state = reducer2(this.state);
+    notifyManager.batch(() => {
+      this.observers.forEach((observer) => {
+        observer.onQueryUpdate();
+      });
+      this.#cache.notify({ query: this, type: "updated", action });
     });
-    __privateGet(this, _cache).notify({ query: this, type: "updated", action });
-  });
-}, _e);
+  }
+};
 function fetchState(data, options) {
   return {
     fetchFailureCount: 0,
@@ -15761,46 +15706,45 @@ function getDefaultState$1(options) {
     fetchStatus: "idle"
   };
 }
-var QueryObserver = (_f = class extends Subscribable {
+var QueryObserver = class extends Subscribable {
   constructor(client2, options) {
     super();
-    __privateAdd(this, _QueryObserver_instances);
-    __privateAdd(this, _client2);
-    __privateAdd(this, _currentQuery);
-    __privateAdd(this, _currentQueryInitialState);
-    __privateAdd(this, _currentResult);
-    __privateAdd(this, _currentResultState);
-    __privateAdd(this, _currentResultOptions);
-    __privateAdd(this, _currentThenable);
-    __privateAdd(this, _selectError);
-    __privateAdd(this, _selectFn);
-    __privateAdd(this, _selectResult);
-    // This property keeps track of the last query with defined data.
-    // It will be used to pass the previous data and query to the placeholder function between renders.
-    __privateAdd(this, _lastQueryWithDefinedData);
-    __privateAdd(this, _staleTimeoutId);
-    __privateAdd(this, _refetchIntervalId);
-    __privateAdd(this, _currentRefetchInterval);
-    __privateAdd(this, _trackedProps, /* @__PURE__ */ new Set());
     this.options = options;
-    __privateSet(this, _client2, client2);
-    __privateSet(this, _selectError, null);
-    __privateSet(this, _currentThenable, pendingThenable());
+    this.#client = client2;
+    this.#selectError = null;
+    this.#currentThenable = pendingThenable();
     this.bindMethods();
     this.setOptions(options);
   }
+  #client;
+  #currentQuery = void 0;
+  #currentQueryInitialState = void 0;
+  #currentResult = void 0;
+  #currentResultState;
+  #currentResultOptions;
+  #currentThenable;
+  #selectError;
+  #selectFn;
+  #selectResult;
+  // This property keeps track of the last query with defined data.
+  // It will be used to pass the previous data and query to the placeholder function between renders.
+  #lastQueryWithDefinedData;
+  #staleTimeoutId;
+  #refetchIntervalId;
+  #currentRefetchInterval;
+  #trackedProps = /* @__PURE__ */ new Set();
   bindMethods() {
     this.refetch = this.refetch.bind(this);
   }
   onSubscribe() {
     if (this.listeners.size === 1) {
-      __privateGet(this, _currentQuery).addObserver(this);
-      if (shouldFetchOnMount(__privateGet(this, _currentQuery), this.options)) {
-        __privateMethod(this, _QueryObserver_instances, executeFetch_fn).call(this);
+      this.#currentQuery.addObserver(this);
+      if (shouldFetchOnMount(this.#currentQuery, this.options)) {
+        this.#executeFetch();
       } else {
         this.updateResult();
       }
-      __privateMethod(this, _QueryObserver_instances, updateTimers_fn).call(this);
+      this.#updateTimers();
     }
   }
   onUnsubscribe() {
@@ -15810,82 +15754,82 @@ var QueryObserver = (_f = class extends Subscribable {
   }
   shouldFetchOnReconnect() {
     return shouldFetchOn(
-      __privateGet(this, _currentQuery),
+      this.#currentQuery,
       this.options,
       this.options.refetchOnReconnect
     );
   }
   shouldFetchOnWindowFocus() {
     return shouldFetchOn(
-      __privateGet(this, _currentQuery),
+      this.#currentQuery,
       this.options,
       this.options.refetchOnWindowFocus
     );
   }
   destroy() {
     this.listeners = /* @__PURE__ */ new Set();
-    __privateMethod(this, _QueryObserver_instances, clearStaleTimeout_fn).call(this);
-    __privateMethod(this, _QueryObserver_instances, clearRefetchInterval_fn).call(this);
-    __privateGet(this, _currentQuery).removeObserver(this);
+    this.#clearStaleTimeout();
+    this.#clearRefetchInterval();
+    this.#currentQuery.removeObserver(this);
   }
   setOptions(options) {
     const prevOptions = this.options;
-    const prevQuery = __privateGet(this, _currentQuery);
-    this.options = __privateGet(this, _client2).defaultQueryOptions(options);
-    if (this.options.enabled !== void 0 && typeof this.options.enabled !== "boolean" && typeof this.options.enabled !== "function" && typeof resolveEnabled(this.options.enabled, __privateGet(this, _currentQuery)) !== "boolean") {
+    const prevQuery = this.#currentQuery;
+    this.options = this.#client.defaultQueryOptions(options);
+    if (this.options.enabled !== void 0 && typeof this.options.enabled !== "boolean" && typeof this.options.enabled !== "function" && typeof resolveEnabled(this.options.enabled, this.#currentQuery) !== "boolean") {
       throw new Error(
         "Expected enabled to be a boolean or a callback that returns a boolean"
       );
     }
-    __privateMethod(this, _QueryObserver_instances, updateQuery_fn).call(this);
-    __privateGet(this, _currentQuery).setOptions(this.options);
+    this.#updateQuery();
+    this.#currentQuery.setOptions(this.options);
     if (prevOptions._defaulted && !shallowEqualObjects(this.options, prevOptions)) {
-      __privateGet(this, _client2).getQueryCache().notify({
+      this.#client.getQueryCache().notify({
         type: "observerOptionsUpdated",
-        query: __privateGet(this, _currentQuery),
+        query: this.#currentQuery,
         observer: this
       });
     }
     const mounted = this.hasListeners();
     if (mounted && shouldFetchOptionally(
-      __privateGet(this, _currentQuery),
+      this.#currentQuery,
       prevQuery,
       this.options,
       prevOptions
     )) {
-      __privateMethod(this, _QueryObserver_instances, executeFetch_fn).call(this);
+      this.#executeFetch();
     }
     this.updateResult();
-    if (mounted && (__privateGet(this, _currentQuery) !== prevQuery || resolveEnabled(this.options.enabled, __privateGet(this, _currentQuery)) !== resolveEnabled(prevOptions.enabled, __privateGet(this, _currentQuery)) || resolveStaleTime(this.options.staleTime, __privateGet(this, _currentQuery)) !== resolveStaleTime(prevOptions.staleTime, __privateGet(this, _currentQuery)))) {
-      __privateMethod(this, _QueryObserver_instances, updateStaleTimeout_fn).call(this);
+    if (mounted && (this.#currentQuery !== prevQuery || resolveEnabled(this.options.enabled, this.#currentQuery) !== resolveEnabled(prevOptions.enabled, this.#currentQuery) || resolveStaleTime(this.options.staleTime, this.#currentQuery) !== resolveStaleTime(prevOptions.staleTime, this.#currentQuery))) {
+      this.#updateStaleTimeout();
     }
-    const nextRefetchInterval = __privateMethod(this, _QueryObserver_instances, computeRefetchInterval_fn).call(this);
-    if (mounted && (__privateGet(this, _currentQuery) !== prevQuery || resolveEnabled(this.options.enabled, __privateGet(this, _currentQuery)) !== resolveEnabled(prevOptions.enabled, __privateGet(this, _currentQuery)) || nextRefetchInterval !== __privateGet(this, _currentRefetchInterval))) {
-      __privateMethod(this, _QueryObserver_instances, updateRefetchInterval_fn).call(this, nextRefetchInterval);
+    const nextRefetchInterval = this.#computeRefetchInterval();
+    if (mounted && (this.#currentQuery !== prevQuery || resolveEnabled(this.options.enabled, this.#currentQuery) !== resolveEnabled(prevOptions.enabled, this.#currentQuery) || nextRefetchInterval !== this.#currentRefetchInterval)) {
+      this.#updateRefetchInterval(nextRefetchInterval);
     }
   }
   getOptimisticResult(options) {
-    const query = __privateGet(this, _client2).getQueryCache().build(__privateGet(this, _client2), options);
+    const query = this.#client.getQueryCache().build(this.#client, options);
     const result = this.createResult(query, options);
     if (shouldAssignObserverCurrentProperties(this, result)) {
-      __privateSet(this, _currentResult, result);
-      __privateSet(this, _currentResultOptions, this.options);
-      __privateSet(this, _currentResultState, __privateGet(this, _currentQuery).state);
+      this.#currentResult = result;
+      this.#currentResultOptions = this.options;
+      this.#currentResultState = this.#currentQuery.state;
     }
     return result;
   }
   getCurrentResult() {
-    return __privateGet(this, _currentResult);
+    return this.#currentResult;
   }
   trackResult(result, onPropTracked) {
     return new Proxy(result, {
       get: (target, key) => {
         this.trackProp(key);
-        onPropTracked == null ? void 0 : onPropTracked(key);
+        onPropTracked?.(key);
         if (key === "promise") {
           this.trackProp("data");
-          if (!this.options.experimental_prefetchInRender && __privateGet(this, _currentThenable).status === "pending") {
-            __privateGet(this, _currentThenable).reject(
+          if (!this.options.experimental_prefetchInRender && this.#currentThenable.status === "pending") {
+            this.#currentThenable.reject(
               new Error(
                 "experimental_prefetchInRender feature flag is not enabled"
               )
@@ -15897,10 +15841,10 @@ var QueryObserver = (_f = class extends Subscribable {
     });
   }
   trackProp(key) {
-    __privateGet(this, _trackedProps).add(key);
+    this.#trackedProps.add(key);
   }
   getCurrentQuery() {
-    return __privateGet(this, _currentQuery);
+    return this.#currentQuery;
   }
   refetch({ ...options } = {}) {
     return this.fetch({
@@ -15908,28 +15852,86 @@ var QueryObserver = (_f = class extends Subscribable {
     });
   }
   fetchOptimistic(options) {
-    const defaultedOptions = __privateGet(this, _client2).defaultQueryOptions(options);
-    const query = __privateGet(this, _client2).getQueryCache().build(__privateGet(this, _client2), defaultedOptions);
+    const defaultedOptions = this.#client.defaultQueryOptions(options);
+    const query = this.#client.getQueryCache().build(this.#client, defaultedOptions);
     return query.fetch().then(() => this.createResult(query, defaultedOptions));
   }
   fetch(fetchOptions) {
-    return __privateMethod(this, _QueryObserver_instances, executeFetch_fn).call(this, {
+    return this.#executeFetch({
       ...fetchOptions,
       cancelRefetch: fetchOptions.cancelRefetch ?? true
     }).then(() => {
       this.updateResult();
-      return __privateGet(this, _currentResult);
+      return this.#currentResult;
     });
   }
+  #executeFetch(fetchOptions) {
+    this.#updateQuery();
+    let promise = this.#currentQuery.fetch(
+      this.options,
+      fetchOptions
+    );
+    if (!fetchOptions?.throwOnError) {
+      promise = promise.catch(noop$4);
+    }
+    return promise;
+  }
+  #updateStaleTimeout() {
+    this.#clearStaleTimeout();
+    const staleTime = resolveStaleTime(
+      this.options.staleTime,
+      this.#currentQuery
+    );
+    if (isServer$1 || this.#currentResult.isStale || !isValidTimeout(staleTime)) {
+      return;
+    }
+    const time = timeUntilStale(this.#currentResult.dataUpdatedAt, staleTime);
+    const timeout = time + 1;
+    this.#staleTimeoutId = timeoutManager.setTimeout(() => {
+      if (!this.#currentResult.isStale) {
+        this.updateResult();
+      }
+    }, timeout);
+  }
+  #computeRefetchInterval() {
+    return (typeof this.options.refetchInterval === "function" ? this.options.refetchInterval(this.#currentQuery) : this.options.refetchInterval) ?? false;
+  }
+  #updateRefetchInterval(nextInterval) {
+    this.#clearRefetchInterval();
+    this.#currentRefetchInterval = nextInterval;
+    if (isServer$1 || resolveEnabled(this.options.enabled, this.#currentQuery) === false || !isValidTimeout(this.#currentRefetchInterval) || this.#currentRefetchInterval === 0) {
+      return;
+    }
+    this.#refetchIntervalId = timeoutManager.setInterval(() => {
+      if (this.options.refetchIntervalInBackground || focusManager.isFocused()) {
+        this.#executeFetch();
+      }
+    }, this.#currentRefetchInterval);
+  }
+  #updateTimers() {
+    this.#updateStaleTimeout();
+    this.#updateRefetchInterval(this.#computeRefetchInterval());
+  }
+  #clearStaleTimeout() {
+    if (this.#staleTimeoutId) {
+      timeoutManager.clearTimeout(this.#staleTimeoutId);
+      this.#staleTimeoutId = void 0;
+    }
+  }
+  #clearRefetchInterval() {
+    if (this.#refetchIntervalId) {
+      timeoutManager.clearInterval(this.#refetchIntervalId);
+      this.#refetchIntervalId = void 0;
+    }
+  }
   createResult(query, options) {
-    var _a2;
-    const prevQuery = __privateGet(this, _currentQuery);
+    const prevQuery = this.#currentQuery;
     const prevOptions = this.options;
-    const prevResult = __privateGet(this, _currentResult);
-    const prevResultState = __privateGet(this, _currentResultState);
-    const prevResultOptions = __privateGet(this, _currentResultOptions);
+    const prevResult = this.#currentResult;
+    const prevResultState = this.#currentResultState;
+    const prevResultOptions = this.#currentResultOptions;
     const queryChange = query !== prevQuery;
-    const queryInitialState = queryChange ? query.state : __privateGet(this, _currentQueryInitialState);
+    const queryInitialState = queryChange ? query.state : this.#currentQueryInitialState;
     const { state } = query;
     let newState = { ...state };
     let isPlaceholderData = false;
@@ -15953,19 +15955,19 @@ var QueryObserver = (_f = class extends Subscribable {
     let skipSelect = false;
     if (options.placeholderData !== void 0 && data === void 0 && status === "pending") {
       let placeholderData;
-      if ((prevResult == null ? void 0 : prevResult.isPlaceholderData) && options.placeholderData === (prevResultOptions == null ? void 0 : prevResultOptions.placeholderData)) {
+      if (prevResult?.isPlaceholderData && options.placeholderData === prevResultOptions?.placeholderData) {
         placeholderData = prevResult.data;
         skipSelect = true;
       } else {
         placeholderData = typeof options.placeholderData === "function" ? options.placeholderData(
-          (_a2 = __privateGet(this, _lastQueryWithDefinedData)) == null ? void 0 : _a2.state.data,
-          __privateGet(this, _lastQueryWithDefinedData)
+          this.#lastQueryWithDefinedData?.state.data,
+          this.#lastQueryWithDefinedData
         ) : options.placeholderData;
       }
       if (placeholderData !== void 0) {
         status = "success";
         data = replaceData(
-          prevResult == null ? void 0 : prevResult.data,
+          prevResult?.data,
           placeholderData,
           options
         );
@@ -15973,23 +15975,23 @@ var QueryObserver = (_f = class extends Subscribable {
       }
     }
     if (options.select && data !== void 0 && !skipSelect) {
-      if (prevResult && data === (prevResultState == null ? void 0 : prevResultState.data) && options.select === __privateGet(this, _selectFn)) {
-        data = __privateGet(this, _selectResult);
+      if (prevResult && data === prevResultState?.data && options.select === this.#selectFn) {
+        data = this.#selectResult;
       } else {
         try {
-          __privateSet(this, _selectFn, options.select);
+          this.#selectFn = options.select;
           data = options.select(data);
-          data = replaceData(prevResult == null ? void 0 : prevResult.data, data, options);
-          __privateSet(this, _selectResult, data);
-          __privateSet(this, _selectError, null);
+          data = replaceData(prevResult?.data, data, options);
+          this.#selectResult = data;
+          this.#selectError = null;
         } catch (selectError) {
-          __privateSet(this, _selectError, selectError);
+          this.#selectError = selectError;
         }
       }
     }
-    if (__privateGet(this, _selectError)) {
-      error = __privateGet(this, _selectError);
-      data = __privateGet(this, _selectResult);
+    if (this.#selectError) {
+      error = this.#selectError;
+      data = this.#selectResult;
       errorUpdatedAt = Date.now();
       status = "error";
     }
@@ -16023,7 +16025,7 @@ var QueryObserver = (_f = class extends Subscribable {
       isRefetchError: isError && hasData,
       isStale: isStale(query, options),
       refetch: this.refetch,
-      promise: __privateGet(this, _currentThenable),
+      promise: this.#currentThenable,
       isEnabled: resolveEnabled(options.enabled, query) !== false
     };
     const nextResult = result;
@@ -16036,10 +16038,10 @@ var QueryObserver = (_f = class extends Subscribable {
         }
       };
       const recreateThenable = () => {
-        const pending = __privateSet(this, _currentThenable, nextResult.promise = pendingThenable());
+        const pending = this.#currentThenable = nextResult.promise = pendingThenable();
         finalizeThenableIfPossible(pending);
       };
-      const prevThenable = __privateGet(this, _currentThenable);
+      const prevThenable = this.#currentThenable;
       switch (prevThenable.status) {
         case "pending":
           if (query.queryHash === prevQuery.queryHash) {
@@ -16061,123 +16063,73 @@ var QueryObserver = (_f = class extends Subscribable {
     return nextResult;
   }
   updateResult() {
-    const prevResult = __privateGet(this, _currentResult);
-    const nextResult = this.createResult(__privateGet(this, _currentQuery), this.options);
-    __privateSet(this, _currentResultState, __privateGet(this, _currentQuery).state);
-    __privateSet(this, _currentResultOptions, this.options);
-    if (__privateGet(this, _currentResultState).data !== void 0) {
-      __privateSet(this, _lastQueryWithDefinedData, __privateGet(this, _currentQuery));
+    const prevResult = this.#currentResult;
+    const nextResult = this.createResult(this.#currentQuery, this.options);
+    this.#currentResultState = this.#currentQuery.state;
+    this.#currentResultOptions = this.options;
+    if (this.#currentResultState.data !== void 0) {
+      this.#lastQueryWithDefinedData = this.#currentQuery;
     }
     if (shallowEqualObjects(nextResult, prevResult)) {
       return;
     }
-    __privateSet(this, _currentResult, nextResult);
+    this.#currentResult = nextResult;
     const shouldNotifyListeners = () => {
       if (!prevResult) {
         return true;
       }
       const { notifyOnChangeProps } = this.options;
       const notifyOnChangePropsValue = typeof notifyOnChangeProps === "function" ? notifyOnChangeProps() : notifyOnChangeProps;
-      if (notifyOnChangePropsValue === "all" || !notifyOnChangePropsValue && !__privateGet(this, _trackedProps).size) {
+      if (notifyOnChangePropsValue === "all" || !notifyOnChangePropsValue && !this.#trackedProps.size) {
         return true;
       }
       const includedProps = new Set(
-        notifyOnChangePropsValue ?? __privateGet(this, _trackedProps)
+        notifyOnChangePropsValue ?? this.#trackedProps
       );
       if (this.options.throwOnError) {
         includedProps.add("error");
       }
-      return Object.keys(__privateGet(this, _currentResult)).some((key) => {
+      return Object.keys(this.#currentResult).some((key) => {
         const typedKey = key;
-        const changed = __privateGet(this, _currentResult)[typedKey] !== prevResult[typedKey];
+        const changed = this.#currentResult[typedKey] !== prevResult[typedKey];
         return changed && includedProps.has(typedKey);
       });
     };
-    __privateMethod(this, _QueryObserver_instances, notify_fn).call(this, { listeners: shouldNotifyListeners() });
+    this.#notify({ listeners: shouldNotifyListeners() });
+  }
+  #updateQuery() {
+    const query = this.#client.getQueryCache().build(this.#client, this.options);
+    if (query === this.#currentQuery) {
+      return;
+    }
+    const prevQuery = this.#currentQuery;
+    this.#currentQuery = query;
+    this.#currentQueryInitialState = query.state;
+    if (this.hasListeners()) {
+      prevQuery?.removeObserver(this);
+      query.addObserver(this);
+    }
   }
   onQueryUpdate() {
     this.updateResult();
     if (this.hasListeners()) {
-      __privateMethod(this, _QueryObserver_instances, updateTimers_fn).call(this);
+      this.#updateTimers();
     }
   }
-}, _client2 = new WeakMap(), _currentQuery = new WeakMap(), _currentQueryInitialState = new WeakMap(), _currentResult = new WeakMap(), _currentResultState = new WeakMap(), _currentResultOptions = new WeakMap(), _currentThenable = new WeakMap(), _selectError = new WeakMap(), _selectFn = new WeakMap(), _selectResult = new WeakMap(), _lastQueryWithDefinedData = new WeakMap(), _staleTimeoutId = new WeakMap(), _refetchIntervalId = new WeakMap(), _currentRefetchInterval = new WeakMap(), _trackedProps = new WeakMap(), _QueryObserver_instances = new WeakSet(), executeFetch_fn = function(fetchOptions) {
-  __privateMethod(this, _QueryObserver_instances, updateQuery_fn).call(this);
-  let promise = __privateGet(this, _currentQuery).fetch(
-    this.options,
-    fetchOptions
-  );
-  if (!(fetchOptions == null ? void 0 : fetchOptions.throwOnError)) {
-    promise = promise.catch(noop$4);
-  }
-  return promise;
-}, updateStaleTimeout_fn = function() {
-  __privateMethod(this, _QueryObserver_instances, clearStaleTimeout_fn).call(this);
-  const staleTime = resolveStaleTime(
-    this.options.staleTime,
-    __privateGet(this, _currentQuery)
-  );
-  if (isServer$1 || __privateGet(this, _currentResult).isStale || !isValidTimeout(staleTime)) {
-    return;
-  }
-  const time = timeUntilStale(__privateGet(this, _currentResult).dataUpdatedAt, staleTime);
-  const timeout = time + 1;
-  __privateSet(this, _staleTimeoutId, timeoutManager.setTimeout(() => {
-    if (!__privateGet(this, _currentResult).isStale) {
-      this.updateResult();
-    }
-  }, timeout));
-}, computeRefetchInterval_fn = function() {
-  return (typeof this.options.refetchInterval === "function" ? this.options.refetchInterval(__privateGet(this, _currentQuery)) : this.options.refetchInterval) ?? false;
-}, updateRefetchInterval_fn = function(nextInterval) {
-  __privateMethod(this, _QueryObserver_instances, clearRefetchInterval_fn).call(this);
-  __privateSet(this, _currentRefetchInterval, nextInterval);
-  if (isServer$1 || resolveEnabled(this.options.enabled, __privateGet(this, _currentQuery)) === false || !isValidTimeout(__privateGet(this, _currentRefetchInterval)) || __privateGet(this, _currentRefetchInterval) === 0) {
-    return;
-  }
-  __privateSet(this, _refetchIntervalId, timeoutManager.setInterval(() => {
-    if (this.options.refetchIntervalInBackground || focusManager.isFocused()) {
-      __privateMethod(this, _QueryObserver_instances, executeFetch_fn).call(this);
-    }
-  }, __privateGet(this, _currentRefetchInterval)));
-}, updateTimers_fn = function() {
-  __privateMethod(this, _QueryObserver_instances, updateStaleTimeout_fn).call(this);
-  __privateMethod(this, _QueryObserver_instances, updateRefetchInterval_fn).call(this, __privateMethod(this, _QueryObserver_instances, computeRefetchInterval_fn).call(this));
-}, clearStaleTimeout_fn = function() {
-  if (__privateGet(this, _staleTimeoutId)) {
-    timeoutManager.clearTimeout(__privateGet(this, _staleTimeoutId));
-    __privateSet(this, _staleTimeoutId, void 0);
-  }
-}, clearRefetchInterval_fn = function() {
-  if (__privateGet(this, _refetchIntervalId)) {
-    timeoutManager.clearInterval(__privateGet(this, _refetchIntervalId));
-    __privateSet(this, _refetchIntervalId, void 0);
-  }
-}, updateQuery_fn = function() {
-  const query = __privateGet(this, _client2).getQueryCache().build(__privateGet(this, _client2), this.options);
-  if (query === __privateGet(this, _currentQuery)) {
-    return;
-  }
-  const prevQuery = __privateGet(this, _currentQuery);
-  __privateSet(this, _currentQuery, query);
-  __privateSet(this, _currentQueryInitialState, query.state);
-  if (this.hasListeners()) {
-    prevQuery == null ? void 0 : prevQuery.removeObserver(this);
-    query.addObserver(this);
-  }
-}, notify_fn = function(notifyOptions) {
-  notifyManager.batch(() => {
-    if (notifyOptions.listeners) {
-      this.listeners.forEach((listener) => {
-        listener(__privateGet(this, _currentResult));
+  #notify(notifyOptions) {
+    notifyManager.batch(() => {
+      if (notifyOptions.listeners) {
+        this.listeners.forEach((listener) => {
+          listener(this.#currentResult);
+        });
+      }
+      this.#client.getQueryCache().notify({
+        query: this.#currentQuery,
+        type: "observerResultsUpdated"
       });
-    }
-    __privateGet(this, _client2).getQueryCache().notify({
-      query: __privateGet(this, _currentQuery),
-      type: "observerResultsUpdated"
     });
-  });
-}, _f);
+  }
+};
 function shouldLoadOnMount(query, options) {
   return resolveEnabled(options.enabled, query) !== false && query.state.data === void 0 && !(query.state.status === "error" && options.retryOnMount === false);
 }
@@ -16206,11 +16158,10 @@ function shouldAssignObserverCurrentProperties(observer, optimisticResult) {
 function infiniteQueryBehavior(pages) {
   return {
     onFetch: (context, query) => {
-      var _a2, _b2, _c2, _d2, _e2;
       const options = context.options;
-      const direction = (_c2 = (_b2 = (_a2 = context.fetchOptions) == null ? void 0 : _a2.meta) == null ? void 0 : _b2.fetchMore) == null ? void 0 : _c2.direction;
-      const oldPages = ((_d2 = context.state.data) == null ? void 0 : _d2.pages) || [];
-      const oldPageParams = ((_e2 = context.state.data) == null ? void 0 : _e2.pageParams) || [];
+      const direction = context.fetchOptions?.meta?.fetchMore?.direction;
+      const oldPages = context.state.data?.pages || [];
+      const oldPageParams = context.state.data?.pageParams || [];
       let result = { pages: [], pageParams: [] };
       let currentPage = 0;
       const fetchFn = async () => {
@@ -16282,9 +16233,7 @@ function infiniteQueryBehavior(pages) {
       };
       if (context.options.persister) {
         context.fetchFn = () => {
-          var _a3, _b3;
-          return (_b3 = (_a3 = context.options).persister) == null ? void 0 : _b3.call(
-            _a3,
+          return context.options.persister?.(
             fetchFn,
             {
               client: context.client,
@@ -16311,21 +16260,19 @@ function getNextPageParam(options, { pages, pageParams }) {
   ) : void 0;
 }
 function getPreviousPageParam(options, { pages, pageParams }) {
-  var _a2;
-  return pages.length > 0 ? (_a2 = options.getPreviousPageParam) == null ? void 0 : _a2.call(options, pages[0], pages, pageParams[0], pageParams) : void 0;
+  return pages.length > 0 ? options.getPreviousPageParam?.(pages[0], pages, pageParams[0], pageParams) : void 0;
 }
-var Mutation = (_g = class extends Removable {
+var Mutation = class extends Removable {
+  #client;
+  #observers;
+  #mutationCache;
+  #retryer;
   constructor(config) {
     super();
-    __privateAdd(this, _Mutation_instances);
-    __privateAdd(this, _client3);
-    __privateAdd(this, _observers);
-    __privateAdd(this, _mutationCache);
-    __privateAdd(this, _retryer2);
-    __privateSet(this, _client3, config.client);
+    this.#client = config.client;
     this.mutationId = config.mutationId;
-    __privateSet(this, _mutationCache, config.mutationCache);
-    __privateSet(this, _observers, []);
+    this.#mutationCache = config.mutationCache;
+    this.#observers = [];
     this.state = config.state || getDefaultState();
     this.setOptions(config.options);
     this.scheduleGc();
@@ -16338,10 +16285,10 @@ var Mutation = (_g = class extends Removable {
     return this.options.meta;
   }
   addObserver(observer) {
-    if (!__privateGet(this, _observers).includes(observer)) {
-      __privateGet(this, _observers).push(observer);
+    if (!this.#observers.includes(observer)) {
+      this.#observers.push(observer);
       this.clearGcTimeout();
-      __privateGet(this, _mutationCache).notify({
+      this.#mutationCache.notify({
         type: "observerAdded",
         mutation: this,
         observer
@@ -16349,39 +16296,37 @@ var Mutation = (_g = class extends Removable {
     }
   }
   removeObserver(observer) {
-    __privateSet(this, _observers, __privateGet(this, _observers).filter((x) => x !== observer));
+    this.#observers = this.#observers.filter((x) => x !== observer);
     this.scheduleGc();
-    __privateGet(this, _mutationCache).notify({
+    this.#mutationCache.notify({
       type: "observerRemoved",
       mutation: this,
       observer
     });
   }
   optionalRemove() {
-    if (!__privateGet(this, _observers).length) {
+    if (!this.#observers.length) {
       if (this.state.status === "pending") {
         this.scheduleGc();
       } else {
-        __privateGet(this, _mutationCache).remove(this);
+        this.#mutationCache.remove(this);
       }
     }
   }
   continue() {
-    var _a2;
-    return ((_a2 = __privateGet(this, _retryer2)) == null ? void 0 : _a2.continue()) ?? // continuing a mutation assumes that variables are set, mutation must have been dehydrated before
+    return this.#retryer?.continue() ?? // continuing a mutation assumes that variables are set, mutation must have been dehydrated before
     this.execute(this.state.variables);
   }
   async execute(variables) {
-    var _a2, _b2, _c2, _d2, _e2, _f2, _g2, _h2, _i2, _j2, _k2, _l2, _m2, _n, _o, _p, _q, _r, _s, _t;
     const onContinue = () => {
-      __privateMethod(this, _Mutation_instances, dispatch_fn2).call(this, { type: "continue" });
+      this.#dispatch({ type: "continue" });
     };
     const mutationFnContext = {
-      client: __privateGet(this, _client3),
+      client: this.#client,
       meta: this.options.meta,
       mutationKey: this.options.mutationKey
     };
-    __privateSet(this, _retryer2, createRetryer({
+    this.#retryer = createRetryer({
       fn: () => {
         if (!this.options.mutationFn) {
           return Promise.reject(new Error("No mutationFn found"));
@@ -16389,37 +16334,35 @@ var Mutation = (_g = class extends Removable {
         return this.options.mutationFn(variables, mutationFnContext);
       },
       onFail: (failureCount, error) => {
-        __privateMethod(this, _Mutation_instances, dispatch_fn2).call(this, { type: "failed", failureCount, error });
+        this.#dispatch({ type: "failed", failureCount, error });
       },
       onPause: () => {
-        __privateMethod(this, _Mutation_instances, dispatch_fn2).call(this, { type: "pause" });
+        this.#dispatch({ type: "pause" });
       },
       onContinue,
       retry: this.options.retry ?? 0,
       retryDelay: this.options.retryDelay,
       networkMode: this.options.networkMode,
-      canRun: () => __privateGet(this, _mutationCache).canRun(this)
-    }));
+      canRun: () => this.#mutationCache.canRun(this)
+    });
     const restored = this.state.status === "pending";
-    const isPaused = !__privateGet(this, _retryer2).canStart();
+    const isPaused = !this.#retryer.canStart();
     try {
       if (restored) {
         onContinue();
       } else {
-        __privateMethod(this, _Mutation_instances, dispatch_fn2).call(this, { type: "pending", variables, isPaused });
-        await ((_b2 = (_a2 = __privateGet(this, _mutationCache).config).onMutate) == null ? void 0 : _b2.call(
-          _a2,
+        this.#dispatch({ type: "pending", variables, isPaused });
+        await this.#mutationCache.config.onMutate?.(
           variables,
           this,
           mutationFnContext
-        ));
-        const context = await ((_d2 = (_c2 = this.options).onMutate) == null ? void 0 : _d2.call(
-          _c2,
+        );
+        const context = await this.options.onMutate?.(
           variables,
           mutationFnContext
-        ));
+        );
         if (context !== this.state.context) {
-          __privateMethod(this, _Mutation_instances, dispatch_fn2).call(this, {
+          this.#dispatch({
             type: "pending",
             context,
             variables,
@@ -16427,149 +16370,142 @@ var Mutation = (_g = class extends Removable {
           });
         }
       }
-      const data = await __privateGet(this, _retryer2).start();
-      await ((_f2 = (_e2 = __privateGet(this, _mutationCache).config).onSuccess) == null ? void 0 : _f2.call(
-        _e2,
+      const data = await this.#retryer.start();
+      await this.#mutationCache.config.onSuccess?.(
         data,
         variables,
         this.state.context,
         this,
         mutationFnContext
-      ));
-      await ((_h2 = (_g2 = this.options).onSuccess) == null ? void 0 : _h2.call(
-        _g2,
+      );
+      await this.options.onSuccess?.(
         data,
         variables,
         this.state.context,
         mutationFnContext
-      ));
-      await ((_j2 = (_i2 = __privateGet(this, _mutationCache).config).onSettled) == null ? void 0 : _j2.call(
-        _i2,
+      );
+      await this.#mutationCache.config.onSettled?.(
         data,
         null,
         this.state.variables,
         this.state.context,
         this,
         mutationFnContext
-      ));
-      await ((_l2 = (_k2 = this.options).onSettled) == null ? void 0 : _l2.call(
-        _k2,
+      );
+      await this.options.onSettled?.(
         data,
         null,
         variables,
         this.state.context,
         mutationFnContext
-      ));
-      __privateMethod(this, _Mutation_instances, dispatch_fn2).call(this, { type: "success", data });
+      );
+      this.#dispatch({ type: "success", data });
       return data;
     } catch (error) {
       try {
-        await ((_n = (_m2 = __privateGet(this, _mutationCache).config).onError) == null ? void 0 : _n.call(
-          _m2,
+        await this.#mutationCache.config.onError?.(
           error,
           variables,
           this.state.context,
           this,
           mutationFnContext
-        ));
-        await ((_p = (_o = this.options).onError) == null ? void 0 : _p.call(
-          _o,
+        );
+        await this.options.onError?.(
           error,
           variables,
           this.state.context,
           mutationFnContext
-        ));
-        await ((_r = (_q = __privateGet(this, _mutationCache).config).onSettled) == null ? void 0 : _r.call(
-          _q,
+        );
+        await this.#mutationCache.config.onSettled?.(
           void 0,
           error,
           this.state.variables,
           this.state.context,
           this,
           mutationFnContext
-        ));
-        await ((_t = (_s = this.options).onSettled) == null ? void 0 : _t.call(
-          _s,
+        );
+        await this.options.onSettled?.(
           void 0,
           error,
           variables,
           this.state.context,
           mutationFnContext
-        ));
+        );
         throw error;
       } finally {
-        __privateMethod(this, _Mutation_instances, dispatch_fn2).call(this, { type: "error", error });
+        this.#dispatch({ type: "error", error });
       }
     } finally {
-      __privateGet(this, _mutationCache).runNext(this);
+      this.#mutationCache.runNext(this);
     }
   }
-}, _client3 = new WeakMap(), _observers = new WeakMap(), _mutationCache = new WeakMap(), _retryer2 = new WeakMap(), _Mutation_instances = new WeakSet(), dispatch_fn2 = function(action) {
-  const reducer2 = (state) => {
-    switch (action.type) {
-      case "failed":
-        return {
-          ...state,
-          failureCount: action.failureCount,
-          failureReason: action.error
-        };
-      case "pause":
-        return {
-          ...state,
-          isPaused: true
-        };
-      case "continue":
-        return {
-          ...state,
-          isPaused: false
-        };
-      case "pending":
-        return {
-          ...state,
-          context: action.context,
-          data: void 0,
-          failureCount: 0,
-          failureReason: null,
-          error: null,
-          isPaused: action.isPaused,
-          status: "pending",
-          variables: action.variables,
-          submittedAt: Date.now()
-        };
-      case "success":
-        return {
-          ...state,
-          data: action.data,
-          failureCount: 0,
-          failureReason: null,
-          error: null,
-          status: "success",
-          isPaused: false
-        };
-      case "error":
-        return {
-          ...state,
-          data: void 0,
-          error: action.error,
-          failureCount: state.failureCount + 1,
-          failureReason: action.error,
-          isPaused: false,
-          status: "error"
-        };
-    }
-  };
-  this.state = reducer2(this.state);
-  notifyManager.batch(() => {
-    __privateGet(this, _observers).forEach((observer) => {
-      observer.onMutationUpdate(action);
+  #dispatch(action) {
+    const reducer2 = (state) => {
+      switch (action.type) {
+        case "failed":
+          return {
+            ...state,
+            failureCount: action.failureCount,
+            failureReason: action.error
+          };
+        case "pause":
+          return {
+            ...state,
+            isPaused: true
+          };
+        case "continue":
+          return {
+            ...state,
+            isPaused: false
+          };
+        case "pending":
+          return {
+            ...state,
+            context: action.context,
+            data: void 0,
+            failureCount: 0,
+            failureReason: null,
+            error: null,
+            isPaused: action.isPaused,
+            status: "pending",
+            variables: action.variables,
+            submittedAt: Date.now()
+          };
+        case "success":
+          return {
+            ...state,
+            data: action.data,
+            failureCount: 0,
+            failureReason: null,
+            error: null,
+            status: "success",
+            isPaused: false
+          };
+        case "error":
+          return {
+            ...state,
+            data: void 0,
+            error: action.error,
+            failureCount: state.failureCount + 1,
+            failureReason: action.error,
+            isPaused: false,
+            status: "error"
+          };
+      }
+    };
+    this.state = reducer2(this.state);
+    notifyManager.batch(() => {
+      this.#observers.forEach((observer) => {
+        observer.onMutationUpdate(action);
+      });
+      this.#mutationCache.notify({
+        mutation: this,
+        type: "updated",
+        action
+      });
     });
-    __privateGet(this, _mutationCache).notify({
-      mutation: this,
-      type: "updated",
-      action
-    });
-  });
-}, _g);
+  }
+};
 function getDefaultState() {
   return {
     context: void 0,
@@ -16583,22 +16519,22 @@ function getDefaultState() {
     submittedAt: 0
   };
 }
-var MutationCache = (_h = class extends Subscribable {
+var MutationCache = class extends Subscribable {
   constructor(config = {}) {
     super();
-    __privateAdd(this, _mutations);
-    __privateAdd(this, _scopes);
-    __privateAdd(this, _mutationId);
     this.config = config;
-    __privateSet(this, _mutations, /* @__PURE__ */ new Set());
-    __privateSet(this, _scopes, /* @__PURE__ */ new Map());
-    __privateSet(this, _mutationId, 0);
+    this.#mutations = /* @__PURE__ */ new Set();
+    this.#scopes = /* @__PURE__ */ new Map();
+    this.#mutationId = 0;
   }
+  #mutations;
+  #scopes;
+  #mutationId;
   build(client2, options, state) {
     const mutation = new Mutation({
       client: client2,
       mutationCache: this,
-      mutationId: ++__privateWrapper(this, _mutationId)._,
+      mutationId: ++this.#mutationId,
       options: client2.defaultMutationOptions(options),
       state
     });
@@ -16606,23 +16542,23 @@ var MutationCache = (_h = class extends Subscribable {
     return mutation;
   }
   add(mutation) {
-    __privateGet(this, _mutations).add(mutation);
+    this.#mutations.add(mutation);
     const scope = scopeFor(mutation);
     if (typeof scope === "string") {
-      const scopedMutations = __privateGet(this, _scopes).get(scope);
+      const scopedMutations = this.#scopes.get(scope);
       if (scopedMutations) {
         scopedMutations.push(mutation);
       } else {
-        __privateGet(this, _scopes).set(scope, [mutation]);
+        this.#scopes.set(scope, [mutation]);
       }
     }
     this.notify({ type: "added", mutation });
   }
   remove(mutation) {
-    if (__privateGet(this, _mutations).delete(mutation)) {
+    if (this.#mutations.delete(mutation)) {
       const scope = scopeFor(mutation);
       if (typeof scope === "string") {
-        const scopedMutations = __privateGet(this, _scopes).get(scope);
+        const scopedMutations = this.#scopes.get(scope);
         if (scopedMutations) {
           if (scopedMutations.length > 1) {
             const index2 = scopedMutations.indexOf(mutation);
@@ -16630,7 +16566,7 @@ var MutationCache = (_h = class extends Subscribable {
               scopedMutations.splice(index2, 1);
             }
           } else if (scopedMutations[0] === mutation) {
-            __privateGet(this, _scopes).delete(scope);
+            this.#scopes.delete(scope);
           }
         }
       }
@@ -16640,8 +16576,8 @@ var MutationCache = (_h = class extends Subscribable {
   canRun(mutation) {
     const scope = scopeFor(mutation);
     if (typeof scope === "string") {
-      const mutationsWithSameScope = __privateGet(this, _scopes).get(scope);
-      const firstPendingMutation = mutationsWithSameScope == null ? void 0 : mutationsWithSameScope.find(
+      const mutationsWithSameScope = this.#scopes.get(scope);
+      const firstPendingMutation = mutationsWithSameScope?.find(
         (m) => m.state.status === "pending"
       );
       return !firstPendingMutation || firstPendingMutation === mutation;
@@ -16650,26 +16586,25 @@ var MutationCache = (_h = class extends Subscribable {
     }
   }
   runNext(mutation) {
-    var _a2;
     const scope = scopeFor(mutation);
     if (typeof scope === "string") {
-      const foundMutation = (_a2 = __privateGet(this, _scopes).get(scope)) == null ? void 0 : _a2.find((m) => m !== mutation && m.state.isPaused);
-      return (foundMutation == null ? void 0 : foundMutation.continue()) ?? Promise.resolve();
+      const foundMutation = this.#scopes.get(scope)?.find((m) => m !== mutation && m.state.isPaused);
+      return foundMutation?.continue() ?? Promise.resolve();
     } else {
       return Promise.resolve();
     }
   }
   clear() {
     notifyManager.batch(() => {
-      __privateGet(this, _mutations).forEach((mutation) => {
+      this.#mutations.forEach((mutation) => {
         this.notify({ type: "removed", mutation });
       });
-      __privateGet(this, _mutations).clear();
-      __privateGet(this, _scopes).clear();
+      this.#mutations.clear();
+      this.#scopes.clear();
     });
   }
   getAll() {
-    return Array.from(__privateGet(this, _mutations));
+    return Array.from(this.#mutations);
   }
   find(filters) {
     const defaultedFilters = { exact: true, ...filters };
@@ -16695,142 +16630,132 @@ var MutationCache = (_h = class extends Subscribable {
       )
     );
   }
-}, _mutations = new WeakMap(), _scopes = new WeakMap(), _mutationId = new WeakMap(), _h);
+};
 function scopeFor(mutation) {
-  var _a2;
-  return (_a2 = mutation.options.scope) == null ? void 0 : _a2.id;
+  return mutation.options.scope?.id;
 }
-var MutationObserver$1 = (_i = class extends Subscribable {
+var MutationObserver$1 = class MutationObserver2 extends Subscribable {
+  #client;
+  #currentResult = void 0;
+  #currentMutation;
+  #mutateOptions;
   constructor(client2, options) {
     super();
-    __privateAdd(this, _MutationObserver_instances);
-    __privateAdd(this, _client4);
-    __privateAdd(this, _currentResult2);
-    __privateAdd(this, _currentMutation);
-    __privateAdd(this, _mutateOptions);
-    __privateSet(this, _client4, client2);
+    this.#client = client2;
     this.setOptions(options);
     this.bindMethods();
-    __privateMethod(this, _MutationObserver_instances, updateResult_fn).call(this);
+    this.#updateResult();
   }
   bindMethods() {
     this.mutate = this.mutate.bind(this);
     this.reset = this.reset.bind(this);
   }
   setOptions(options) {
-    var _a2;
     const prevOptions = this.options;
-    this.options = __privateGet(this, _client4).defaultMutationOptions(options);
+    this.options = this.#client.defaultMutationOptions(options);
     if (!shallowEqualObjects(this.options, prevOptions)) {
-      __privateGet(this, _client4).getMutationCache().notify({
+      this.#client.getMutationCache().notify({
         type: "observerOptionsUpdated",
-        mutation: __privateGet(this, _currentMutation),
+        mutation: this.#currentMutation,
         observer: this
       });
     }
-    if ((prevOptions == null ? void 0 : prevOptions.mutationKey) && this.options.mutationKey && hashKey(prevOptions.mutationKey) !== hashKey(this.options.mutationKey)) {
+    if (prevOptions?.mutationKey && this.options.mutationKey && hashKey(prevOptions.mutationKey) !== hashKey(this.options.mutationKey)) {
       this.reset();
-    } else if (((_a2 = __privateGet(this, _currentMutation)) == null ? void 0 : _a2.state.status) === "pending") {
-      __privateGet(this, _currentMutation).setOptions(this.options);
+    } else if (this.#currentMutation?.state.status === "pending") {
+      this.#currentMutation.setOptions(this.options);
     }
   }
   onUnsubscribe() {
-    var _a2;
     if (!this.hasListeners()) {
-      (_a2 = __privateGet(this, _currentMutation)) == null ? void 0 : _a2.removeObserver(this);
+      this.#currentMutation?.removeObserver(this);
     }
   }
   onMutationUpdate(action) {
-    __privateMethod(this, _MutationObserver_instances, updateResult_fn).call(this);
-    __privateMethod(this, _MutationObserver_instances, notify_fn2).call(this, action);
+    this.#updateResult();
+    this.#notify(action);
   }
   getCurrentResult() {
-    return __privateGet(this, _currentResult2);
+    return this.#currentResult;
   }
   reset() {
-    var _a2;
-    (_a2 = __privateGet(this, _currentMutation)) == null ? void 0 : _a2.removeObserver(this);
-    __privateSet(this, _currentMutation, void 0);
-    __privateMethod(this, _MutationObserver_instances, updateResult_fn).call(this);
-    __privateMethod(this, _MutationObserver_instances, notify_fn2).call(this);
+    this.#currentMutation?.removeObserver(this);
+    this.#currentMutation = void 0;
+    this.#updateResult();
+    this.#notify();
   }
   mutate(variables, options) {
-    var _a2;
-    __privateSet(this, _mutateOptions, options);
-    (_a2 = __privateGet(this, _currentMutation)) == null ? void 0 : _a2.removeObserver(this);
-    __privateSet(this, _currentMutation, __privateGet(this, _client4).getMutationCache().build(__privateGet(this, _client4), this.options));
-    __privateGet(this, _currentMutation).addObserver(this);
-    return __privateGet(this, _currentMutation).execute(variables);
+    this.#mutateOptions = options;
+    this.#currentMutation?.removeObserver(this);
+    this.#currentMutation = this.#client.getMutationCache().build(this.#client, this.options);
+    this.#currentMutation.addObserver(this);
+    return this.#currentMutation.execute(variables);
   }
-}, _client4 = new WeakMap(), _currentResult2 = new WeakMap(), _currentMutation = new WeakMap(), _mutateOptions = new WeakMap(), _MutationObserver_instances = new WeakSet(), updateResult_fn = function() {
-  var _a2;
-  const state = ((_a2 = __privateGet(this, _currentMutation)) == null ? void 0 : _a2.state) ?? getDefaultState();
-  __privateSet(this, _currentResult2, {
-    ...state,
-    isPending: state.status === "pending",
-    isSuccess: state.status === "success",
-    isError: state.status === "error",
-    isIdle: state.status === "idle",
-    mutate: this.mutate,
-    reset: this.reset
-  });
-}, notify_fn2 = function(action) {
-  notifyManager.batch(() => {
-    var _a2, _b2, _c2, _d2, _e2, _f2, _g2, _h2;
-    if (__privateGet(this, _mutateOptions) && this.hasListeners()) {
-      const variables = __privateGet(this, _currentResult2).variables;
-      const onMutateResult = __privateGet(this, _currentResult2).context;
-      const context = {
-        client: __privateGet(this, _client4),
-        meta: this.options.meta,
-        mutationKey: this.options.mutationKey
-      };
-      if ((action == null ? void 0 : action.type) === "success") {
-        (_b2 = (_a2 = __privateGet(this, _mutateOptions)).onSuccess) == null ? void 0 : _b2.call(
-          _a2,
-          action.data,
-          variables,
-          onMutateResult,
-          context
-        );
-        (_d2 = (_c2 = __privateGet(this, _mutateOptions)).onSettled) == null ? void 0 : _d2.call(
-          _c2,
-          action.data,
-          null,
-          variables,
-          onMutateResult,
-          context
-        );
-      } else if ((action == null ? void 0 : action.type) === "error") {
-        (_f2 = (_e2 = __privateGet(this, _mutateOptions)).onError) == null ? void 0 : _f2.call(
-          _e2,
-          action.error,
-          variables,
-          onMutateResult,
-          context
-        );
-        (_h2 = (_g2 = __privateGet(this, _mutateOptions)).onSettled) == null ? void 0 : _h2.call(
-          _g2,
-          void 0,
-          action.error,
-          variables,
-          onMutateResult,
-          context
-        );
+  #updateResult() {
+    const state = this.#currentMutation?.state ?? getDefaultState();
+    this.#currentResult = {
+      ...state,
+      isPending: state.status === "pending",
+      isSuccess: state.status === "success",
+      isError: state.status === "error",
+      isIdle: state.status === "idle",
+      mutate: this.mutate,
+      reset: this.reset
+    };
+  }
+  #notify(action) {
+    notifyManager.batch(() => {
+      if (this.#mutateOptions && this.hasListeners()) {
+        const variables = this.#currentResult.variables;
+        const onMutateResult = this.#currentResult.context;
+        const context = {
+          client: this.#client,
+          meta: this.options.meta,
+          mutationKey: this.options.mutationKey
+        };
+        if (action?.type === "success") {
+          this.#mutateOptions.onSuccess?.(
+            action.data,
+            variables,
+            onMutateResult,
+            context
+          );
+          this.#mutateOptions.onSettled?.(
+            action.data,
+            null,
+            variables,
+            onMutateResult,
+            context
+          );
+        } else if (action?.type === "error") {
+          this.#mutateOptions.onError?.(
+            action.error,
+            variables,
+            onMutateResult,
+            context
+          );
+          this.#mutateOptions.onSettled?.(
+            void 0,
+            action.error,
+            variables,
+            onMutateResult,
+            context
+          );
+        }
       }
-    }
-    this.listeners.forEach((listener) => {
-      listener(__privateGet(this, _currentResult2));
+      this.listeners.forEach((listener) => {
+        listener(this.#currentResult);
+      });
     });
-  });
-}, _i);
-var QueryCache = (_j = class extends Subscribable {
+  }
+};
+var QueryCache = class extends Subscribable {
   constructor(config = {}) {
     super();
-    __privateAdd(this, _queries);
     this.config = config;
-    __privateSet(this, _queries, /* @__PURE__ */ new Map());
+    this.#queries = /* @__PURE__ */ new Map();
   }
+  #queries;
   build(client2, options, state) {
     const queryKey = options.queryKey;
     const queryHash = options.queryHash ?? hashQueryKeyByOptions(queryKey, options);
@@ -16849,8 +16774,8 @@ var QueryCache = (_j = class extends Subscribable {
     return query;
   }
   add(query) {
-    if (!__privateGet(this, _queries).has(query.queryHash)) {
-      __privateGet(this, _queries).set(query.queryHash, query);
+    if (!this.#queries.has(query.queryHash)) {
+      this.#queries.set(query.queryHash, query);
       this.notify({
         type: "added",
         query
@@ -16858,11 +16783,11 @@ var QueryCache = (_j = class extends Subscribable {
     }
   }
   remove(query) {
-    const queryInMap = __privateGet(this, _queries).get(query.queryHash);
+    const queryInMap = this.#queries.get(query.queryHash);
     if (queryInMap) {
       query.destroy();
       if (queryInMap === query) {
-        __privateGet(this, _queries).delete(query.queryHash);
+        this.#queries.delete(query.queryHash);
       }
       this.notify({ type: "removed", query });
     }
@@ -16875,10 +16800,10 @@ var QueryCache = (_j = class extends Subscribable {
     });
   }
   get(queryHash) {
-    return __privateGet(this, _queries).get(queryHash);
+    return this.#queries.get(queryHash);
   }
   getAll() {
-    return [...__privateGet(this, _queries).values()];
+    return [...this.#queries.values()];
   }
   find(filters) {
     const defaultedFilters = { exact: true, ...filters };
@@ -16911,54 +16836,53 @@ var QueryCache = (_j = class extends Subscribable {
       });
     });
   }
-}, _queries = new WeakMap(), _j);
-var QueryClient = (_k = class {
+};
+var QueryClient = class {
+  #queryCache;
+  #mutationCache;
+  #defaultOptions;
+  #queryDefaults;
+  #mutationDefaults;
+  #mountCount;
+  #unsubscribeFocus;
+  #unsubscribeOnline;
   constructor(config = {}) {
-    __privateAdd(this, _queryCache);
-    __privateAdd(this, _mutationCache2);
-    __privateAdd(this, _defaultOptions2);
-    __privateAdd(this, _queryDefaults);
-    __privateAdd(this, _mutationDefaults);
-    __privateAdd(this, _mountCount);
-    __privateAdd(this, _unsubscribeFocus);
-    __privateAdd(this, _unsubscribeOnline);
-    __privateSet(this, _queryCache, config.queryCache || new QueryCache());
-    __privateSet(this, _mutationCache2, config.mutationCache || new MutationCache());
-    __privateSet(this, _defaultOptions2, config.defaultOptions || {});
-    __privateSet(this, _queryDefaults, /* @__PURE__ */ new Map());
-    __privateSet(this, _mutationDefaults, /* @__PURE__ */ new Map());
-    __privateSet(this, _mountCount, 0);
+    this.#queryCache = config.queryCache || new QueryCache();
+    this.#mutationCache = config.mutationCache || new MutationCache();
+    this.#defaultOptions = config.defaultOptions || {};
+    this.#queryDefaults = /* @__PURE__ */ new Map();
+    this.#mutationDefaults = /* @__PURE__ */ new Map();
+    this.#mountCount = 0;
   }
   mount() {
-    __privateWrapper(this, _mountCount)._++;
-    if (__privateGet(this, _mountCount) !== 1) return;
-    __privateSet(this, _unsubscribeFocus, focusManager.subscribe(async (focused) => {
+    this.#mountCount++;
+    if (this.#mountCount !== 1) return;
+    this.#unsubscribeFocus = focusManager.subscribe(async (focused) => {
       if (focused) {
         await this.resumePausedMutations();
-        __privateGet(this, _queryCache).onFocus();
+        this.#queryCache.onFocus();
       }
-    }));
-    __privateSet(this, _unsubscribeOnline, onlineManager.subscribe(async (online2) => {
+    });
+    this.#unsubscribeOnline = onlineManager.subscribe(async (online2) => {
       if (online2) {
         await this.resumePausedMutations();
-        __privateGet(this, _queryCache).onOnline();
+        this.#queryCache.onOnline();
       }
-    }));
+    });
   }
   unmount() {
-    var _a2, _b2;
-    __privateWrapper(this, _mountCount)._--;
-    if (__privateGet(this, _mountCount) !== 0) return;
-    (_a2 = __privateGet(this, _unsubscribeFocus)) == null ? void 0 : _a2.call(this);
-    __privateSet(this, _unsubscribeFocus, void 0);
-    (_b2 = __privateGet(this, _unsubscribeOnline)) == null ? void 0 : _b2.call(this);
-    __privateSet(this, _unsubscribeOnline, void 0);
+    this.#mountCount--;
+    if (this.#mountCount !== 0) return;
+    this.#unsubscribeFocus?.();
+    this.#unsubscribeFocus = void 0;
+    this.#unsubscribeOnline?.();
+    this.#unsubscribeOnline = void 0;
   }
   isFetching(filters) {
-    return __privateGet(this, _queryCache).findAll({ ...filters, fetchStatus: "fetching" }).length;
+    return this.#queryCache.findAll({ ...filters, fetchStatus: "fetching" }).length;
   }
   isMutating(filters) {
-    return __privateGet(this, _mutationCache2).findAll({ ...filters, status: "pending" }).length;
+    return this.#mutationCache.findAll({ ...filters, status: "pending" }).length;
   }
   /**
    * Imperative (non-reactive) way to retrieve data for a QueryKey.
@@ -16968,13 +16892,12 @@ var QueryClient = (_k = class {
    * Use `useQuery` to create a `QueryObserver` that subscribes to changes.
    */
   getQueryData(queryKey) {
-    var _a2;
     const options = this.defaultQueryOptions({ queryKey });
-    return (_a2 = __privateGet(this, _queryCache).get(options.queryHash)) == null ? void 0 : _a2.state.data;
+    return this.#queryCache.get(options.queryHash)?.state.data;
   }
   ensureQueryData(options) {
     const defaultedOptions = this.defaultQueryOptions(options);
-    const query = __privateGet(this, _queryCache).build(this, defaultedOptions);
+    const query = this.#queryCache.build(this, defaultedOptions);
     const cachedData = query.state.data;
     if (cachedData === void 0) {
       return this.fetchQuery(options);
@@ -16985,40 +16908,39 @@ var QueryClient = (_k = class {
     return Promise.resolve(cachedData);
   }
   getQueriesData(filters) {
-    return __privateGet(this, _queryCache).findAll(filters).map(({ queryKey, state }) => {
+    return this.#queryCache.findAll(filters).map(({ queryKey, state }) => {
       const data = state.data;
       return [queryKey, data];
     });
   }
   setQueryData(queryKey, updater, options) {
     const defaultedOptions = this.defaultQueryOptions({ queryKey });
-    const query = __privateGet(this, _queryCache).get(
+    const query = this.#queryCache.get(
       defaultedOptions.queryHash
     );
-    const prevData = query == null ? void 0 : query.state.data;
+    const prevData = query?.state.data;
     const data = functionalUpdate(updater, prevData);
     if (data === void 0) {
       return void 0;
     }
-    return __privateGet(this, _queryCache).build(this, defaultedOptions).setData(data, { ...options, manual: true });
+    return this.#queryCache.build(this, defaultedOptions).setData(data, { ...options, manual: true });
   }
   setQueriesData(filters, updater, options) {
     return notifyManager.batch(
-      () => __privateGet(this, _queryCache).findAll(filters).map(({ queryKey }) => [
+      () => this.#queryCache.findAll(filters).map(({ queryKey }) => [
         queryKey,
         this.setQueryData(queryKey, updater, options)
       ])
     );
   }
   getQueryState(queryKey) {
-    var _a2;
     const options = this.defaultQueryOptions({ queryKey });
-    return (_a2 = __privateGet(this, _queryCache).get(
+    return this.#queryCache.get(
       options.queryHash
-    )) == null ? void 0 : _a2.state;
+    )?.state;
   }
   removeQueries(filters) {
-    const queryCache = __privateGet(this, _queryCache);
+    const queryCache = this.#queryCache;
     notifyManager.batch(() => {
       queryCache.findAll(filters).forEach((query) => {
         queryCache.remove(query);
@@ -17026,7 +16948,7 @@ var QueryClient = (_k = class {
     });
   }
   resetQueries(filters, options) {
-    const queryCache = __privateGet(this, _queryCache);
+    const queryCache = this.#queryCache;
     return notifyManager.batch(() => {
       queryCache.findAll(filters).forEach((query) => {
         query.reset();
@@ -17043,22 +16965,22 @@ var QueryClient = (_k = class {
   cancelQueries(filters, cancelOptions = {}) {
     const defaultedCancelOptions = { revert: true, ...cancelOptions };
     const promises = notifyManager.batch(
-      () => __privateGet(this, _queryCache).findAll(filters).map((query) => query.cancel(defaultedCancelOptions))
+      () => this.#queryCache.findAll(filters).map((query) => query.cancel(defaultedCancelOptions))
     );
     return Promise.all(promises).then(noop$4).catch(noop$4);
   }
   invalidateQueries(filters, options = {}) {
     return notifyManager.batch(() => {
-      __privateGet(this, _queryCache).findAll(filters).forEach((query) => {
+      this.#queryCache.findAll(filters).forEach((query) => {
         query.invalidate();
       });
-      if ((filters == null ? void 0 : filters.refetchType) === "none") {
+      if (filters?.refetchType === "none") {
         return Promise.resolve();
       }
       return this.refetchQueries(
         {
           ...filters,
-          type: (filters == null ? void 0 : filters.refetchType) ?? (filters == null ? void 0 : filters.type) ?? "active"
+          type: filters?.refetchType ?? filters?.type ?? "active"
         },
         options
       );
@@ -17070,7 +16992,7 @@ var QueryClient = (_k = class {
       cancelRefetch: options.cancelRefetch ?? true
     };
     const promises = notifyManager.batch(
-      () => __privateGet(this, _queryCache).findAll(filters).filter((query) => !query.isDisabled() && !query.isStatic()).map((query) => {
+      () => this.#queryCache.findAll(filters).filter((query) => !query.isDisabled() && !query.isStatic()).map((query) => {
         let promise = query.fetch(void 0, fetchOptions);
         if (!fetchOptions.throwOnError) {
           promise = promise.catch(noop$4);
@@ -17085,7 +17007,7 @@ var QueryClient = (_k = class {
     if (defaultedOptions.retry === void 0) {
       defaultedOptions.retry = false;
     }
-    const query = __privateGet(this, _queryCache).build(this, defaultedOptions);
+    const query = this.#queryCache.build(this, defaultedOptions);
     return query.isStaleByTime(
       resolveStaleTime(defaultedOptions.staleTime, query)
     ) ? query.fetch(defaultedOptions) : Promise.resolve(query.state.data);
@@ -17106,30 +17028,30 @@ var QueryClient = (_k = class {
   }
   resumePausedMutations() {
     if (onlineManager.isOnline()) {
-      return __privateGet(this, _mutationCache2).resumePausedMutations();
+      return this.#mutationCache.resumePausedMutations();
     }
     return Promise.resolve();
   }
   getQueryCache() {
-    return __privateGet(this, _queryCache);
+    return this.#queryCache;
   }
   getMutationCache() {
-    return __privateGet(this, _mutationCache2);
+    return this.#mutationCache;
   }
   getDefaultOptions() {
-    return __privateGet(this, _defaultOptions2);
+    return this.#defaultOptions;
   }
   setDefaultOptions(options) {
-    __privateSet(this, _defaultOptions2, options);
+    this.#defaultOptions = options;
   }
   setQueryDefaults(queryKey, options) {
-    __privateGet(this, _queryDefaults).set(hashKey(queryKey), {
+    this.#queryDefaults.set(hashKey(queryKey), {
       queryKey,
       defaultOptions: options
     });
   }
   getQueryDefaults(queryKey) {
-    const defaults = [...__privateGet(this, _queryDefaults).values()];
+    const defaults = [...this.#queryDefaults.values()];
     const result = {};
     defaults.forEach((queryDefault) => {
       if (partialMatchKey(queryKey, queryDefault.queryKey)) {
@@ -17139,13 +17061,13 @@ var QueryClient = (_k = class {
     return result;
   }
   setMutationDefaults(mutationKey, options) {
-    __privateGet(this, _mutationDefaults).set(hashKey(mutationKey), {
+    this.#mutationDefaults.set(hashKey(mutationKey), {
       mutationKey,
       defaultOptions: options
     });
   }
   getMutationDefaults(mutationKey) {
-    const defaults = [...__privateGet(this, _mutationDefaults).values()];
+    const defaults = [...this.#mutationDefaults.values()];
     const result = {};
     defaults.forEach((queryDefault) => {
       if (partialMatchKey(mutationKey, queryDefault.mutationKey)) {
@@ -17159,7 +17081,7 @@ var QueryClient = (_k = class {
       return options;
     }
     const defaultedOptions = {
-      ...__privateGet(this, _defaultOptions2).queries,
+      ...this.#defaultOptions.queries,
       ...this.getQueryDefaults(options.queryKey),
       ...options,
       _defaulted: true
@@ -17185,21 +17107,21 @@ var QueryClient = (_k = class {
     return defaultedOptions;
   }
   defaultMutationOptions(options) {
-    if (options == null ? void 0 : options._defaulted) {
+    if (options?._defaulted) {
       return options;
     }
     return {
-      ...__privateGet(this, _defaultOptions2).mutations,
-      ...(options == null ? void 0 : options.mutationKey) && this.getMutationDefaults(options.mutationKey),
+      ...this.#defaultOptions.mutations,
+      ...options?.mutationKey && this.getMutationDefaults(options.mutationKey),
       ...options,
       _defaulted: true
     };
   }
   clear() {
-    __privateGet(this, _queryCache).clear();
-    __privateGet(this, _mutationCache2).clear();
+    this.#queryCache.clear();
+    this.#mutationCache.clear();
   }
-}, _queryCache = new WeakMap(), _mutationCache2 = new WeakMap(), _defaultOptions2 = new WeakMap(), _queryDefaults = new WeakMap(), _mutationDefaults = new WeakMap(), _mountCount = new WeakMap(), _unsubscribeFocus = new WeakMap(), _unsubscribeOnline = new WeakMap(), _k);
+};
 var QueryClientContext = reactExports.createContext(
   void 0
 );
@@ -17277,18 +17199,16 @@ var ensureSuspenseTimers = (defaultedOptions) => {
   }
 };
 var willFetch = (result, isRestoring) => result.isLoading && result.isFetching && !isRestoring;
-var shouldSuspend = (defaultedOptions, result) => (defaultedOptions == null ? void 0 : defaultedOptions.suspense) && result.isPending;
+var shouldSuspend = (defaultedOptions, result) => defaultedOptions?.suspense && result.isPending;
 var fetchOptimistic = (defaultedOptions, observer, errorResetBoundary) => observer.fetchOptimistic(defaultedOptions).catch(() => {
   errorResetBoundary.clearReset();
 });
 function useBaseQuery(options, Observer, queryClient2) {
-  var _a2, _b2, _c2, _d2, _e2;
   const isRestoring = useIsRestoring();
   const errorResetBoundary = useQueryErrorResetBoundary();
   const client2 = useQueryClient();
   const defaultedOptions = client2.defaultQueryOptions(options);
-  (_b2 = (_a2 = client2.getDefaultOptions().queries) == null ? void 0 : _a2._experimental_beforeQuery) == null ? void 0 : _b2.call(
-    _a2,
+  client2.getDefaultOptions().queries?._experimental_beforeQuery?.(
     defaultedOptions
   );
   defaultedOptions._optimisticResults = isRestoring ? "isRestoring" : "optimistic";
@@ -17331,8 +17251,7 @@ function useBaseQuery(options, Observer, queryClient2) {
   })) {
     throw result.error;
   }
-  (_d2 = (_c2 = client2.getDefaultOptions().queries) == null ? void 0 : _c2._experimental_afterQuery) == null ? void 0 : _d2.call(
-    _c2,
+  client2.getDefaultOptions().queries?._experimental_afterQuery?.(
     defaultedOptions,
     result
   );
@@ -17342,9 +17261,9 @@ function useBaseQuery(options, Observer, queryClient2) {
       fetchOptimistic(defaultedOptions, observer, errorResetBoundary)
     ) : (
       // subscribe to the "cache promise" so that we can finalize the currentThenable once data comes in
-      (_e2 = client2.getQueryCache().get(defaultedOptions.queryHash)) == null ? void 0 : _e2.promise
+      client2.getQueryCache().get(defaultedOptions.queryHash)?.promise
     );
-    promise == null ? void 0 : promise.catch(noop$4).finally(() => {
+    promise?.catch(noop$4).finally(() => {
       observer.updateResult();
     });
   }
@@ -17383,22 +17302,23 @@ function useMutation(options, queryClient2) {
   }
   return { ...result, mutate: mutate2, mutateAsync: result.mutate };
 }
-var ClerkError = (_l = class extends Error {
+var ClerkError = class _ClerkError extends Error {
+  static kind = "ClerkError";
+  clerkError = true;
+  code;
+  longMessage;
+  docsUrl;
+  cause;
+  get name() {
+    return this.constructor.name;
+  }
   constructor(opts) {
     super(new.target.formatMessage(new.target.kind, opts.message, opts.code, opts.docsUrl), { cause: opts.cause });
-    __publicField(this, "clerkError", true);
-    __publicField(this, "code");
-    __publicField(this, "longMessage");
-    __publicField(this, "docsUrl");
-    __publicField(this, "cause");
-    Object.setPrototypeOf(this, _l.prototype);
+    Object.setPrototypeOf(this, _ClerkError.prototype);
     this.code = opts.code;
     this.docsUrl = opts.docsUrl;
     this.longMessage = opts.longMessage;
     this.cause = opts.cause;
-  }
-  get name() {
-    return this.constructor.name;
   }
   toString() {
     return `[${this.name}]
@@ -17420,7 +17340,7 @@ Docs: ${docsUrl}`;
     }
     return msg;
   }
-}, __publicField(_l, "kind", "ClerkError"), _l);
+};
 var DefaultMessages = Object.freeze({
   InvalidProxyUrlErrorMessage: `The proxyUrl passed to Clerk is invalid. The expected value for proxyUrl is an absolute URL or a relative path with a leading '/'. (key={{url}})`,
   InvalidPublishableKeyErrorMessage: `The publishableKey passed to Clerk is invalid. You can get your Publishable key at https://dashboard.clerk.com/last-active?path=api-keys. (key={{key}})`,
@@ -17477,29 +17397,30 @@ function buildErrorThrower({ packageName, customMessages }) {
     }
   };
 }
-var ClerkRuntimeError = (_m = class extends ClerkError {
+var ClerkRuntimeError = class _ClerkRuntimeError extends ClerkError {
+  static kind = "ClerkRuntimeError";
+  /**
+   * @deprecated Use `clerkError` property instead. This property is maintained for backward compatibility.
+   */
+  clerkRuntimeError = true;
   constructor(message, options) {
     super({ ...options, message });
-    /**
-     * @deprecated Use `clerkError` property instead. This property is maintained for backward compatibility.
-     */
-    __publicField(this, "clerkRuntimeError", true);
-    Object.setPrototypeOf(this, _m.prototype);
+    Object.setPrototypeOf(this, _ClerkRuntimeError.prototype);
   }
-}, __publicField(_m, "kind", "ClerkRuntimeError"), _m);
-var __defProp2 = Object.defineProperty;
+};
+var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __export = (target, all) => {
   for (var name in all)
-    __defProp2(target, name, { get: all[name], enumerable: true });
+    __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
   if (from && typeof from === "object" || typeof from === "function") {
     for (let key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp2(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
   }
   return to;
 };
@@ -18136,14 +18057,14 @@ async function internalMutate(...args) {
     return Promise.all(matchedKeys.map(mutateByKey));
   }
   return mutateByKey(_key);
-  async function mutateByKey(_k2) {
-    const [key] = serialize$2(_k2);
+  async function mutateByKey(_k) {
+    const [key] = serialize$2(_k);
     if (!key) return;
     const [get, set] = createCacheHelper(cache2, key);
     const [EVENT_REVALIDATORS, MUTATION, FETCH, PRELOAD] = SWRGlobalState.get(cache2);
     const startRevalidate = () => {
       const revalidators = EVENT_REVALIDATORS[key];
-      const revalidate = isFunction$4(options.revalidate) ? options.revalidate(get().data, _k2) : options.revalidate !== false;
+      const revalidate = isFunction$4(options.revalidate) ? options.revalidate(get().data, _k) : options.revalidate !== false;
       if (revalidate) {
         delete FETCH[key];
         delete PRELOAD[key];
@@ -19312,17 +19233,17 @@ __export(clerk_swr_exports, {
 });
 __reExport(clerk_swr_exports, swr_star);
 var [ClerkInstanceContext, useClerkInstanceContext] = createContextAndHook("ClerkInstanceContext");
-var [UserContext] = createContextAndHook("UserContext");
-var [ClientContext] = createContextAndHook("ClientContext");
-var [SessionContext] = createContextAndHook(
+var [UserContext, useUserContext] = createContextAndHook("UserContext");
+var [ClientContext, useClientContext] = createContextAndHook("ClientContext");
+var [SessionContext, useSessionContext] = createContextAndHook(
   "SessionContext"
 );
 React.createContext({});
-var [CheckoutContext] = createContextAndHook("CheckoutContext");
+var [CheckoutContext, useCheckoutContext] = createContextAndHook("CheckoutContext");
 var __experimental_CheckoutProvider = ({ children, ...rest }) => {
   return /* @__PURE__ */ React.createElement(CheckoutContext.Provider, { value: { value: rest } }, children);
 };
-var [OrganizationContextInternal] = createContextAndHook("OrganizationContext");
+var [OrganizationContextInternal, useOrganizationContext] = createContextAndHook("OrganizationContext");
 var OrganizationProvider = ({
   children,
   organization,
@@ -19636,7 +19557,7 @@ var createSignOut = (isomorphicClerk) => {
   };
 };
 var useAuth = (initialAuthStateOrOptions = {}) => {
-  var _a2;
+  var _a;
   useAssertWrappedByClerkProvider("useAuth");
   const { treatPendingAsSignedOut, ...rest } = initialAuthStateOrOptions != null ? initialAuthStateOrOptions : {};
   const initialAuthState = rest;
@@ -19648,7 +19569,7 @@ var useAuth = (initialAuthStateOrOptions = {}) => {
   const isomorphicClerk = useIsomorphicClerkContext();
   const getToken = reactExports.useCallback(createGetToken(isomorphicClerk), [isomorphicClerk]);
   const signOut = reactExports.useCallback(createSignOut(isomorphicClerk), [isomorphicClerk]);
-  (_a2 = isomorphicClerk.telemetry) == null ? void 0 : _a2.record(eventMethodCalled("useAuth", { treatPendingAsSignedOut }));
+  (_a = isomorphicClerk.telemetry) == null ? void 0 : _a.record(eventMethodCalled("useAuth", { treatPendingAsSignedOut }));
   return useDerivedAuth(
     {
       ...authContext,
@@ -20054,7 +19975,7 @@ var isExternalLink = (childProps) => {
   return !children && !!url && !!labelIcon && !!label;
 };
 var useUserButtonCustomMenuItems = (children, options) => {
-  var _a2;
+  var _a;
   const reorderItemsLabels = ["manageAccount", "signOut"];
   return useCustomMenuItems({
     children,
@@ -20064,7 +19985,7 @@ var useUserButtonCustomMenuItems = (children, options) => {
     MenuLinkComponent: MenuLink,
     UserProfileLinkComponent: UserProfileLink,
     UserProfilePageComponent: UserProfilePage,
-    allowForAnyChildren: (_a2 = options == null ? void 0 : options.allowForAnyChildren) != null ? _a2 : false
+    allowForAnyChildren: (_a = options == null ? void 0 : options.allowForAnyChildren) != null ? _a : false
   });
 };
 var useCustomMenuItems = ({
@@ -20246,8 +20167,8 @@ var waitForElementChildren = createAwaitableMutationObserver({
   childList: true,
   subtree: true,
   isReady: (el, selector) => {
-    var _a2;
-    return !!(el == null ? void 0 : el.childElementCount) && ((_a2 = el == null ? void 0 : el.matches) == null ? void 0 : _a2.call(el, selector)) && el.childElementCount > 0;
+    var _a;
+    return !!(el == null ? void 0 : el.childElementCount) && ((_a = el == null ? void 0 : el.matches) == null ? void 0 : _a.call(el, selector)) && el.childElementCount > 0;
   }
 });
 function useWaitForComponentMount(component, options) {
@@ -20289,14 +20210,14 @@ var ClerkHostRenderer = class extends React.PureComponent {
     this.rootRef = React.createRef();
   }
   componentDidUpdate(_prevProps) {
-    var _a2, _b2, _c2, _d2;
+    var _a, _b, _c, _d;
     if (!isMountProps(_prevProps) || !isMountProps(this.props)) {
       return;
     }
     const prevProps = without(_prevProps.props, "customPages", "customMenuItems", "children");
     const newProps = without(this.props.props, "customPages", "customMenuItems", "children");
-    const customPagesChanged = ((_a2 = prevProps.customPages) == null ? void 0 : _a2.length) !== ((_b2 = newProps.customPages) == null ? void 0 : _b2.length);
-    const customMenuItemsChanged = ((_c2 = prevProps.customMenuItems) == null ? void 0 : _c2.length) !== ((_d2 = newProps.customMenuItems) == null ? void 0 : _d2.length);
+    const customPagesChanged = ((_a = prevProps.customPages) == null ? void 0 : _a.length) !== ((_b = newProps.customPages) == null ? void 0 : _b.length);
+    const customMenuItemsChanged = ((_c = prevProps.customMenuItems) == null ? void 0 : _c.length) !== ((_d = newProps.customMenuItems) == null ? void 0 : _d.length);
     const prevMenuItemsWithoutHandlers = stripMenuItemIconHandlers(_prevProps.props.customMenuItems);
     const newMenuItemsWithoutHandlers = stripMenuItemIconHandlers(this.props.props.customMenuItems);
     if (!isDeeplyEqual(prevProps, newProps) || !isDeeplyEqual(prevMenuItemsWithoutHandlers, newMenuItemsWithoutHandlers) || customPagesChanged || customMenuItemsChanged) {
@@ -20336,8 +20257,8 @@ var ClerkHostRenderer = class extends React.PureComponent {
   }
 };
 var CustomPortalsRenderer = (props) => {
-  var _a2, _b2;
-  return /* @__PURE__ */ React.createElement(React.Fragment, null, (_a2 = props == null ? void 0 : props.customPagesPortals) == null ? void 0 : _a2.map((portal, index2) => reactExports.createElement(portal, { key: index2 })), (_b2 = props == null ? void 0 : props.customMenuItemsPortals) == null ? void 0 : _b2.map((portal, index2) => reactExports.createElement(portal, { key: index2 })));
+  var _a, _b;
+  return /* @__PURE__ */ React.createElement(React.Fragment, null, (_a = props == null ? void 0 : props.customPagesPortals) == null ? void 0 : _a.map((portal, index2) => reactExports.createElement(portal, { key: index2 })), (_b = props == null ? void 0 : props.customMenuItemsPortals) == null ? void 0 : _b.map((portal, index2) => reactExports.createElement(portal, { key: index2 })));
 };
 withClerk(
   ({ clerk, component, fallback, ...props }) => {
@@ -20777,14 +20698,14 @@ withClerk(
   },
   { component: "TaskChooseOrganization", renderWhileLoading: true }
 );
-var __typeError2 = (msg) => {
+var __typeError = (msg) => {
   throw TypeError(msg);
 };
-var __accessCheck2 = (obj, member, msg) => member.has(obj) || __typeError2("Cannot " + msg);
-var __privateGet2 = (obj, member, getter) => (__accessCheck2(obj, member, "read from private field"), getter ? getter.call(obj) : member.get(obj));
-var __privateAdd2 = (obj, member, value) => member.has(obj) ? __typeError2("Cannot add the same private member more than once") : member instanceof WeakSet ? member.add(obj) : member.set(obj, value);
-var __privateSet2 = (obj, member, value, setter) => (__accessCheck2(obj, member, "write to private field"), member.set(obj, value), value);
-var __privateMethod2 = (obj, member, method) => (__accessCheck2(obj, member, "access private method"), method);
+var __accessCheck = (obj, member, msg) => member.has(obj) || __typeError("Cannot " + msg);
+var __privateGet = (obj, member, getter) => (__accessCheck(obj, member, "read from private field"), getter ? getter.call(obj) : member.get(obj));
+var __privateAdd = (obj, member, value) => member.has(obj) ? __typeError("Cannot add the same private member more than once") : member instanceof WeakSet ? member.add(obj) : member.set(obj, value);
+var __privateSet = (obj, member, value, setter) => (__accessCheck(obj, member, "write to private field"), member.set(obj, value), value);
+var __privateMethod = (obj, member, method) => (__accessCheck(obj, member, "access private method"), method);
 var versionSelector = (clerkJSVersion, packageVersion = "5.101.1") => {
   if (clerkJSVersion) {
     return clerkJSVersion;
@@ -20798,10 +20719,7 @@ var versionSelector = (clerkJSVersion, packageVersion = "5.101.1") => {
   }
   return getMajorVersion(packageVersion);
 };
-var getPrereleaseTag = (packageVersion) => {
-  var _a2;
-  return (_a2 = packageVersion.trim().replace(/^v/, "").match(/-(.+?)(\.|$)/)) == null ? void 0 : _a2[1];
-};
+var getPrereleaseTag = (packageVersion) => packageVersion.trim().replace(/^v/, "").match(/-(.+?)(\.|$)/)?.[1];
 var getMajorVersion = (packageVersion) => packageVersion.trim().replace(/^v/, "").split(".")[0];
 function isValidProxyUrl(key) {
   if (!key) {
@@ -20922,7 +20840,7 @@ async function loadScript(src = "", opts) {
       });
       script.src = src;
       script.nonce = nonce;
-      beforeLoad == null ? void 0 : beforeLoad(script);
+      beforeLoad?.(script);
       document.body.appendChild(script);
     });
   };
@@ -20984,7 +20902,7 @@ function waitForClerkWithTimeout(timeoutMs) {
   });
 }
 var loadClerkJsScript = async (opts) => {
-  const timeout = (opts == null ? void 0 : opts.scriptLoadTimeout) ?? 15e3;
+  const timeout = opts?.scriptLoadTimeout ?? 15e3;
   if (isClerkProperlyLoaded()) {
     return null;
   }
@@ -20992,7 +20910,7 @@ var loadClerkJsScript = async (opts) => {
   if (existingScript) {
     return waitForClerkWithTimeout(timeout);
   }
-  if (!(opts == null ? void 0 : opts.publishableKey)) {
+  if (!opts?.publishableKey) {
     errorThrower.throwMissingPublishableKeyError();
     return null;
   }
@@ -21011,7 +20929,6 @@ var loadClerkJsScript = async (opts) => {
   return loadPromise;
 };
 var clerkJsScriptUrl = (opts) => {
-  var _a2, _b2;
   const { clerkJSUrl, clerkJSVariant, clerkJSVersion, proxyUrl, domain, publishableKey } = opts;
   if (clerkJSUrl) {
     return clerkJSUrl;
@@ -21019,10 +20936,10 @@ var clerkJsScriptUrl = (opts) => {
   let scriptHost = "";
   if (!!proxyUrl && isValidProxyUrl(proxyUrl)) {
     scriptHost = proxyUrlToAbsoluteURL(proxyUrl).replace(/http(s)?:\/\//, "");
-  } else if (domain && !isDevOrStagingUrl(((_a2 = parsePublishableKey(publishableKey)) == null ? void 0 : _a2.frontendApi) || "")) {
+  } else if (domain && !isDevOrStagingUrl(parsePublishableKey(publishableKey)?.frontendApi || "")) {
     scriptHost = addClerkPrefix(domain);
   } else {
-    scriptHost = ((_b2 = parsePublishableKey(publishableKey)) == null ? void 0 : _b2.frontendApi) || "";
+    scriptHost = parsePublishableKey(publishableKey)?.frontendApi || "";
   }
   const variant = clerkJSVariant ? `${clerkJSVariant.replace(/\.+$/, "")}.` : "";
   const version = versionSelector(clerkJSVersion);
@@ -21087,19 +21004,18 @@ var deriveFromSsrInitialState = (initialState) => {
   };
 };
 var deriveFromClientSideState = (state) => {
-  var _a2, _b2, _c2, _d2;
   const userId = state.user ? state.user.id : state.user;
   const user2 = state.user;
   const sessionId = state.session ? state.session.id : state.session;
   const session = state.session;
-  const sessionStatus = (_a2 = state.session) == null ? void 0 : _a2.status;
-  const sessionClaims = state.session ? (_c2 = (_b2 = state.session.lastActiveToken) == null ? void 0 : _b2.jwt) == null ? void 0 : _c2.claims : null;
+  const sessionStatus = state.session?.status;
+  const sessionClaims = state.session ? state.session.lastActiveToken?.jwt?.claims : null;
   const factorVerificationAge = state.session ? state.session.factorVerificationAge : null;
-  const actor = session == null ? void 0 : session.actor;
+  const actor = session?.actor;
   const organization = state.organization;
   const orgId = state.organization ? state.organization.id : state.organization;
-  const orgSlug = organization == null ? void 0 : organization.slug;
-  const membership = organization ? (_d2 = user2 == null ? void 0 : user2.organizationMemberships) == null ? void 0 : _d2.find((om) => om.organization.id === orgId) : organization;
+  const orgSlug = organization?.slug;
+  const membership = organization ? user2?.organizationMemberships?.find((om) => om.organization.id === orgId) : organization;
   const orgPermissions = membership ? membership.permissions : membership;
   const orgRole = membership ? membership.role : membership;
   return {
@@ -21582,7 +21498,7 @@ var SDK_METADATA = {
 var _status, _domain, _proxyUrl, _publishableKey, _eventBus, _stateProxy, _instance, _IsomorphicClerk_instances, waitForClerkJS_fn;
 var _IsomorphicClerk = class _IsomorphicClerk2 {
   constructor(options) {
-    __privateAdd2(this, _IsomorphicClerk_instances);
+    __privateAdd(this, _IsomorphicClerk_instances);
     this.clerkjs = null;
     this.preopenOneTap = null;
     this.preopenUserVerification = null;
@@ -21612,16 +21528,16 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     this.premountTaskChooseOrganizationNodes = /* @__PURE__ */ new Map();
     this.premountAddListenerCalls = /* @__PURE__ */ new Map();
     this.loadedListeners = [];
-    __privateAdd2(this, _status, "loading");
-    __privateAdd2(this, _domain);
-    __privateAdd2(this, _proxyUrl);
-    __privateAdd2(this, _publishableKey);
-    __privateAdd2(this, _eventBus, createClerkEventBus());
-    __privateAdd2(this, _stateProxy);
+    __privateAdd(this, _status, "loading");
+    __privateAdd(this, _domain);
+    __privateAdd(this, _proxyUrl);
+    __privateAdd(this, _publishableKey);
+    __privateAdd(this, _eventBus, createClerkEventBus());
+    __privateAdd(this, _stateProxy);
     this.buildSignInUrl = (opts) => {
       const callback = () => {
-        var _a2;
-        return ((_a2 = this.clerkjs) == null ? void 0 : _a2.buildSignInUrl(opts)) || "";
+        var _a;
+        return ((_a = this.clerkjs) == null ? void 0 : _a.buildSignInUrl(opts)) || "";
       };
       if (this.clerkjs && this.loaded) {
         return callback();
@@ -21631,8 +21547,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.buildSignUpUrl = (opts) => {
       const callback = () => {
-        var _a2;
-        return ((_a2 = this.clerkjs) == null ? void 0 : _a2.buildSignUpUrl(opts)) || "";
+        var _a;
+        return ((_a = this.clerkjs) == null ? void 0 : _a.buildSignUpUrl(opts)) || "";
       };
       if (this.clerkjs && this.loaded) {
         return callback();
@@ -21642,8 +21558,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.buildAfterSignInUrl = (...args) => {
       const callback = () => {
-        var _a2;
-        return ((_a2 = this.clerkjs) == null ? void 0 : _a2.buildAfterSignInUrl(...args)) || "";
+        var _a;
+        return ((_a = this.clerkjs) == null ? void 0 : _a.buildAfterSignInUrl(...args)) || "";
       };
       if (this.clerkjs && this.loaded) {
         return callback();
@@ -21653,8 +21569,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.buildAfterSignUpUrl = (...args) => {
       const callback = () => {
-        var _a2;
-        return ((_a2 = this.clerkjs) == null ? void 0 : _a2.buildAfterSignUpUrl(...args)) || "";
+        var _a;
+        return ((_a = this.clerkjs) == null ? void 0 : _a.buildAfterSignUpUrl(...args)) || "";
       };
       if (this.clerkjs && this.loaded) {
         return callback();
@@ -21664,8 +21580,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.buildAfterSignOutUrl = () => {
       const callback = () => {
-        var _a2;
-        return ((_a2 = this.clerkjs) == null ? void 0 : _a2.buildAfterSignOutUrl()) || "";
+        var _a;
+        return ((_a = this.clerkjs) == null ? void 0 : _a.buildAfterSignOutUrl()) || "";
       };
       if (this.clerkjs && this.loaded) {
         return callback();
@@ -21675,8 +21591,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.buildNewSubscriptionRedirectUrl = () => {
       const callback = () => {
-        var _a2;
-        return ((_a2 = this.clerkjs) == null ? void 0 : _a2.buildNewSubscriptionRedirectUrl()) || "";
+        var _a;
+        return ((_a = this.clerkjs) == null ? void 0 : _a.buildNewSubscriptionRedirectUrl()) || "";
       };
       if (this.clerkjs && this.loaded) {
         return callback();
@@ -21686,8 +21602,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.buildAfterMultiSessionSingleSignOutUrl = () => {
       const callback = () => {
-        var _a2;
-        return ((_a2 = this.clerkjs) == null ? void 0 : _a2.buildAfterMultiSessionSingleSignOutUrl()) || "";
+        var _a;
+        return ((_a = this.clerkjs) == null ? void 0 : _a.buildAfterMultiSessionSingleSignOutUrl()) || "";
       };
       if (this.clerkjs && this.loaded) {
         return callback();
@@ -21697,8 +21613,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.buildUserProfileUrl = () => {
       const callback = () => {
-        var _a2;
-        return ((_a2 = this.clerkjs) == null ? void 0 : _a2.buildUserProfileUrl()) || "";
+        var _a;
+        return ((_a = this.clerkjs) == null ? void 0 : _a.buildUserProfileUrl()) || "";
       };
       if (this.clerkjs && this.loaded) {
         return callback();
@@ -21708,8 +21624,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.buildCreateOrganizationUrl = () => {
       const callback = () => {
-        var _a2;
-        return ((_a2 = this.clerkjs) == null ? void 0 : _a2.buildCreateOrganizationUrl()) || "";
+        var _a;
+        return ((_a = this.clerkjs) == null ? void 0 : _a.buildCreateOrganizationUrl()) || "";
       };
       if (this.clerkjs && this.loaded) {
         return callback();
@@ -21719,8 +21635,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.buildOrganizationProfileUrl = () => {
       const callback = () => {
-        var _a2;
-        return ((_a2 = this.clerkjs) == null ? void 0 : _a2.buildOrganizationProfileUrl()) || "";
+        var _a;
+        return ((_a = this.clerkjs) == null ? void 0 : _a.buildOrganizationProfileUrl()) || "";
       };
       if (this.clerkjs && this.loaded) {
         return callback();
@@ -21730,8 +21646,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.buildWaitlistUrl = () => {
       const callback = () => {
-        var _a2;
-        return ((_a2 = this.clerkjs) == null ? void 0 : _a2.buildWaitlistUrl()) || "";
+        var _a;
+        return ((_a = this.clerkjs) == null ? void 0 : _a.buildWaitlistUrl()) || "";
       };
       if (this.clerkjs && this.loaded) {
         return callback();
@@ -21741,8 +21657,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.buildTasksUrl = () => {
       const callback = () => {
-        var _a2;
-        return ((_a2 = this.clerkjs) == null ? void 0 : _a2.buildTasksUrl()) || "";
+        var _a;
+        return ((_a = this.clerkjs) == null ? void 0 : _a.buildTasksUrl()) || "";
       };
       if (this.clerkjs && this.loaded) {
         return callback();
@@ -21752,8 +21668,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.buildUrlWithAuth = (to) => {
       const callback = () => {
-        var _a2;
-        return ((_a2 = this.clerkjs) == null ? void 0 : _a2.buildUrlWithAuth(to)) || "";
+        var _a;
+        return ((_a = this.clerkjs) == null ? void 0 : _a.buildUrlWithAuth(to)) || "";
       };
       if (this.clerkjs && this.loaded) {
         return callback();
@@ -21763,8 +21679,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.handleUnauthenticated = async () => {
       const callback = () => {
-        var _a2;
-        return (_a2 = this.clerkjs) == null ? void 0 : _a2.handleUnauthenticated();
+        var _a;
+        return (_a = this.clerkjs) == null ? void 0 : _a.handleUnauthenticated();
       };
       if (this.clerkjs && this.loaded) {
         void callback();
@@ -21773,19 +21689,19 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
       }
     };
     this.on = (...args) => {
-      var _a2;
-      if ((_a2 = this.clerkjs) == null ? void 0 : _a2.on) {
+      var _a;
+      if ((_a = this.clerkjs) == null ? void 0 : _a.on) {
         return this.clerkjs.on(...args);
       } else {
-        __privateGet2(this, _eventBus).on(...args);
+        __privateGet(this, _eventBus).on(...args);
       }
     };
     this.off = (...args) => {
-      var _a2;
-      if ((_a2 = this.clerkjs) == null ? void 0 : _a2.off) {
+      var _a;
+      if ((_a = this.clerkjs) == null ? void 0 : _a.off) {
         return this.clerkjs.off(...args);
       } else {
-        __privateGet2(this, _eventBus).off(...args);
+        __privateGet(this, _eventBus).off(...args);
       }
     };
     this.addOnLoaded = (cb) => {
@@ -21804,7 +21720,7 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
       }
     };
     this.hydrateClerkJS = (clerkjs) => {
-      var _a2;
+      var _a;
       if (!clerkjs) {
         throw new Error("Failed to hydrate latest Clerk JS");
       }
@@ -21813,7 +21729,7 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
       this.premountAddListenerCalls.forEach((listenerHandlers, listener) => {
         listenerHandlers.nativeUnsubscribe = clerkjs.addListener(listener);
       });
-      (_a2 = __privateGet2(this, _eventBus).internal.retrieveListeners("status")) == null ? void 0 : _a2.forEach((listener) => {
+      (_a = __privateGet(this, _eventBus).internal.retrieveListeners("status")) == null ? void 0 : _a.forEach((listener) => {
         this.on("status", listener, { notify: true });
       });
       if (this.preopenSignIn !== null) {
@@ -21883,17 +21799,17 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
         clerkjs.mountTaskChooseOrganization(node, props);
       });
       if (typeof this.clerkjs.status === "undefined") {
-        __privateGet2(this, _eventBus).emit(clerkEvents.Status, "ready");
+        __privateGet(this, _eventBus).emit(clerkEvents.Status, "ready");
       }
       this.emitLoaded();
       return this.clerkjs;
     };
     this.__experimental_checkout = (...args) => {
-      var _a2;
-      return (_a2 = this.clerkjs) == null ? void 0 : _a2.__experimental_checkout(...args);
+      var _a;
+      return (_a = this.clerkjs) == null ? void 0 : _a.__experimental_checkout(...args);
     };
     this.__unstable__updateProps = async (props) => {
-      const clerkjs = await __privateMethod2(this, _IsomorphicClerk_instances, waitForClerkJS_fn).call(this);
+      const clerkjs = await __privateMethod(this, _IsomorphicClerk_instances, waitForClerkJS_fn).call(this);
       if (clerkjs && "__unstable__updateProps" in clerkjs) {
         return clerkjs.__unstable__updateProps(props);
       }
@@ -22159,8 +22075,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.__experimental_prefetchOrganizationSwitcher = () => {
       const callback = () => {
-        var _a2;
-        return (_a2 = this.clerkjs) == null ? void 0 : _a2.__experimental_prefetchOrganizationSwitcher();
+        var _a;
+        return (_a = this.clerkjs) == null ? void 0 : _a.__experimental_prefetchOrganizationSwitcher();
       };
       if (this.clerkjs && this.loaded) {
         void callback();
@@ -22271,10 +22187,10 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
         return this.clerkjs.addListener(listener);
       } else {
         const unsubscribe = () => {
-          var _a2;
+          var _a;
           const listenerHandlers = this.premountAddListenerCalls.get(listener);
           if (listenerHandlers) {
-            (_a2 = listenerHandlers.nativeUnsubscribe) == null ? void 0 : _a2.call(listenerHandlers);
+            (_a = listenerHandlers.nativeUnsubscribe) == null ? void 0 : _a.call(listenerHandlers);
             this.premountAddListenerCalls.delete(listener);
           }
         };
@@ -22284,8 +22200,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.navigate = (to) => {
       const callback = () => {
-        var _a2;
-        return (_a2 = this.clerkjs) == null ? void 0 : _a2.navigate(to);
+        var _a;
+        return (_a = this.clerkjs) == null ? void 0 : _a.navigate(to);
       };
       if (this.clerkjs && this.loaded) {
         void callback();
@@ -22295,8 +22211,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.redirectWithAuth = async (...args) => {
       const callback = () => {
-        var _a2;
-        return (_a2 = this.clerkjs) == null ? void 0 : _a2.redirectWithAuth(...args);
+        var _a;
+        return (_a = this.clerkjs) == null ? void 0 : _a.redirectWithAuth(...args);
       };
       if (this.clerkjs && this.loaded) {
         return callback();
@@ -22307,8 +22223,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.redirectToSignIn = async (opts) => {
       const callback = () => {
-        var _a2;
-        return (_a2 = this.clerkjs) == null ? void 0 : _a2.redirectToSignIn(opts);
+        var _a;
+        return (_a = this.clerkjs) == null ? void 0 : _a.redirectToSignIn(opts);
       };
       if (this.clerkjs && this.loaded) {
         return callback();
@@ -22319,8 +22235,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.redirectToSignUp = async (opts) => {
       const callback = () => {
-        var _a2;
-        return (_a2 = this.clerkjs) == null ? void 0 : _a2.redirectToSignUp(opts);
+        var _a;
+        return (_a = this.clerkjs) == null ? void 0 : _a.redirectToSignUp(opts);
       };
       if (this.clerkjs && this.loaded) {
         return callback();
@@ -22331,8 +22247,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.redirectToUserProfile = async () => {
       const callback = () => {
-        var _a2;
-        return (_a2 = this.clerkjs) == null ? void 0 : _a2.redirectToUserProfile();
+        var _a;
+        return (_a = this.clerkjs) == null ? void 0 : _a.redirectToUserProfile();
       };
       if (this.clerkjs && this.loaded) {
         return callback();
@@ -22343,8 +22259,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.redirectToAfterSignUp = () => {
       const callback = () => {
-        var _a2;
-        return (_a2 = this.clerkjs) == null ? void 0 : _a2.redirectToAfterSignUp();
+        var _a;
+        return (_a = this.clerkjs) == null ? void 0 : _a.redirectToAfterSignUp();
       };
       if (this.clerkjs && this.loaded) {
         return callback();
@@ -22354,8 +22270,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.redirectToAfterSignIn = () => {
       const callback = () => {
-        var _a2;
-        return (_a2 = this.clerkjs) == null ? void 0 : _a2.redirectToAfterSignIn();
+        var _a;
+        return (_a = this.clerkjs) == null ? void 0 : _a.redirectToAfterSignIn();
       };
       if (this.clerkjs && this.loaded) {
         callback();
@@ -22365,8 +22281,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.redirectToAfterSignOut = () => {
       const callback = () => {
-        var _a2;
-        return (_a2 = this.clerkjs) == null ? void 0 : _a2.redirectToAfterSignOut();
+        var _a;
+        return (_a = this.clerkjs) == null ? void 0 : _a.redirectToAfterSignOut();
       };
       if (this.clerkjs && this.loaded) {
         callback();
@@ -22376,8 +22292,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.redirectToOrganizationProfile = async () => {
       const callback = () => {
-        var _a2;
-        return (_a2 = this.clerkjs) == null ? void 0 : _a2.redirectToOrganizationProfile();
+        var _a;
+        return (_a = this.clerkjs) == null ? void 0 : _a.redirectToOrganizationProfile();
       };
       if (this.clerkjs && this.loaded) {
         return callback();
@@ -22388,8 +22304,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.redirectToCreateOrganization = async () => {
       const callback = () => {
-        var _a2;
-        return (_a2 = this.clerkjs) == null ? void 0 : _a2.redirectToCreateOrganization();
+        var _a;
+        return (_a = this.clerkjs) == null ? void 0 : _a.redirectToCreateOrganization();
       };
       if (this.clerkjs && this.loaded) {
         return callback();
@@ -22400,8 +22316,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.redirectToWaitlist = async () => {
       const callback = () => {
-        var _a2;
-        return (_a2 = this.clerkjs) == null ? void 0 : _a2.redirectToWaitlist();
+        var _a;
+        return (_a = this.clerkjs) == null ? void 0 : _a.redirectToWaitlist();
       };
       if (this.clerkjs && this.loaded) {
         return callback();
@@ -22412,8 +22328,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.redirectToTasks = async (opts) => {
       const callback = () => {
-        var _a2;
-        return (_a2 = this.clerkjs) == null ? void 0 : _a2.redirectToTasks(opts);
+        var _a;
+        return (_a = this.clerkjs) == null ? void 0 : _a.redirectToTasks(opts);
       };
       if (this.clerkjs && this.loaded) {
         return callback();
@@ -22423,26 +22339,26 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
       }
     };
     this.handleRedirectCallback = async (params) => {
-      var _a2;
+      var _a;
       const callback = () => {
-        var _a22;
-        return (_a22 = this.clerkjs) == null ? void 0 : _a22.handleRedirectCallback(params);
+        var _a2;
+        return (_a2 = this.clerkjs) == null ? void 0 : _a2.handleRedirectCallback(params);
       };
       if (this.clerkjs && this.loaded) {
-        void ((_a2 = callback()) == null ? void 0 : _a2.catch(() => {
+        void ((_a = callback()) == null ? void 0 : _a.catch(() => {
         }));
       } else {
         this.premountMethodCalls.set("handleRedirectCallback", callback);
       }
     };
     this.handleGoogleOneTapCallback = async (signInOrUp, params) => {
-      var _a2;
+      var _a;
       const callback = () => {
-        var _a22;
-        return (_a22 = this.clerkjs) == null ? void 0 : _a22.handleGoogleOneTapCallback(signInOrUp, params);
+        var _a2;
+        return (_a2 = this.clerkjs) == null ? void 0 : _a2.handleGoogleOneTapCallback(signInOrUp, params);
       };
       if (this.clerkjs && this.loaded) {
-        void ((_a2 = callback()) == null ? void 0 : _a2.catch(() => {
+        void ((_a = callback()) == null ? void 0 : _a.catch(() => {
         }));
       } else {
         this.premountMethodCalls.set("handleGoogleOneTapCallback", callback);
@@ -22450,8 +22366,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.handleEmailLinkVerification = async (params) => {
       const callback = () => {
-        var _a2;
-        return (_a2 = this.clerkjs) == null ? void 0 : _a2.handleEmailLinkVerification(params);
+        var _a;
+        return (_a = this.clerkjs) == null ? void 0 : _a.handleEmailLinkVerification(params);
       };
       if (this.clerkjs && this.loaded) {
         return callback();
@@ -22461,8 +22377,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.authenticateWithMetamask = async (params) => {
       const callback = () => {
-        var _a2;
-        return (_a2 = this.clerkjs) == null ? void 0 : _a2.authenticateWithMetamask(params);
+        var _a;
+        return (_a = this.clerkjs) == null ? void 0 : _a.authenticateWithMetamask(params);
       };
       if (this.clerkjs && this.loaded) {
         return callback();
@@ -22472,8 +22388,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.authenticateWithCoinbaseWallet = async (params) => {
       const callback = () => {
-        var _a2;
-        return (_a2 = this.clerkjs) == null ? void 0 : _a2.authenticateWithCoinbaseWallet(params);
+        var _a;
+        return (_a = this.clerkjs) == null ? void 0 : _a.authenticateWithCoinbaseWallet(params);
       };
       if (this.clerkjs && this.loaded) {
         return callback();
@@ -22483,8 +22399,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.authenticateWithBase = async (params) => {
       const callback = () => {
-        var _a2;
-        return (_a2 = this.clerkjs) == null ? void 0 : _a2.authenticateWithBase(params);
+        var _a;
+        return (_a = this.clerkjs) == null ? void 0 : _a.authenticateWithBase(params);
       };
       if (this.clerkjs && this.loaded) {
         return callback();
@@ -22494,8 +22410,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.authenticateWithOKXWallet = async (params) => {
       const callback = () => {
-        var _a2;
-        return (_a2 = this.clerkjs) == null ? void 0 : _a2.authenticateWithOKXWallet(params);
+        var _a;
+        return (_a = this.clerkjs) == null ? void 0 : _a.authenticateWithOKXWallet(params);
       };
       if (this.clerkjs && this.loaded) {
         return callback();
@@ -22505,8 +22421,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.authenticateWithWeb3 = async (params) => {
       const callback = () => {
-        var _a2;
-        return (_a2 = this.clerkjs) == null ? void 0 : _a2.authenticateWithWeb3(params);
+        var _a;
+        return (_a = this.clerkjs) == null ? void 0 : _a.authenticateWithWeb3(params);
       };
       if (this.clerkjs && this.loaded) {
         return callback();
@@ -22515,17 +22431,17 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
       }
     };
     this.authenticateWithGoogleOneTap = async (params) => {
-      const clerkjs = await __privateMethod2(this, _IsomorphicClerk_instances, waitForClerkJS_fn).call(this);
+      const clerkjs = await __privateMethod(this, _IsomorphicClerk_instances, waitForClerkJS_fn).call(this);
       return clerkjs.authenticateWithGoogleOneTap(params);
     };
     this.__internal_loadStripeJs = async () => {
-      const clerkjs = await __privateMethod2(this, _IsomorphicClerk_instances, waitForClerkJS_fn).call(this);
+      const clerkjs = await __privateMethod(this, _IsomorphicClerk_instances, waitForClerkJS_fn).call(this);
       return clerkjs.__internal_loadStripeJs();
     };
     this.createOrganization = async (params) => {
       const callback = () => {
-        var _a2;
-        return (_a2 = this.clerkjs) == null ? void 0 : _a2.createOrganization(params);
+        var _a;
+        return (_a = this.clerkjs) == null ? void 0 : _a.createOrganization(params);
       };
       if (this.clerkjs && this.loaded) {
         return callback();
@@ -22535,8 +22451,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.getOrganization = async (organizationId) => {
       const callback = () => {
-        var _a2;
-        return (_a2 = this.clerkjs) == null ? void 0 : _a2.getOrganization(organizationId);
+        var _a;
+        return (_a = this.clerkjs) == null ? void 0 : _a.getOrganization(organizationId);
       };
       if (this.clerkjs && this.loaded) {
         return callback();
@@ -22546,8 +22462,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.joinWaitlist = async (params) => {
       const callback = () => {
-        var _a2;
-        return (_a2 = this.clerkjs) == null ? void 0 : _a2.joinWaitlist(params);
+        var _a;
+        return (_a = this.clerkjs) == null ? void 0 : _a.joinWaitlist(params);
       };
       if (this.clerkjs && this.loaded) {
         return callback();
@@ -22557,8 +22473,8 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     };
     this.signOut = async (...args) => {
       const callback = () => {
-        var _a2;
-        return (_a2 = this.clerkjs) == null ? void 0 : _a2.signOut(...args);
+        var _a;
+        return (_a = this.clerkjs) == null ? void 0 : _a.signOut(...args);
       };
       if (this.clerkjs && this.loaded) {
         return callback();
@@ -22567,35 +22483,35 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
       }
     };
     const { Clerk = null, publishableKey } = options || {};
-    __privateSet2(this, _publishableKey, publishableKey);
-    __privateSet2(this, _proxyUrl, options == null ? void 0 : options.proxyUrl);
-    __privateSet2(this, _domain, options == null ? void 0 : options.domain);
+    __privateSet(this, _publishableKey, publishableKey);
+    __privateSet(this, _proxyUrl, options == null ? void 0 : options.proxyUrl);
+    __privateSet(this, _domain, options == null ? void 0 : options.domain);
     this.options = options;
     this.Clerk = Clerk;
     this.mode = inBrowser() ? "browser" : "server";
-    __privateSet2(this, _stateProxy, new StateProxy(this));
+    __privateSet(this, _stateProxy, new StateProxy(this));
     if (!this.options.sdkMetadata) {
       this.options.sdkMetadata = SDK_METADATA;
     }
-    __privateGet2(this, _eventBus).emit(clerkEvents.Status, "loading");
-    __privateGet2(this, _eventBus).prioritizedOn(clerkEvents.Status, (status) => __privateSet2(this, _status, status));
-    if (__privateGet2(this, _publishableKey)) {
+    __privateGet(this, _eventBus).emit(clerkEvents.Status, "loading");
+    __privateGet(this, _eventBus).prioritizedOn(clerkEvents.Status, (status) => __privateSet(this, _status, status));
+    if (__privateGet(this, _publishableKey)) {
       void this.loadClerkJS();
     }
   }
   get publishableKey() {
-    return __privateGet2(this, _publishableKey);
+    return __privateGet(this, _publishableKey);
   }
   get loaded() {
-    var _a2;
-    return ((_a2 = this.clerkjs) == null ? void 0 : _a2.loaded) || false;
+    var _a;
+    return ((_a = this.clerkjs) == null ? void 0 : _a.loaded) || false;
   }
   get status() {
-    var _a2;
+    var _a;
     if (!this.clerkjs) {
-      return __privateGet2(this, _status);
+      return __privateGet(this, _status);
     }
-    return ((_a2 = this.clerkjs) == null ? void 0 : _a2.status) || /**
+    return ((_a = this.clerkjs) == null ? void 0 : _a.status) || /**
     * Support older clerk-js versions.
     * If clerk-js is available but `.status` is missing it we need to fallback to `.loaded`.
     * Since "degraded" an "error" did not exist before,
@@ -22604,32 +22520,32 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     (this.clerkjs.loaded ? "ready" : "loading");
   }
   static getOrCreateInstance(options) {
-    if (!inBrowser() || !__privateGet2(this, _instance) || options.Clerk && __privateGet2(this, _instance).Clerk !== options.Clerk || // Allow hot swapping PKs on the client
-    __privateGet2(this, _instance).publishableKey !== options.publishableKey) {
-      __privateSet2(this, _instance, new _IsomorphicClerk2(options));
+    if (!inBrowser() || !__privateGet(this, _instance) || options.Clerk && __privateGet(this, _instance).Clerk !== options.Clerk || // Allow hot swapping PKs on the client
+    __privateGet(this, _instance).publishableKey !== options.publishableKey) {
+      __privateSet(this, _instance, new _IsomorphicClerk2(options));
     }
-    return __privateGet2(this, _instance);
+    return __privateGet(this, _instance);
   }
   static clearInstance() {
-    __privateSet2(this, _instance, null);
+    __privateSet(this, _instance, null);
   }
   get domain() {
     if (typeof window !== "undefined" && window.location) {
-      return handleValueOrFn(__privateGet2(this, _domain), new URL(window.location.href), "");
+      return handleValueOrFn(__privateGet(this, _domain), new URL(window.location.href), "");
     }
-    if (typeof __privateGet2(this, _domain) === "function") {
+    if (typeof __privateGet(this, _domain) === "function") {
       return errorThrower$1.throw(unsupportedNonBrowserDomainOrProxyUrlFunction);
     }
-    return __privateGet2(this, _domain) || "";
+    return __privateGet(this, _domain) || "";
   }
   get proxyUrl() {
     if (typeof window !== "undefined" && window.location) {
-      return handleValueOrFn(__privateGet2(this, _proxyUrl), new URL(window.location.href), "");
+      return handleValueOrFn(__privateGet(this, _proxyUrl), new URL(window.location.href), "");
     }
-    if (typeof __privateGet2(this, _proxyUrl) === "function") {
+    if (typeof __privateGet(this, _proxyUrl) === "function") {
       return errorThrower$1.throw(unsupportedNonBrowserDomainOrProxyUrlFunction);
     }
-    return __privateGet2(this, _proxyUrl) || "";
+    return __privateGet(this, _proxyUrl) || "";
   }
   /**
    * Accesses private options from the `Clerk` instance and defaults to
@@ -22637,24 +22553,24 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
    *  @internal
    */
   __internal_getOption(key) {
-    var _a2, _b2;
-    return ((_a2 = this.clerkjs) == null ? void 0 : _a2.__internal_getOption) ? (_b2 = this.clerkjs) == null ? void 0 : _b2.__internal_getOption(key) : this.options[key];
+    var _a, _b;
+    return ((_a = this.clerkjs) == null ? void 0 : _a.__internal_getOption) ? (_b = this.clerkjs) == null ? void 0 : _b.__internal_getOption(key) : this.options[key];
   }
   get sdkMetadata() {
-    var _a2;
-    return ((_a2 = this.clerkjs) == null ? void 0 : _a2.sdkMetadata) || this.options.sdkMetadata || void 0;
+    var _a;
+    return ((_a = this.clerkjs) == null ? void 0 : _a.sdkMetadata) || this.options.sdkMetadata || void 0;
   }
   get instanceType() {
-    var _a2;
-    return (_a2 = this.clerkjs) == null ? void 0 : _a2.instanceType;
+    var _a;
+    return (_a = this.clerkjs) == null ? void 0 : _a.instanceType;
   }
   get frontendApi() {
-    var _a2;
-    return ((_a2 = this.clerkjs) == null ? void 0 : _a2.frontendApi) || "";
+    var _a;
+    return ((_a = this.clerkjs) == null ? void 0 : _a.frontendApi) || "";
   }
   get isStandardBrowser() {
-    var _a2;
-    return ((_a2 = this.clerkjs) == null ? void 0 : _a2.isStandardBrowser) || this.options.standardBrowser || false;
+    var _a;
+    return ((_a = this.clerkjs) == null ? void 0 : _a.isStandardBrowser) || this.options.standardBrowser || false;
   }
   get isSatellite() {
     if (typeof window !== "undefined" && window.location) {
@@ -22666,12 +22582,12 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     return false;
   }
   async loadClerkJS() {
-    var _a2;
+    var _a;
     if (this.mode !== "browser" || this.loaded) {
       return;
     }
     if (typeof window !== "undefined") {
-      window.__clerk_publishable_key = __privateGet2(this, _publishableKey);
+      window.__clerk_publishable_key = __privateGet(this, _publishableKey);
       window.__clerk_proxy_url = this.proxyUrl;
       window.__clerk_domain = this.domain;
     }
@@ -22679,7 +22595,7 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
       if (this.Clerk) {
         let c;
         if (isConstructor(this.Clerk)) {
-          c = new this.Clerk(__privateGet2(this, _publishableKey), {
+          c = new this.Clerk(__privateGet(this, _publishableKey), {
             proxyUrl: this.proxyUrl,
             domain: this.domain
           });
@@ -22697,7 +22613,7 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
         if (!global.Clerk) {
           await loadClerkJsScript({
             ...this.options,
-            publishableKey: __privateGet2(this, _publishableKey),
+            publishableKey: __privateGet(this, _publishableKey),
             proxyUrl: this.proxyUrl,
             domain: this.domain,
             nonce: this.options.nonce
@@ -22709,20 +22625,20 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
         this.beforeLoad(global.Clerk);
         await global.Clerk.load(this.options);
       }
-      if ((_a2 = global.Clerk) == null ? void 0 : _a2.loaded) {
+      if ((_a = global.Clerk) == null ? void 0 : _a.loaded) {
         return this.hydrateClerkJS(global.Clerk);
       }
       return;
     } catch (err) {
       const error = err;
-      __privateGet2(this, _eventBus).emit(clerkEvents.Status, "error");
+      __privateGet(this, _eventBus).emit(clerkEvents.Status, "error");
       console.error(error.stack || error.message || error);
       return;
     }
   }
   get version() {
-    var _a2;
-    return (_a2 = this.clerkjs) == null ? void 0 : _a2.version;
+    var _a;
+    return (_a = this.clerkjs) == null ? void 0 : _a.version;
   }
   get client() {
     if (this.clerkjs) {
@@ -22774,15 +22690,15 @@ var _IsomorphicClerk = class _IsomorphicClerk2 {
     }
   }
   get billing() {
-    var _a2;
-    return (_a2 = this.clerkjs) == null ? void 0 : _a2.billing;
+    var _a;
+    return (_a = this.clerkjs) == null ? void 0 : _a.billing;
   }
   get __internal_state() {
-    return this.loaded && this.clerkjs ? this.clerkjs.__internal_state : __privateGet2(this, _stateProxy);
+    return this.loaded && this.clerkjs ? this.clerkjs.__internal_state : __privateGet(this, _stateProxy);
   }
   get apiKeys() {
-    var _a2;
-    return (_a2 = this.clerkjs) == null ? void 0 : _a2.apiKeys;
+    var _a;
+    return (_a = this.clerkjs) == null ? void 0 : _a.apiKeys;
   }
   __unstable__setEnvironment(...args) {
     if (this.clerkjs && "__unstable__setEnvironment" in this.clerkjs) {
@@ -22805,7 +22721,7 @@ waitForClerkJS_fn = function() {
     this.addOnLoaded(() => resolve(this.clerkjs));
   });
 };
-__privateAdd2(_IsomorphicClerk, _instance);
+__privateAdd(_IsomorphicClerk, _instance);
 var IsomorphicClerk = _IsomorphicClerk;
 function ClerkContextProvider(props) {
   const { isomorphicClerkOptions, initialState, children } = props;
@@ -23038,9 +22954,9 @@ function useToast() {
 }
 function composeEventHandlers(originalEventHandler, ourEventHandler, { checkForDefaultPrevented = true } = {}) {
   return function handleEvent(event) {
-    originalEventHandler == null ? void 0 : originalEventHandler(event);
+    originalEventHandler?.(event);
     if (checkForDefaultPrevented === false || !event.defaultPrevented) {
-      return ourEventHandler == null ? void 0 : ourEventHandler(event);
+      return ourEventHandler?.(event);
     }
   };
 }
@@ -23101,16 +23017,14 @@ function createContextScope(scopeName, createContextScopeDeps = []) {
     const index2 = defaultContexts.length;
     defaultContexts = [...defaultContexts, defaultContext];
     const Provider2 = (props) => {
-      var _a2;
       const { scope, children, ...context } = props;
-      const Context = ((_a2 = scope == null ? void 0 : scope[scopeName]) == null ? void 0 : _a2[index2]) || BaseContext;
+      const Context = scope?.[scopeName]?.[index2] || BaseContext;
       const value = reactExports.useMemo(() => context, Object.values(context));
       return /* @__PURE__ */ jsxRuntimeExports.jsx(Context.Provider, { value, children });
     };
     Provider2.displayName = rootComponentName + "Provider";
     function useContext2(consumerName, scope) {
-      var _a2;
-      const Context = ((_a2 = scope == null ? void 0 : scope[scopeName]) == null ? void 0 : _a2[index2]) || BaseContext;
+      const Context = scope?.[scopeName]?.[index2] || BaseContext;
       const context = reactExports.useContext(Context);
       if (context) return context;
       if (defaultContext !== void 0) return defaultContext;
@@ -23123,7 +23037,7 @@ function createContextScope(scopeName, createContextScopeDeps = []) {
       return reactExports.createContext(defaultContext);
     });
     return function useScope(scope) {
-      const contexts = (scope == null ? void 0 : scope[scopeName]) || scopeContexts;
+      const contexts = scope?.[scopeName] || scopeContexts;
       return reactExports.useMemo(
         () => ({ [`__scope${scopeName}`]: { ...scope, [scopeName]: contexts } }),
         [scope, contexts]
@@ -23224,13 +23138,12 @@ function mergeProps(slotProps, childProps) {
   return { ...slotProps, ...overrideProps };
 }
 function getElementRef$1(element) {
-  var _a2, _b2;
-  let getter = (_a2 = Object.getOwnPropertyDescriptor(element.props, "ref")) == null ? void 0 : _a2.get;
+  let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
   let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
   if (mayWarn) {
     return element.ref;
   }
-  getter = (_b2 = Object.getOwnPropertyDescriptor(element, "ref")) == null ? void 0 : _b2.get;
+  getter = Object.getOwnPropertyDescriptor(element, "ref")?.get;
   mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
   if (mayWarn) {
     return element.props.ref;
@@ -23339,12 +23252,9 @@ function useCallbackRef$1(callback) {
   reactExports.useEffect(() => {
     callbackRef.current = callback;
   });
-  return reactExports.useMemo(() => (...args) => {
-    var _a2;
-    return (_a2 = callbackRef.current) == null ? void 0 : _a2.call(callbackRef, ...args);
-  }, []);
+  return reactExports.useMemo(() => (...args) => callbackRef.current?.(...args), []);
 }
-function useEscapeKeydown(onEscapeKeyDownProp, ownerDocument = globalThis == null ? void 0 : globalThis.document) {
+function useEscapeKeydown(onEscapeKeyDownProp, ownerDocument = globalThis?.document) {
   const onEscapeKeyDown = useCallbackRef$1(onEscapeKeyDownProp);
   reactExports.useEffect(() => {
     const handleKeyDown = (event) => {
@@ -23379,7 +23289,7 @@ var DismissableLayer = reactExports.forwardRef(
     } = props;
     const context = reactExports.useContext(DismissableLayerContext);
     const [node, setNode] = reactExports.useState(null);
-    const ownerDocument = (node == null ? void 0 : node.ownerDocument) ?? (globalThis == null ? void 0 : globalThis.document);
+    const ownerDocument = node?.ownerDocument ?? globalThis?.document;
     const [, force] = reactExports.useState({});
     const composedRefs = useComposedRefs(forwardedRef, (node2) => setNode(node2));
     const layers = Array.from(context.layers);
@@ -23392,22 +23302,22 @@ var DismissableLayer = reactExports.forwardRef(
       const target = event.target;
       const isPointerDownOnBranch = [...context.branches].some((branch) => branch.contains(target));
       if (!isPointerEventsEnabled || isPointerDownOnBranch) return;
-      onPointerDownOutside == null ? void 0 : onPointerDownOutside(event);
-      onInteractOutside == null ? void 0 : onInteractOutside(event);
-      if (!event.defaultPrevented) onDismiss == null ? void 0 : onDismiss();
+      onPointerDownOutside?.(event);
+      onInteractOutside?.(event);
+      if (!event.defaultPrevented) onDismiss?.();
     }, ownerDocument);
     const focusOutside = useFocusOutside((event) => {
       const target = event.target;
       const isFocusInBranch = [...context.branches].some((branch) => branch.contains(target));
       if (isFocusInBranch) return;
-      onFocusOutside == null ? void 0 : onFocusOutside(event);
-      onInteractOutside == null ? void 0 : onInteractOutside(event);
-      if (!event.defaultPrevented) onDismiss == null ? void 0 : onDismiss();
+      onFocusOutside?.(event);
+      onInteractOutside?.(event);
+      if (!event.defaultPrevented) onDismiss?.();
     }, ownerDocument);
     useEscapeKeydown((event) => {
       const isHighestLayer = index2 === context.layers.size - 1;
       if (!isHighestLayer) return;
-      onEscapeKeyDown == null ? void 0 : onEscapeKeyDown(event);
+      onEscapeKeyDown?.(event);
       if (!event.defaultPrevented && onDismiss) {
         event.preventDefault();
         onDismiss();
@@ -23480,7 +23390,7 @@ var DismissableLayerBranch = reactExports.forwardRef((props, forwardedRef) => {
   return /* @__PURE__ */ jsxRuntimeExports.jsx(Primitive.div, { ...props, ref: composedRefs });
 });
 DismissableLayerBranch.displayName = BRANCH_NAME;
-function usePointerDownOutside(onPointerDownOutside, ownerDocument = globalThis == null ? void 0 : globalThis.document) {
+function usePointerDownOutside(onPointerDownOutside, ownerDocument = globalThis?.document) {
   const handlePointerDownOutside = useCallbackRef$1(onPointerDownOutside);
   const isPointerInsideReactTreeRef = reactExports.useRef(false);
   const handleClickRef = reactExports.useRef(() => {
@@ -23523,7 +23433,7 @@ function usePointerDownOutside(onPointerDownOutside, ownerDocument = globalThis 
     onPointerDownCapture: () => isPointerInsideReactTreeRef.current = true
   };
 }
-function useFocusOutside(onFocusOutside, ownerDocument = globalThis == null ? void 0 : globalThis.document) {
+function useFocusOutside(onFocusOutside, ownerDocument = globalThis?.document) {
   const handleFocusOutside = useCallbackRef$1(onFocusOutside);
   const isFocusInsideReactTreeRef = reactExports.useRef(false);
   reactExports.useEffect(() => {
@@ -23559,15 +23469,14 @@ function handleAndDispatchCustomEvent$1(name, handler, detail, { discrete }) {
 }
 var Root$4 = DismissableLayer;
 var Branch = DismissableLayerBranch;
-var useLayoutEffect2 = (globalThis == null ? void 0 : globalThis.document) ? reactExports.useLayoutEffect : () => {
+var useLayoutEffect2 = globalThis?.document ? reactExports.useLayoutEffect : () => {
 };
 var PORTAL_NAME$2 = "Portal";
 var Portal$2 = reactExports.forwardRef((props, forwardedRef) => {
-  var _a2;
   const { container: containerProp, ...portalProps } = props;
   const [mounted, setMounted] = reactExports.useState(false);
   useLayoutEffect2(() => setMounted(true), []);
-  const container = containerProp || mounted && ((_a2 = globalThis == null ? void 0 : globalThis.document) == null ? void 0 : _a2.body);
+  const container = containerProp || mounted && globalThis?.document?.body;
   return container ? ReactDOM.createPortal(/* @__PURE__ */ jsxRuntimeExports.jsx(Primitive.div, { ...portalProps, ref: forwardedRef }), container) : null;
 });
 Portal$2.displayName = PORTAL_NAME$2;
@@ -23618,7 +23527,7 @@ function usePresence(present) {
       const currentAnimationName = getAnimationName(styles);
       if (present) {
         send("MOUNT");
-      } else if (currentAnimationName === "none" || (styles == null ? void 0 : styles.display) === "none") {
+      } else if (currentAnimationName === "none" || styles?.display === "none") {
         send("UNMOUNT");
       } else {
         const isAnimating = prevAnimationName !== currentAnimationName;
@@ -23678,16 +23587,15 @@ function usePresence(present) {
   };
 }
 function getAnimationName(styles) {
-  return (styles == null ? void 0 : styles.animationName) || "none";
+  return styles?.animationName || "none";
 }
 function getElementRef(element) {
-  var _a2, _b2;
-  let getter = (_a2 = Object.getOwnPropertyDescriptor(element.props, "ref")) == null ? void 0 : _a2.get;
+  let getter = Object.getOwnPropertyDescriptor(element.props, "ref")?.get;
   let mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
   if (mayWarn) {
     return element.ref;
   }
-  getter = (_b2 = Object.getOwnPropertyDescriptor(element, "ref")) == null ? void 0 : _b2.get;
+  getter = Object.getOwnPropertyDescriptor(element, "ref")?.get;
   mayWarn = getter && "isReactWarning" in getter && getter.isReactWarning;
   if (mayWarn) {
     return element.props.ref;
@@ -23724,11 +23632,10 @@ function useControllableState({
   }
   const setValue = reactExports.useCallback(
     (nextValue) => {
-      var _a2;
       if (isControlled) {
         const value2 = isFunction$1(nextValue) ? nextValue(prop) : nextValue;
         if (value2 !== prop) {
-          (_a2 = onChangeRef.current) == null ? void 0 : _a2.call(onChangeRef, value2);
+          onChangeRef.current?.(value2);
         }
       } else {
         setUncontrolledProp(nextValue);
@@ -23749,9 +23656,8 @@ function useUncontrolledState({
     onChangeRef.current = onChange;
   }, [onChange]);
   reactExports.useEffect(() => {
-    var _a2;
     if (prevValueRef.current !== value) {
-      (_a2 = onChangeRef.current) == null ? void 0 : _a2.call(onChangeRef, value);
+      onChangeRef.current?.(value);
       prevValueRef.current = value;
     }
   }, [value, prevValueRef]);
@@ -23789,7 +23695,7 @@ var VisuallyHidden = reactExports.forwardRef(
 VisuallyHidden.displayName = NAME$2;
 var PROVIDER_NAME = "ToastProvider";
 var [Collection$2, useCollection$2, createCollectionScope$2] = createCollection("Toast");
-var [createToastContext] = createContextScope("Toast", [createCollectionScope$2]);
+var [createToastContext, createToastScope] = createContextScope("Toast", [createCollectionScope$2]);
 var [ToastProviderProvider, useToastProviderContext] = createToastContext(PROVIDER_NAME);
 var ToastProvider$1 = (props) => {
   const {
@@ -23852,9 +23758,8 @@ var ToastViewport$1 = reactExports.forwardRef(
     const hasToasts = context.toastCount > 0;
     reactExports.useEffect(() => {
       const handleKeyDown = (event) => {
-        var _a2;
         const isHotkeyPressed = hotkey.length !== 0 && hotkey.every((key) => event[key] || event.code === key);
-        if (isHotkeyPressed) (_a2 = ref.current) == null ? void 0 : _a2.focus();
+        if (isHotkeyPressed) ref.current?.focus();
       };
       document.addEventListener("keydown", handleKeyDown);
       return () => document.removeEventListener("keydown", handleKeyDown);
@@ -23917,7 +23822,6 @@ var ToastViewport$1 = reactExports.forwardRef(
       const viewport = ref.current;
       if (viewport) {
         const handleKeyDown = (event) => {
-          var _a2, _b2, _c2;
           const isMetaKey = event.altKey || event.ctrlKey || event.metaKey;
           const isTabKey = event.key === "Tab" && !isMetaKey;
           if (isTabKey) {
@@ -23925,7 +23829,7 @@ var ToastViewport$1 = reactExports.forwardRef(
             const isTabbingBackwards = event.shiftKey;
             const targetIsViewport = event.target === viewport;
             if (targetIsViewport && isTabbingBackwards) {
-              (_a2 = headFocusProxyRef.current) == null ? void 0 : _a2.focus();
+              headFocusProxyRef.current?.focus();
               return;
             }
             const tabbingDirection = isTabbingBackwards ? "backwards" : "forwards";
@@ -23934,7 +23838,7 @@ var ToastViewport$1 = reactExports.forwardRef(
             if (focusFirst$2(sortedCandidates.slice(index2 + 1))) {
               event.preventDefault();
             } else {
-              isTabbingBackwards ? (_b2 = headFocusProxyRef.current) == null ? void 0 : _b2.focus() : (_c2 = tailFocusProxyRef.current) == null ? void 0 : _c2.focus();
+              isTabbingBackwards ? headFocusProxyRef.current?.focus() : tailFocusProxyRef.current?.focus();
             }
           }
         };
@@ -23995,9 +23899,8 @@ var FocusProxy = reactExports.forwardRef(
         ref: forwardedRef,
         style: { position: "fixed" },
         onFocus: (event) => {
-          var _a2;
           const prevFocusedElement = event.relatedTarget;
-          const isFocusFromOutsideViewport = !((_a2 = context.viewport) == null ? void 0 : _a2.contains(prevFocusedElement));
+          const isFocusFromOutsideViewport = !context.viewport?.contains(prevFocusedElement);
           if (isFocusFromOutsideViewport) onFocusFromOutsideViewport();
         }
       }
@@ -24090,9 +23993,8 @@ var ToastImpl = reactExports.forwardRef(
     const closeTimerRef = reactExports.useRef(0);
     const { onToastAdd, onToastRemove } = context;
     const handleClose = useCallbackRef$1(() => {
-      var _a2;
-      const isFocusInToast = node == null ? void 0 : node.contains(document.activeElement);
-      if (isFocusInToast) (_a2 = context.viewport) == null ? void 0 : _a2.focus();
+      const isFocusInToast = node?.contains(document.activeElement);
+      if (isFocusInToast) context.viewport?.focus();
       onClose();
     });
     const startTimer = reactExports.useCallback(
@@ -24109,13 +24011,13 @@ var ToastImpl = reactExports.forwardRef(
       if (viewport) {
         const handleResume = () => {
           startTimer(closeTimerRemainingTimeRef.current);
-          onResume == null ? void 0 : onResume();
+          onResume?.();
         };
         const handlePause = () => {
           const elapsedTime = (/* @__PURE__ */ new Date()).getTime() - closeTimerStartTimeRef.current;
           closeTimerRemainingTimeRef.current = closeTimerRemainingTimeRef.current - elapsedTime;
           window.clearTimeout(closeTimerRef.current);
-          onPause == null ? void 0 : onPause();
+          onPause?.();
         };
         viewport.addEventListener(VIEWPORT_PAUSE, handlePause);
         viewport.addEventListener(VIEWPORT_RESUME, handleResume);
@@ -24166,7 +24068,7 @@ var ToastImpl = reactExports.forwardRef(
                 style: { userSelect: "none", touchAction: "none", ...props.style },
                 onKeyDown: composeEventHandlers(props.onKeyDown, (event) => {
                   if (event.key !== "Escape") return;
-                  onEscapeKeyDown == null ? void 0 : onEscapeKeyDown(event.nativeEvent);
+                  onEscapeKeyDown?.(event.nativeEvent);
                   if (!event.nativeEvent.defaultPrevented) {
                     context.isFocusedToastEscapeKeyDownRef.current = true;
                     handleClose();
@@ -24994,7 +24896,6 @@ const createClassGroupUtils = (config) => {
   };
 };
 const getGroupRecursive = (classParts, classPartObject) => {
-  var _a2;
   if (classParts.length === 0) {
     return classPartObject.classGroupId;
   }
@@ -25008,15 +24909,15 @@ const getGroupRecursive = (classParts, classPartObject) => {
     return void 0;
   }
   const classRest = classParts.join(CLASS_PART_SEPARATOR);
-  return (_a2 = classPartObject.validators.find(({
+  return classPartObject.validators.find(({
     validator
-  }) => validator(classRest))) == null ? void 0 : _a2.classGroupId;
+  }) => validator(classRest))?.classGroupId;
 };
 const arbitraryPropertyRegex = /^\[(.+)\]$/;
 const getGroupIdForArbitraryProperty = (className) => {
   if (arbitraryPropertyRegex.test(className)) {
     const arbitraryPropertyClassName = arbitraryPropertyRegex.exec(className)[1];
-    const property = arbitraryPropertyClassName == null ? void 0 : arbitraryPropertyClassName.substring(0, arbitraryPropertyClassName.indexOf(":"));
+    const property = arbitraryPropertyClassName?.substring(0, arbitraryPropertyClassName.indexOf(":"));
     if (property) {
       return "arbitrary.." + property;
     }
@@ -28158,10 +28059,7 @@ function LandingPage() {
             size: "lg",
             variant: "outline",
             className: "text-lg px-10 py-6 rounded-lg border",
-            onClick: () => {
-              var _a2;
-              return (_a2 = document.getElementById("science")) == null ? void 0 : _a2.scrollIntoView({ behavior: "smooth" });
-            },
+            onClick: () => document.getElementById("science")?.scrollIntoView({ behavior: "smooth" }),
             children: "Learn More"
           }
         )
@@ -28756,7 +28654,7 @@ class BaseClient {
   async callTypedAPI(path, params) {
     return this.callAPI(path, {
       ...params,
-      headers: { "Content-Type": "application/json", ...params == null ? void 0 : params.headers }
+      headers: { "Content-Type": "application/json", ...params?.headers }
     });
   }
   // callAPI is used by each generated API method to actually make the request
@@ -29118,15 +29016,14 @@ function createFocusScopesStack() {
     add(focusScope) {
       const activeFocusScope = stack[0];
       if (focusScope !== activeFocusScope) {
-        activeFocusScope == null ? void 0 : activeFocusScope.pause();
+        activeFocusScope?.pause();
       }
       stack = arrayRemove(stack, focusScope);
       stack.unshift(focusScope);
     },
     remove(focusScope) {
-      var _a2;
       stack = arrayRemove(stack, focusScope);
-      (_a2 = stack[0]) == null ? void 0 : _a2.resume();
+      stack[0]?.resume();
     }
   };
 }
@@ -29350,8 +29247,8 @@ function createSidecarMedium(options) {
   medium.options = __assign({ async: true, ssr: false }, options);
   return medium;
 }
-var SideCar$1 = function(_a2) {
-  var sideCar = _a2.sideCar, rest = __rest(_a2, ["sideCar"]);
+var SideCar$1 = function(_a) {
+  var sideCar = _a.sideCar, rest = __rest(_a, ["sideCar"]);
   if (!sideCar) {
     throw new Error("Sidecar: please provide `sideCar` property to import the right car");
   }
@@ -29372,12 +29269,12 @@ var nothing = function() {
 };
 var RemoveScroll = reactExports.forwardRef(function(props, parentRef) {
   var ref = reactExports.useRef(null);
-  var _a2 = reactExports.useState({
+  var _a = reactExports.useState({
     onScrollCapture: nothing,
     onWheelCapture: nothing,
     onTouchMoveCapture: nothing
-  }), callbacks = _a2[0], setCallbacks = _a2[1];
-  var forwardProps = props.forwardProps, children = props.children, className = props.className, removeScrollBar = props.removeScrollBar, enabled = props.enabled, shards = props.shards, sideCar = props.sideCar, noRelative = props.noRelative, noIsolation = props.noIsolation, inert = props.inert, allowPinchZoom = props.allowPinchZoom, _b2 = props.as, Container = _b2 === void 0 ? "div" : _b2, gapMode = props.gapMode, rest = __rest(props, ["forwardProps", "children", "className", "removeScrollBar", "enabled", "shards", "sideCar", "noRelative", "noIsolation", "inert", "allowPinchZoom", "as", "gapMode"]);
+  }), callbacks = _a[0], setCallbacks = _a[1];
+  var forwardProps = props.forwardProps, children = props.children, className = props.className, removeScrollBar = props.removeScrollBar, enabled = props.enabled, shards = props.shards, sideCar = props.sideCar, noRelative = props.noRelative, noIsolation = props.noIsolation, inert = props.inert, allowPinchZoom = props.allowPinchZoom, _b = props.as, Container = _b === void 0 ? "div" : _b, gapMode = props.gapMode, rest = __rest(props, ["forwardProps", "children", "className", "removeScrollBar", "enabled", "shards", "sideCar", "noRelative", "noIsolation", "inert", "allowPinchZoom", "as", "gapMode"]);
   var SideCar2 = sideCar;
   var containerRef = useMergeRefs([ref, parentRef]);
   var containerProps = __assign(__assign({}, rest), callbacks);
@@ -29460,8 +29357,8 @@ var styleHookSingleton = function() {
 };
 var styleSingleton = function() {
   var useStyle = styleHookSingleton();
-  var Sheet = function(_a2) {
-    var styles = _a2.styles, dynamic = _a2.dynamic;
+  var Sheet = function(_a) {
+    var styles = _a.styles, dynamic = _a.dynamic;
     useStyle(styles, dynamic);
     return null;
   };
@@ -29502,8 +29399,8 @@ var getGapWidth = function(gapMode) {
 };
 var Style = styleSingleton();
 var lockAttribute = "data-scroll-locked";
-var getStyles = function(_a2, allowRelative, gapMode, important) {
-  var left = _a2.left, top = _a2.top, right = _a2.right, gap = _a2.gap;
+var getStyles = function(_a, allowRelative, gapMode, important) {
+  var left = _a.left, top = _a.top, right = _a.right, gap = _a.gap;
   if (gapMode === void 0) {
     gapMode = "margin";
   }
@@ -29530,8 +29427,8 @@ var useLockAttribute = function() {
     };
   }, []);
 };
-var RemoveScrollBar = function(_a2) {
-  var noRelative = _a2.noRelative, noImportant = _a2.noImportant, _b2 = _a2.gapMode, gapMode = _b2 === void 0 ? "margin" : _b2;
+var RemoveScrollBar = function(_a) {
+  var noRelative = _a.noRelative, noImportant = _a.noImportant, _b = _a.gapMode, gapMode = _b === void 0 ? "margin" : _b;
   useLockAttribute();
   var gap = reactExports.useMemo(function() {
     return getGapWidth(gapMode);
@@ -29583,7 +29480,7 @@ var locationCouldBeScrolled = function(axis, node) {
     }
     var isScrollable = elementCouldBeScrolled(axis, current);
     if (isScrollable) {
-      var _a2 = getScrollVariables(axis, current), scrollHeight = _a2[1], clientHeight = _a2[2];
+      var _a = getScrollVariables(axis, current), scrollHeight = _a[1], clientHeight = _a[2];
       if (scrollHeight > clientHeight) {
         return true;
       }
@@ -29592,16 +29489,16 @@ var locationCouldBeScrolled = function(axis, node) {
   } while (current && current !== ownerDocument.body);
   return false;
 };
-var getVScrollVariables = function(_a2) {
-  var scrollTop = _a2.scrollTop, scrollHeight = _a2.scrollHeight, clientHeight = _a2.clientHeight;
+var getVScrollVariables = function(_a) {
+  var scrollTop = _a.scrollTop, scrollHeight = _a.scrollHeight, clientHeight = _a.clientHeight;
   return [
     scrollTop,
     scrollHeight,
     clientHeight
   ];
 };
-var getHScrollVariables = function(_a2) {
-  var scrollLeft = _a2.scrollLeft, scrollWidth = _a2.scrollWidth, clientWidth = _a2.clientWidth;
+var getHScrollVariables = function(_a) {
+  var scrollLeft = _a.scrollLeft, scrollWidth = _a.scrollWidth, clientWidth = _a.clientWidth;
   return [
     scrollLeft,
     scrollWidth,
@@ -29630,7 +29527,7 @@ var handleScroll = function(axis, endTarget, event, sourceDelta, noOverscroll) {
     if (!target) {
       break;
     }
-    var _a2 = getScrollVariables(axis, target), position = _a2[0], scroll_1 = _a2[1], capacity = _a2[2];
+    var _a = getScrollVariables(axis, target), position = _a[0], scroll_1 = _a[1], capacity = _a[2];
     var elementScroll = scroll_1 - capacity - directionFactor * position;
     if (position || elementScroll) {
       if (elementCouldBeScrolled(axis, target)) {
@@ -29940,7 +29837,7 @@ var hideOthers = function(originalTarget, parentNode, markerName) {
   return applyAttributeToOthers(targets, activeParentNode, markerName, "aria-hidden");
 };
 var DIALOG_NAME = "Dialog";
-var [createDialogContext] = createContextScope(DIALOG_NAME);
+var [createDialogContext, createDialogScope] = createContextScope(DIALOG_NAME);
 var [DialogProvider, useDialogContext] = createDialogContext(DIALOG_NAME);
 var Dialog$1 = (props) => {
   const {
@@ -30066,9 +29963,8 @@ var DialogContentModal = reactExports.forwardRef(
         trapFocus: context.open,
         disableOutsidePointerEvents: true,
         onCloseAutoFocus: composeEventHandlers(props.onCloseAutoFocus, (event) => {
-          var _a2;
           event.preventDefault();
-          (_a2 = context.triggerRef.current) == null ? void 0 : _a2.focus();
+          context.triggerRef.current?.focus();
         }),
         onPointerDownOutside: composeEventHandlers(props.onPointerDownOutside, (event) => {
           const originalEvent = event.detail.originalEvent;
@@ -30097,18 +29993,16 @@ var DialogContentNonModal = reactExports.forwardRef(
         trapFocus: false,
         disableOutsidePointerEvents: false,
         onCloseAutoFocus: (event) => {
-          var _a2, _b2;
-          (_a2 = props.onCloseAutoFocus) == null ? void 0 : _a2.call(props, event);
+          props.onCloseAutoFocus?.(event);
           if (!event.defaultPrevented) {
-            if (!hasInteractedOutsideRef.current) (_b2 = context.triggerRef.current) == null ? void 0 : _b2.focus();
+            if (!hasInteractedOutsideRef.current) context.triggerRef.current?.focus();
             event.preventDefault();
           }
           hasInteractedOutsideRef.current = false;
           hasPointerDownOutsideRef.current = false;
         },
         onInteractOutside: (event) => {
-          var _a2, _b2;
-          (_a2 = props.onInteractOutside) == null ? void 0 : _a2.call(props, event);
+          props.onInteractOutside?.(event);
           if (!event.defaultPrevented) {
             hasInteractedOutsideRef.current = true;
             if (event.detail.originalEvent.type === "pointerdown") {
@@ -30116,7 +30010,7 @@ var DialogContentNonModal = reactExports.forwardRef(
             }
           }
           const target = event.target;
-          const targetIsTrigger = (_b2 = context.triggerRef.current) == null ? void 0 : _b2.contains(target);
+          const targetIsTrigger = context.triggerRef.current?.contains(target);
           if (targetIsTrigger) event.preventDefault();
           if (event.detail.originalEvent.type === "focusin" && hasPointerDownOutsideRef.current) {
             event.preventDefault();
@@ -30228,8 +30122,7 @@ var DescriptionWarning = ({ contentRef, descriptionId }) => {
   const descriptionWarningContext = useWarningContext(DESCRIPTION_WARNING_NAME);
   const MESSAGE = `Warning: Missing \`Description\` or \`aria-describedby={undefined}\` for {${descriptionWarningContext.contentName}}.`;
   reactExports.useEffect(() => {
-    var _a2;
-    const describedById = (_a2 = contentRef.current) == null ? void 0 : _a2.getAttribute("aria-describedby");
+    const describedById = contentRef.current?.getAttribute("aria-describedby");
     if (descriptionId && describedById) {
       const hasDescription = document.getElementById(descriptionId);
       if (!hasDescription) console.warn(MESSAGE);
@@ -30365,10 +30258,9 @@ var Label$1 = reactExports.forwardRef((props, forwardedRef) => {
       ...props,
       ref: forwardedRef,
       onMouseDown: (event) => {
-        var _a2;
         const target = event.target;
         if (target.closest("button, input, select, textarea")) return;
-        (_a2 = props.onMouseDown) == null ? void 0 : _a2.call(props, event);
+        props.onMouseDown?.(event);
         if (!event.defaultPrevented && event.detail > 1) event.preventDefault();
       }
     }
@@ -31298,7 +31190,7 @@ function isTopLayer(element) {
   return topLayerSelectors.some((selector) => {
     try {
       return element.matches(selector);
-    } catch (_e2) {
+    } catch (_e) {
       return false;
     }
   });
@@ -31900,7 +31792,7 @@ function observeMove(element, onMove) {
         // Handle <iframe>s
         root: root.ownerDocument
       });
-    } catch (_e2) {
+    } catch (_e) {
       io = new IntersectionObserver(handleObserve, options);
     }
     io.observe(element);
@@ -32348,7 +32240,7 @@ var PopperAnchor = reactExports.forwardRef(
     const anchorRef = reactExports.useRef(null);
     reactExports.useEffect(() => {
       const previousAnchor = anchorRef.current;
-      anchorRef.current = (virtualRef == null ? void 0 : virtualRef.current) || ref.current;
+      anchorRef.current = virtualRef?.current || ref.current;
       if (previousAnchor !== anchorRef.current) {
         context.onAnchorChange(anchorRef.current);
       }
@@ -32361,7 +32253,6 @@ var CONTENT_NAME$2 = "PopperContent";
 var [PopperContentProvider, useContentContext] = createPopperContext(CONTENT_NAME$2);
 var PopperContent = reactExports.forwardRef(
   (props, forwardedRef) => {
-    var _a2, _b2, _c2, _d2, _e2, _f2;
     const {
       __scopePopper,
       side = "bottom",
@@ -32383,8 +32274,8 @@ var PopperContent = reactExports.forwardRef(
     const composedRefs = useComposedRefs(forwardedRef, (node) => setContent(node));
     const [arrow$12, setArrow] = reactExports.useState(null);
     const arrowSize = useSize(arrow$12);
-    const arrowWidth = (arrowSize == null ? void 0 : arrowSize.width) ?? 0;
-    const arrowHeight = (arrowSize == null ? void 0 : arrowSize.height) ?? 0;
+    const arrowWidth = arrowSize?.width ?? 0;
+    const arrowHeight = arrowSize?.height ?? 0;
     const desiredPlacement = side + (align !== "center" ? "-" + align : "");
     const collisionPadding = typeof collisionPaddingProp === "number" ? collisionPaddingProp : { top: 0, right: 0, bottom: 0, left: 0, ...collisionPaddingProp };
     const boundary = Array.isArray(collisionBoundary) ? collisionBoundary : [collisionBoundary];
@@ -32437,12 +32328,12 @@ var PopperContent = reactExports.forwardRef(
     const handlePlaced = useCallbackRef$1(onPlaced);
     useLayoutEffect2(() => {
       if (isPositioned) {
-        handlePlaced == null ? void 0 : handlePlaced();
+        handlePlaced?.();
       }
     }, [isPositioned, handlePlaced]);
-    const arrowX = (_a2 = middlewareData.arrow) == null ? void 0 : _a2.x;
-    const arrowY = (_b2 = middlewareData.arrow) == null ? void 0 : _b2.y;
-    const cannotCenterArrow = ((_c2 = middlewareData.arrow) == null ? void 0 : _c2.centerOffset) !== 0;
+    const arrowX = middlewareData.arrow?.x;
+    const arrowY = middlewareData.arrow?.y;
+    const cannotCenterArrow = middlewareData.arrow?.centerOffset !== 0;
     const [contentZIndex, setContentZIndex] = reactExports.useState();
     useLayoutEffect2(() => {
       if (content) setContentZIndex(window.getComputedStyle(content).zIndex);
@@ -32459,13 +32350,13 @@ var PopperContent = reactExports.forwardRef(
           minWidth: "max-content",
           zIndex: contentZIndex,
           ["--radix-popper-transform-origin"]: [
-            (_d2 = middlewareData.transformOrigin) == null ? void 0 : _d2.x,
-            (_e2 = middlewareData.transformOrigin) == null ? void 0 : _e2.y
+            middlewareData.transformOrigin?.x,
+            middlewareData.transformOrigin?.y
           ].join(" "),
           // hide the content if using the hide middleware and should be hidden
           // set visibility to hidden and disable pointer events so the UI behaves
           // as if the PopperContent isn't there at all
-          ...((_f2 = middlewareData.hide) == null ? void 0 : _f2.referenceHidden) && {
+          ...middlewareData.hide?.referenceHidden && {
             visibility: "hidden",
             pointerEvents: "none"
           }
@@ -32564,16 +32455,15 @@ var transformOrigin = (options) => ({
   name: "transformOrigin",
   options,
   fn(data) {
-    var _a2, _b2, _c2;
     const { placement, rects, middlewareData } = data;
-    const cannotCenterArrow = ((_a2 = middlewareData.arrow) == null ? void 0 : _a2.centerOffset) !== 0;
+    const cannotCenterArrow = middlewareData.arrow?.centerOffset !== 0;
     const isArrowHidden = cannotCenterArrow;
     const arrowWidth = isArrowHidden ? 0 : options.arrowWidth;
     const arrowHeight = isArrowHidden ? 0 : options.arrowHeight;
     const [placedSide, placedAlign] = getSideAndAlignFromPlacement(placement);
     const noArrowAlign = { start: "0%", center: "50%", end: "100%" }[placedAlign];
-    const arrowXCenter = (((_b2 = middlewareData.arrow) == null ? void 0 : _b2.x) ?? 0) + arrowWidth / 2;
-    const arrowYCenter = (((_c2 = middlewareData.arrow) == null ? void 0 : _c2.y) ?? 0) + arrowHeight / 2;
+    const arrowXCenter = (middlewareData.arrow?.x ?? 0) + arrowWidth / 2;
+    const arrowYCenter = (middlewareData.arrow?.y ?? 0) + arrowHeight / 2;
     let x = "";
     let y = "";
     if (placedSide === "bottom") {
@@ -32614,7 +32504,7 @@ var OPEN_KEYS = [" ", "Enter", "ArrowUp", "ArrowDown"];
 var SELECTION_KEYS = [" ", "Enter"];
 var SELECT_NAME = "Select";
 var [Collection$1, useCollection$1, createCollectionScope$1] = createCollection(SELECT_NAME);
-var [createSelectContext] = createContextScope(SELECT_NAME, [
+var [createSelectContext, createSelectScope] = createContextScope(SELECT_NAME, [
   createCollectionScope$1,
   createPopperScope
 ]);
@@ -32902,10 +32792,10 @@ var SelectContentImpl = reactExports.forwardRef(
         const PREVIOUSLY_FOCUSED_ELEMENT = document.activeElement;
         for (const candidate of candidates) {
           if (candidate === PREVIOUSLY_FOCUSED_ELEMENT) return;
-          candidate == null ? void 0 : candidate.scrollIntoView({ block: "nearest" });
+          candidate?.scrollIntoView({ block: "nearest" });
           if (candidate === firstItem && viewport) viewport.scrollTop = 0;
           if (candidate === lastItem && viewport) viewport.scrollTop = viewport.scrollHeight;
-          candidate == null ? void 0 : candidate.focus();
+          candidate?.focus();
           if (document.activeElement !== PREVIOUSLY_FOCUSED_ELEMENT) return;
         }
       },
@@ -32925,10 +32815,9 @@ var SelectContentImpl = reactExports.forwardRef(
       if (content) {
         let pointerMoveDelta = { x: 0, y: 0 };
         const handlePointerMove = (event) => {
-          var _a2, _b2;
           pointerMoveDelta = {
-            x: Math.abs(Math.round(event.pageX) - (((_a2 = triggerPointerDownPosRef.current) == null ? void 0 : _a2.x) ?? 0)),
-            y: Math.abs(Math.round(event.pageY) - (((_b2 = triggerPointerDownPosRef.current) == null ? void 0 : _b2.y) ?? 0))
+            x: Math.abs(Math.round(event.pageX) - (triggerPointerDownPosRef.current?.x ?? 0)),
+            y: Math.abs(Math.round(event.pageY) - (triggerPointerDownPosRef.current?.y ?? 0))
           };
         };
         const handlePointerUp = (event) => {
@@ -32980,7 +32869,7 @@ var SelectContentImpl = reactExports.forwardRef(
       },
       [context.value]
     );
-    const handleItemLeave = reactExports.useCallback(() => content == null ? void 0 : content.focus(), [content]);
+    const handleItemLeave = reactExports.useCallback(() => content?.focus(), [content]);
     const itemTextRefCallback = reactExports.useCallback(
       (node, value, disabled) => {
         const isFirstValidItem = !firstValidItemFoundRef.current && !disabled;
@@ -33029,8 +32918,7 @@ var SelectContentImpl = reactExports.forwardRef(
               event.preventDefault();
             },
             onUnmountAutoFocus: composeEventHandlers(onCloseAutoFocus, (event) => {
-              var _a2;
-              (_a2 = context.trigger) == null ? void 0 : _a2.focus({ preventScroll: true });
+              context.trigger?.focus({ preventScroll: true });
               event.preventDefault();
             }),
             children: /* @__PURE__ */ jsxRuntimeExports.jsx(
@@ -33188,7 +33076,7 @@ var SelectItemAlignedPosition = reactExports.forwardRef((props, forwardedRef) =>
       contentWrapper.style.margin = `${CONTENT_MARGIN}px 0`;
       contentWrapper.style.minHeight = minContentHeight + "px";
       contentWrapper.style.maxHeight = availableHeight + "px";
-      onPlaced == null ? void 0 : onPlaced();
+      onPlaced?.();
       requestAnimationFrame(() => shouldExpandOnScrollRef.current = true);
     }
   }, [
@@ -33212,7 +33100,7 @@ var SelectItemAlignedPosition = reactExports.forwardRef((props, forwardedRef) =>
     (node) => {
       if (node && shouldRepositionRef.current === true) {
         position();
-        focusSelectedItem == null ? void 0 : focusSelectedItem();
+        focusSelectedItem?.();
         shouldRepositionRef.current = false;
       }
     },
@@ -33332,7 +33220,7 @@ var SelectViewport = reactExports.forwardRef(
           onScroll: composeEventHandlers(viewportProps.onScroll, (event) => {
             const viewport = event.currentTarget;
             const { contentWrapper, shouldExpandOnScrollRef } = viewportContext;
-            if ((shouldExpandOnScrollRef == null ? void 0 : shouldExpandOnScrollRef.current) && contentWrapper) {
+            if (shouldExpandOnScrollRef?.current && contentWrapper) {
               const scrolledBy = Math.abs(prevScrollTopRef.current - viewport.scrollTop);
               if (scrolledBy > 0) {
                 const availableHeight = window.innerHeight - CONTENT_MARGIN * 2;
@@ -33396,10 +33284,7 @@ var SelectItem$1 = reactExports.forwardRef(
     const [isFocused, setIsFocused] = reactExports.useState(false);
     const composedRefs = useComposedRefs(
       forwardedRef,
-      (node) => {
-        var _a2;
-        return (_a2 = contentContext.itemRefCallback) == null ? void 0 : _a2.call(contentContext, node, value, disabled);
-      }
+      (node) => contentContext.itemRefCallback?.(node, value, disabled)
     );
     const textId = useId();
     const pointerTypeRef = reactExports.useRef("touch");
@@ -33423,7 +33308,7 @@ var SelectItem$1 = reactExports.forwardRef(
         textId,
         isSelected,
         onItemTextChange: reactExports.useCallback((node) => {
-          setTextValue((prevTextValue) => prevTextValue || ((node == null ? void 0 : node.textContent) ?? "").trim());
+          setTextValue((prevTextValue) => prevTextValue || (node?.textContent ?? "").trim());
         }, []),
         children: /* @__PURE__ */ jsxRuntimeExports.jsx(
           Collection$1.ItemSlot,
@@ -33457,23 +33342,20 @@ var SelectItem$1 = reactExports.forwardRef(
                   pointerTypeRef.current = event.pointerType;
                 }),
                 onPointerMove: composeEventHandlers(itemProps.onPointerMove, (event) => {
-                  var _a2;
                   pointerTypeRef.current = event.pointerType;
                   if (disabled) {
-                    (_a2 = contentContext.onItemLeave) == null ? void 0 : _a2.call(contentContext);
+                    contentContext.onItemLeave?.();
                   } else if (pointerTypeRef.current === "mouse") {
                     event.currentTarget.focus({ preventScroll: true });
                   }
                 }),
                 onPointerLeave: composeEventHandlers(itemProps.onPointerLeave, (event) => {
-                  var _a2;
                   if (event.currentTarget === document.activeElement) {
-                    (_a2 = contentContext.onItemLeave) == null ? void 0 : _a2.call(contentContext);
+                    contentContext.onItemLeave?.();
                   }
                 }),
                 onKeyDown: composeEventHandlers(itemProps.onKeyDown, (event) => {
-                  var _a2;
-                  const isTypingAhead = ((_a2 = contentContext.searchRef) == null ? void 0 : _a2.current) !== "";
+                  const isTypingAhead = contentContext.searchRef?.current !== "";
                   if (isTypingAhead && event.key === " ") return;
                   if (SELECTION_KEYS.includes(event.key)) handleSelect();
                   if (event.key === " ") event.preventDefault();
@@ -33500,12 +33382,9 @@ var SelectItemText = reactExports.forwardRef(
       forwardedRef,
       (node) => setItemTextNode(node),
       itemContext.onItemTextChange,
-      (node) => {
-        var _a2;
-        return (_a2 = contentContext.itemTextRefCallback) == null ? void 0 : _a2.call(contentContext, node, itemContext.value, itemContext.disabled);
-      }
+      (node) => contentContext.itemTextRefCallback?.(node, itemContext.value, itemContext.disabled)
     );
-    const textContent = itemTextNode == null ? void 0 : itemTextNode.textContent;
+    const textContent = itemTextNode?.textContent;
     const nativeOption = reactExports.useMemo(
       () => /* @__PURE__ */ jsxRuntimeExports.jsx("option", { value: itemContext.value, disabled: itemContext.disabled, children: textContent }, itemContext.value),
       [itemContext.disabled, itemContext.value, textContent]
@@ -33613,9 +33492,8 @@ var SelectScrollButtonImpl = reactExports.forwardRef((props, forwardedRef) => {
     return () => clearAutoScrollTimer();
   }, [clearAutoScrollTimer]);
   useLayoutEffect2(() => {
-    var _a2;
     const activeItem = getItems().find((item) => item.ref.current === document.activeElement);
-    (_a2 = activeItem == null ? void 0 : activeItem.ref.current) == null ? void 0 : _a2.scrollIntoView({ block: "nearest" });
+    activeItem?.ref.current?.scrollIntoView({ block: "nearest" });
   }, [getItems]);
   return /* @__PURE__ */ jsxRuntimeExports.jsx(
     Primitive.div,
@@ -33630,8 +33508,7 @@ var SelectScrollButtonImpl = reactExports.forwardRef((props, forwardedRef) => {
         }
       }),
       onPointerMove: composeEventHandlers(scrollIndicatorProps.onPointerMove, () => {
-        var _a2;
-        (_a2 = contentContext.onItemLeave) == null ? void 0 : _a2.call(contentContext);
+        contentContext.onItemLeave?.();
         if (autoScrollTimerRef.current === null) {
           autoScrollTimerRef.current = window.setInterval(onAutoScroll, 50);
         }
@@ -34007,7 +33884,7 @@ function DashboardPage() {
     queryKey: ["children"],
     queryFn: async () => backend.child.list()
   });
-  const children = (childrenData == null ? void 0 : childrenData.children) || [];
+  const children = childrenData?.children || [];
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "border-b border-slate-200 dark:border-gray-800 bg-white/70 dark:bg-gray-900/70 backdrop-blur-xl sticky top-0 z-10", children: /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "container mx-auto px-6 py-6", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-4", children: [
@@ -34070,7 +33947,7 @@ function ChildCard({ child: child2, onStartScreening }) {
     queryKey: ["assessments", child2.id],
     queryFn: async () => backend.assessment.listByChild({ childId: child2.id })
   });
-  const assessments = (assessmentsData == null ? void 0 : assessmentsData.assessments) || [];
+  const assessments = assessmentsData?.assessments || [];
   const latestAssessment = assessments[0];
   return /* @__PURE__ */ jsxRuntimeExports.jsxs(Card, { className: "border-0 shadow-xl hover:shadow-2xl transition-all bg-white dark:bg-gray-900 overflow-hidden group", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "absolute inset-0 bg-gradient-to-br from-blue-500/5 via-purple-500/5 to-pink-500/5 opacity-0 group-hover:opacity-100 transition-opacity" }),
@@ -34350,7 +34227,7 @@ function wrapArray(array, startIndex) {
 var Root = RovingFocusGroup;
 var Item = RovingFocusGroupItem;
 var TABS_NAME = "Tabs";
-var [createTabsContext] = createContextScope(TABS_NAME, [
+var [createTabsContext, createTabsScope] = createContextScope(TABS_NAME, [
   createRovingFocusGroupScope
 ]);
 var useRovingFocusGroupScope = createRovingFocusGroupScope();
@@ -34992,7 +34869,7 @@ function AssessmentAnimation({ ageMonths, taskType, onComplete, complexity = "st
           const next = prev + 100 / effectiveDuration;
           if (next >= 100) {
             setIsPlaying(false);
-            onComplete == null ? void 0 : onComplete();
+            onComplete?.();
             return 100;
           }
           return next;
@@ -35117,7 +34994,7 @@ function AssessmentAnimation({ ageMonths, taskType, onComplete, complexity = "st
   ] }) });
 }
 var CHECKBOX_NAME = "Checkbox";
-var [createCheckboxContext] = createContextScope(CHECKBOX_NAME);
+var [createCheckboxContext, createCheckboxScope] = createContextScope(CHECKBOX_NAME);
 var [CheckboxProviderImpl, useCheckboxContext] = createCheckboxContext(CHECKBOX_NAME);
 function CheckboxProvider(props) {
   const {
@@ -35190,7 +35067,7 @@ var CheckboxTrigger = reactExports.forwardRef(
     const composedRefs = useComposedRefs(forwardedRef, setControl);
     const initialCheckedStateRef = reactExports.useRef(checked);
     reactExports.useEffect(() => {
-      const form = control == null ? void 0 : control.form;
+      const form = control?.form;
       if (form) {
         const reset = () => setChecked(initialCheckedStateRef.current);
         form.addEventListener("reset", reset);
@@ -35666,7 +35543,6 @@ function AlertDescription({
   );
 }
 function ResultsPage() {
-  var _a2, _b2, _c2, _d2, _e2, _f2, _g2, _h2, _i2, _j2, _k2, _l2;
   const { assessmentId } = useParams();
   const navigate = useNavigate();
   const backend = useBackend();
@@ -35681,9 +35557,9 @@ function ResultsPage() {
     enabled: !!assessmentId
   });
   const { data: child2 } = useQuery({
-    queryKey: ["child", assessment2 == null ? void 0 : assessment2.childId],
+    queryKey: ["child", assessment2?.childId],
     queryFn: async () => backend.child.get({ id: assessment2.childId }),
-    enabled: !!(assessment2 == null ? void 0 : assessment2.childId)
+    enabled: !!assessment2?.childId
   });
   if (!assessment2 || !report2 || !child2) {
     return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "min-h-screen flex items-center justify-center", children: "Loading..." });
@@ -35829,12 +35705,12 @@ function ResultsPage() {
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid sm:grid-cols-2 gap-3", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-muted-foreground", children: "Tasks Analyzed" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-lg font-medium", children: ((_a2 = assessment2.analysisData) == null ? void 0 : _a2.tasksAnalyzed) ?? 0 })
+                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-lg font-medium", children: assessment2.analysisData?.tasksAnalyzed ?? 0 })
               ] }),
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-muted-foreground", children: "Avg. Engagement" }),
                 /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-lg font-medium", children: [
-                  ((((_b2 = assessment2.analysisData) == null ? void 0 : _b2.engagementAverage) ?? 0.5) * 100).toFixed(0),
+                  ((assessment2.analysisData?.engagementAverage ?? 0.5) * 100).toFixed(0),
                   "%"
                 ] })
               ] })
@@ -35842,11 +35718,11 @@ function ResultsPage() {
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "grid sm:grid-cols-2 gap-3", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-muted-foreground", children: "Calibration" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-lg font-medium", children: ((_c2 = assessment2.analysisData) == null ? void 0 : _c2.calibrationVersion) ?? "—" })
+                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-lg font-medium", children: assessment2.analysisData?.calibrationVersion ?? "—" })
               ] }),
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-muted-foreground", children: "Notes" }),
-                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm", children: ((_d2 = assessment2.analysisData) == null ? void 0 : _d2.notes) ?? "—" })
+                /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm", children: assessment2.analysisData?.notes ?? "—" })
               ] })
             ] })
           ] })
@@ -35861,28 +35737,28 @@ function ResultsPage() {
               DomainScore,
               {
                 label: "Social Communication",
-                score: ((_f2 = (_e2 = assessment2.analysisData) == null ? void 0 : _e2.domainScores) == null ? void 0 : _f2.social) ?? assessment2.socialCommunicationScore
+                score: assessment2.analysisData?.domainScores?.social ?? assessment2.socialCommunicationScore
               }
             ),
             /* @__PURE__ */ jsxRuntimeExports.jsx(
               DomainScore,
               {
                 label: "Repetitive Behaviors",
-                score: ((_h2 = (_g2 = assessment2.analysisData) == null ? void 0 : _g2.domainScores) == null ? void 0 : _h2.repetitive) ?? assessment2.repetitiveBehaviorsScore
+                score: assessment2.analysisData?.domainScores?.repetitive ?? assessment2.repetitiveBehaviorsScore
               }
             ),
             /* @__PURE__ */ jsxRuntimeExports.jsx(
               DomainScore,
               {
                 label: "Sensory Processing",
-                score: ((_j2 = (_i2 = assessment2.analysisData) == null ? void 0 : _i2.domainScores) == null ? void 0 : _j2.sensory) ?? assessment2.sensoryProcessingScore
+                score: assessment2.analysisData?.domainScores?.sensory ?? assessment2.sensoryProcessingScore
               }
             ),
             /* @__PURE__ */ jsxRuntimeExports.jsx(
               DomainScore,
               {
                 label: "Motor Coordination",
-                score: ((_l2 = (_k2 = assessment2.analysisData) == null ? void 0 : _k2.domainScores) == null ? void 0 : _l2.motor) ?? assessment2.motorCoordinationScore
+                score: assessment2.analysisData?.domainScores?.motor ?? assessment2.motorCoordinationScore
               }
             )
           ] })
@@ -35905,7 +35781,6 @@ function DomainScore({ label, score }) {
   ] });
 }
 function InterventionPage() {
-  var _a2, _b2, _c2;
   const { childId } = useParams();
   const navigate = useNavigate();
   const backend = useBackend();
@@ -35923,11 +35798,11 @@ function InterventionPage() {
     queryFn: async () => backend.assessment.listByChild({ childId: Number(childId) }),
     enabled: !!childId
   });
-  const latestAssessment = assessmentsData == null ? void 0 : assessmentsData.assessments[0];
+  const latestAssessment = assessmentsData?.assessments[0];
   const { data: assessmentDetail } = useQuery({
-    queryKey: ["assessmentDetail", latestAssessment == null ? void 0 : latestAssessment.id],
+    queryKey: ["assessmentDetail", latestAssessment?.id],
     queryFn: async () => backend.assessment.get({ id: latestAssessment.id }),
-    enabled: !!(latestAssessment == null ? void 0 : latestAssessment.id)
+    enabled: !!latestAssessment?.id
   });
   const { data: plan, isLoading: planLoading, refetch } = useQuery({
     queryKey: ["intervention", childId],
@@ -35984,28 +35859,28 @@ function InterventionPage() {
     queryKey: ["me"],
     queryFn: async () => backend.user.getMe()
   });
-  const eduEnabled = (me == null ? void 0 : me.role) === "parent" || (me == null ? void 0 : me.role) === "admin";
+  const eduEnabled = me?.role === "parent" || me?.role === "admin";
   const defaultQuery = (() => {
-    const rec = (assessmentDetail == null ? void 0 : assessmentDetail.recommendation) || (latestAssessment == null ? void 0 : latestAssessment.recommendation);
+    const rec = assessmentDetail?.recommendation || latestAssessment?.recommendation;
     return rec ? rec.slice(0, 80) : "ASD early intervention";
   })();
   const { data: protocolsData, isFetching: loadingProtocols } = useQuery({
     queryKey: ["knowledgeProtocols", searchQuery, protocolCategory],
     queryFn: async () => client.knowledge.searchProtocols({
-      query: (searchQuery == null ? void 0 : searchQuery.trim()) || defaultQuery,
+      query: searchQuery?.trim() || defaultQuery,
       category: protocolCategory !== "general" ? protocolCategory : void 0,
       limit: 6
     }),
-    enabled: !!(latestAssessment == null ? void 0 : latestAssessment.id)
+    enabled: !!latestAssessment?.id
   });
   const { data: educationData, isFetching: loadingEducation } = useQuery({
     queryKey: ["knowledgeEducation", searchQuery, protocolCategory],
     queryFn: async () => client.knowledge.searchEducation({
-      query: (searchQuery == null ? void 0 : searchQuery.trim()) || defaultQuery,
+      query: searchQuery?.trim() || defaultQuery,
       category: protocolCategory !== "general" ? protocolCategory : void 0,
       limit: 6
     }),
-    enabled: !!(latestAssessment == null ? void 0 : latestAssessment.id) && !!eduEnabled
+    enabled: !!latestAssessment?.id && !!eduEnabled
   });
   if (!child2) {
     return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "min-h-screen flex items-center justify-center", children: "Loading..." });
@@ -36030,9 +35905,9 @@ function InterventionPage() {
       ] }) })
     ] }) });
   }
-  const severityScore = (assessmentDetail == null ? void 0 : assessmentDetail.severityScore) ?? (latestAssessment == null ? void 0 : latestAssessment.severityScore) ?? 0;
+  const severityScore = assessmentDetail?.severityScore ?? latestAssessment?.severityScore ?? 0;
   const severityLabel = severityScore >= 0.7 ? "High" : severityScore >= 0.4 ? "Moderate" : "Low";
-  const asdProb = ((assessmentDetail == null ? void 0 : assessmentDetail.asdProbability) ?? (latestAssessment == null ? void 0 : latestAssessment.asdProbability) ?? 0) * 100;
+  const asdProb = (assessmentDetail?.asdProbability ?? latestAssessment?.asdProbability ?? 0) * 100;
   return /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "min-h-screen bg-background", children: /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "container mx-auto px-4 py-8", children: [
     /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-4 mb-8", children: [
       /* @__PURE__ */ jsxRuntimeExports.jsx(Button, { variant: "ghost", size: "icon", onClick: () => navigate("/dashboard"), children: /* @__PURE__ */ jsxRuntimeExports.jsx(ArrowLeft, { className: "h-5 w-5" }) }),
@@ -36127,7 +36002,7 @@ function InterventionPage() {
             ] }),
             /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "border rounded-lg p-4", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-muted-foreground", children: "Red Flags" }),
-              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-2xl font-bold", children: ((_a2 = assessmentDetail == null ? void 0 : assessmentDetail.redFlags) == null ? void 0 : _a2.length) ?? 0 })
+              /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-2xl font-bold", children: assessmentDetail?.redFlags?.length ?? 0 })
             ] })
           ] }),
           /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "space-y-3", children: [
@@ -36184,7 +36059,7 @@ function InterventionPage() {
             /* @__PURE__ */ jsxRuntimeExports.jsx(TabsContent, { value: "protocols", className: "pt-4", children: loadingProtocols ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 text-sm text-muted-foreground", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "h-4 w-4 animate-spin" }),
               " Loading protocols..."
-            ] }) : ((_b2 = protocolsData == null ? void 0 : protocolsData.protocols) == null ? void 0 : _b2.length) ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4", children: protocolsData.protocols.map((p) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "border rounded-lg p-4 space-y-2", children: [
+            ] }) : protocolsData?.protocols?.length ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4", children: protocolsData.protocols.map((p) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "border rounded-lg p-4 space-y-2", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center justify-between", children: [
                 /* @__PURE__ */ jsxRuntimeExports.jsx("h5", { className: "font-semibold", children: p.title }),
                 /* @__PURE__ */ jsxRuntimeExports.jsx(Badge, { variant: "outline", className: "capitalize", children: p.evidenceLevel })
@@ -36202,7 +36077,7 @@ function InterventionPage() {
             /* @__PURE__ */ jsxRuntimeExports.jsx(TabsContent, { value: "education", className: "pt-4", children: !eduEnabled ? /* @__PURE__ */ jsxRuntimeExports.jsx("p", { className: "text-sm text-muted-foreground", children: "Education resources require parent/admin access." }) : loadingEducation ? /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "flex items-center gap-2 text-sm text-muted-foreground", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx(LoaderCircle, { className: "h-4 w-4 animate-spin" }),
               " Loading education..."
-            ] }) : ((_c2 = educationData == null ? void 0 : educationData.resources) == null ? void 0 : _c2.length) ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4", children: educationData.resources.map((r2) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "border rounded-lg p-4 space-y-2", children: [
+            ] }) : educationData?.resources?.length ? /* @__PURE__ */ jsxRuntimeExports.jsx("div", { className: "grid grid-cols-1 md:grid-cols-2 gap-4", children: educationData.resources.map((r2) => /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "border rounded-lg p-4 space-y-2", children: [
               /* @__PURE__ */ jsxRuntimeExports.jsx("h5", { className: "font-semibold", children: r2.title }),
               /* @__PURE__ */ jsxRuntimeExports.jsxs("p", { className: "text-xs text-muted-foreground", children: [
                 "Category: ",
@@ -36266,8 +36141,7 @@ function CareBuddyPage() {
     }
   }, []);
   reactExports.useEffect(() => {
-    var _a2;
-    (_a2 = messagesEndRef.current) == null ? void 0 : _a2.scrollIntoView({ behavior: "smooth" });
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
   const handleSend = () => {
     if (!input.trim() || !conversationId) return;
@@ -36444,7 +36318,7 @@ function KnowledgeLibraryPage() {
       setShowEduForm(false);
       handleSearch("education");
     } catch (err) {
-      toast2({ title: "Failed to save education resource", description: err == null ? void 0 : err.message, variant: "destructive" });
+      toast2({ title: "Failed to save education resource", description: err?.message, variant: "destructive" });
     }
   };
   const handleUpsertProtocol = async () => {
@@ -36464,7 +36338,7 @@ function KnowledgeLibraryPage() {
       setShowProtocolForm(false);
       handleSearch("protocols");
     } catch (err) {
-      toast2({ title: "Failed to save protocol", description: err == null ? void 0 : err.message, variant: "destructive" });
+      toast2({ title: "Failed to save protocol", description: err?.message, variant: "destructive" });
     }
   };
   return /* @__PURE__ */ jsxRuntimeExports.jsxs("div", { className: "min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-50 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950", children: [
