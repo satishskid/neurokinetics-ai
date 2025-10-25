@@ -34,6 +34,7 @@ const BROWSER = typeof globalThis === "object" && ("window" in globalThis);
  */
 export class Client {
     public readonly assessment: assessment.ServiceClient
+    public readonly carebuddy: carebuddy.ServiceClient
     public readonly child: child.ServiceClient
     public readonly copilot: copilot.ServiceClient
     public readonly intervention: intervention.ServiceClient
@@ -56,6 +57,7 @@ export class Client {
         this.options = options ?? {}
         const base = new BaseClient(this.target, this.options)
         this.assessment = new assessment.ServiceClient(base)
+        this.carebuddy = new carebuddy.ServiceClient(base)
         this.child = new child.ServiceClient(base)
         this.copilot = new copilot.ServiceClient(base)
         this.intervention = new intervention.ServiceClient(base)
@@ -198,6 +200,8 @@ export namespace child {
  * Import the endpoint handlers to derive the types for the client.
  */
 import { getConversation as api_copilot_get_conversation_getConversation } from "~backend/copilot/get_conversation";
+import { startConversation as api_carebuddy_start_conversation_startConversation } from "~backend/carebuddy/start_conversation";
+import { sendMessage as api_carebuddy_send_message_sendMessage } from "~backend/carebuddy/send_message";
 import { sendMessage as api_copilot_send_message_sendMessage } from "~backend/copilot/send_message";
 import { startConversation as api_copilot_start_conversation_startConversation } from "~backend/copilot/start_conversation";
 
@@ -238,6 +242,37 @@ export namespace copilot {
             // Now make the actual call to the API
             const resp = await this.baseClient.callTypedAPI(`/copilot/conversation/start`, {method: "POST", body: JSON.stringify(params)})
             return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_copilot_start_conversation_startConversation>
+        }
+    }
+}
+
+export namespace carebuddy {
+
+    export class ServiceClient {
+        private baseClient: BaseClient
+
+        constructor(baseClient: BaseClient) {
+            this.baseClient = baseClient
+            this.sendMessage = this.sendMessage.bind(this)
+            this.startConversation = this.startConversation.bind(this)
+        }
+
+        /**
+         * Sends a message and receives an AI response.
+         */
+        public async sendMessage(params: RequestType<typeof api_carebuddy_send_message_sendMessage>): Promise<ResponseType<typeof api_carebuddy_send_message_sendMessage>> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/carebuddy/message`, {method: "POST", body: JSON.stringify(params)})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_carebuddy_send_message_sendMessage>
+        }
+
+        /**
+         * Starts a new conversation with the AI carebuddy.
+         */
+        public async startConversation(params: RequestType<typeof api_carebuddy_start_conversation_startConversation>): Promise<ResponseType<typeof api_carebuddy_start_conversation_startConversation>> {
+            // Now make the actual call to the API
+            const resp = await this.baseClient.callTypedAPI(`/carebuddy/conversation/start`, {method: "POST", body: JSON.stringify(params)})
+            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_carebuddy_start_conversation_startConversation>
         }
     }
 }

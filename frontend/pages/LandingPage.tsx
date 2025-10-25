@@ -63,6 +63,14 @@ export default function LandingPage() {
               size="lg" 
               variant="outline"
               className="text-lg px-10 py-6 rounded-lg border"
+              onClick={() => navigate('/demo')}
+            >
+              🎮 Try Demo
+            </Button>
+            <Button 
+              size="lg" 
+              variant="outline"
+              className="text-lg px-10 py-6 rounded-lg border"
               onClick={() => document.getElementById('science')?.scrollIntoView({ behavior: 'smooth' })}
             >
               Learn More

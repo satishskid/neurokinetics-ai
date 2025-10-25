@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NeuroKinetics AI Demo</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        
+        .container {
+            text-align: center;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 60px 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 600px;
+            margin: 20px;
+        }
+        
+        .logo {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .status {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 20px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .demo-users {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .demo-user {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .demo-user h3 {
+            margin-top: 0;
+            color: #FFD93D;
+        }
+        
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1em;
+            margin: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 30px 0;
+        }
+        
+        .feature {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 0.9em;
+        }
+        
+        .warning {
+            background: rgba(255, 193, 7, 0.2);
+            border: 1px solid rgba(255, 193, 7, 0.5);
+            color: #FFD93D;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        
+        .contact-info {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid rgba(76, 175, 80, 0.5);
+            color: #4CAF50;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 30px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 20px;
+                margin: 10px;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
+            
+            .demo-users {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🧠</div>
+        <h1>NeuroKinetics AI Demo</h1>
+        <p>AI-Powered Autism Screening Platform</p>
+        
+        <div class="status">
+            <h2>🚀 Demo Access Information</h2>
+            <p><strong>Live Demo Platform</strong> - Experience the future of autism screening</p>
+            
+            <div class="features">
+                <div class="feature">📊 Interactive Dashboard</div>
+                <div class="feature">🎮 Gamified Screening</div>
+                <div class="feature">🤖 AI Analysis</div>
+                <div class="feature">📋 Clinical Reports</div>
+                <div class="feature">💬 CareBuddy AI</div>
+                <div class="feature">📈 Progress Tracking</div>
+            </div>
+        </div>
+        
+        <div class="demo-users">
+            <div class="demo-user">
+                <h3>👨‍⚕️ Dr. Sarah Johnson</h3>
+                <p><strong>Admin Role</strong></p>
+                <p>Full system access, clinic configuration, all patient data</p>
+            </div>
+            <div class="demo-user">
+                <h3>👨‍⚕️ Michael Chen, BCBA</h3>
+                <p><strong>Provider Role</strong></p>
+                <p>Clinical tools, patient screening, results review</p>
+            </div>
+            <div class="demo-user">
+                <h3>👩 Emily Rodriguez</h3>
+                <p><strong>Parent Portal</strong></p>
+                <p>Child's results, CareBuddy AI, family resources</p>
+            </div>
+            <div class="demo-user">
+                <h3>👨 David Thompson</h3>
+                <p><strong>Parent Portal</strong></p>
+                <p>Progress tracking, intervention recommendations</p>
+            </div>
+        </div>
+        
+        <div class="warning">
+            <h3>⚠️ Important Note</h3>
+            <p><strong>This demo requires backend services to be running.</strong></p>
+            <p>The full interactive demo is currently available at the local development URL:</p>
+            <p><code>http://localhost:3002/frontend/demo</code></p>
+        </div>
+        
+        <div class="contact-info">
+            <h3>📞 Schedule a Live Demo</h3>
+            <p><strong>Contact our clinic specialists:</strong></p>
+            <p>📧 Email: clinic-sales@neurokinetics.ai</p>
+            <p>📞 Phone: 1-800-NEURO-AI</p>
+            <p>🌐 Web: neurokinetics.ai</p>
+        </div>
+        
+        <div style="margin-top: 30px;">
+            <h3>🎯 Key Features You'll Experience:</h3>
+            <ul style="text-align: left; max-width: 500px; margin: 20px auto;">
+                <li>✅ 6-10 minute gamified screening process</li>
+                <li>✅ Real-time AI analysis and risk assessment</li>
+                <li>✅ Comprehensive clinical reports</li>
+                <li>✅ Parent portal with progress tracking</li>
+                <li>✅ 24/7 CareBuddy AI assistant</li>
+                <li>✅ HIPAA-compliant, FDA-grade platform</li>
+            </ul>
+        </div>
+        
+        <div style="margin-top: 40px; padding-top: 30px; border-top: 1px solid rgba(255,255,255,0.3);">
+            <p><strong>🔒 HIPAA Compliant • FDA Grade • SOC 2 Type II Certified</strong></p>
+            <p>Trusted by hundreds of pediatric clinics nationwide</p>
+        </div>
+    </div>
+    
+    <script>
+        // Auto-redirect to local demo if available
+        function checkLocalDemo() {
+            fetch('http://localhost:3002/frontend/demo', { mode: 'no-cors' })
+                .then(() => {
+                    // Local demo is available, offer redirect
+                    if (confirm('🎮 Local demo detected!\n\nWould you like to access the full interactive demo at localhost:3002?')) {
+                        window.open('http://localhost:3002/frontend/demo', '_blank');
+                    }
+                })
+                .catch(() => {
+                    // Local demo not available, stay on this page
+                    console.log('Local demo not available');
+                });
+        }
+        
+        // Check for local demo after page loads
+        window.addEventListener('load', () => {
+            setTimeout(checkLocalDemo, 2000);
+        });
+        
+        // Add some interactive elements
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.demo-user');
+            cards.forEach((card, index) => {
+                card.style.opacity = '0';
+                card.style.transform = 'translateY(30px)';
+                card.style.transition = 'all 0.6s ease';
+                
+                setTimeout(() => {
+                    card.style.opacity = '1';
+                    card.style.transform = 'translateY(0)';
+                }, index * 200);
+            });
+        });
+    </script>
+</body>
+</html>

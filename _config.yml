@@ -1,0 +1,48 @@
+# GitHub Pages Configuration
+title: "NeuroKinetics AI - Autism Screening Platform"
+description: "AI-powered autism screening for pediatric clinics - FDA-grade, HIPAA-compliant, 85%+ clinical accuracy"
+baseurl: ""
+url: "https://your-username.github.io"
+
+# Build settings
+markdown: kramdown
+highlighter: rouge
+theme: minima
+
+# Plugins
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+
+# Exclude from processing
+exclude:
+  - node_modules/
+  - vendor/
+  - backend/
+  - frontend/node_modules/
+  - package.json
+  - package-lock.json
+  - bun.lock
+  - tsconfig.json
+  - .env*
+
+# Include specific files
+include:
+  - presentation.html
+  - demo.html
+
+# Custom settings
+demo_url: "https://your-username.github.io/neurokinetics-ai/demo.html"
+presentation_url: "https://your-username.github.io/neurokinetics-ai/presentation.html"
+
+# Social media
+social:
+  github: your-username
+  linkedin: neurokinetics-ai
+  twitter: neurokineticsai
+
+# Contact info
+contact:
+  email: clinic-sales@neurokinetics.ai
+  phone: 1-800-NEURO-AI
+  address: "123 Innovation Drive, Tech City, TC 12345"

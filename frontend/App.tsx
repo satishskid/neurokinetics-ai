@@ -10,6 +10,8 @@ import ResultsPage from './pages/ResultsPage';
 import InterventionPage from './pages/InterventionPage';
 import CareBuddyPage from './pages/CareBuddyPage';
 import KnowledgeLibraryPage from './pages/KnowledgeLibraryPage';
+import TestCareBuddy from './TestCareBuddy';
+import DemoPage from './pages/DemoPage';
 
 const PUBLISHABLE_KEY = "pk_test_dmVyaWZpZWQtcGlnbGV0LTE0LmNsZXJrLmFjY291bnRzLmRldiQ";
 const queryClient = new QueryClient({
@@ -27,6 +29,7 @@ function AppInner() {
       <div className="min-h-screen bg-background">
         <Routes>
           <Route path="/" element={<LandingPage />} />
+          <Route path="/demo" element={<DemoPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
           <Route path="/provider" element={<ProviderDashboard />} />
           <Route path="/screening/:childId" element={<ScreeningPage />} />
@@ -34,6 +37,7 @@ function AppInner() {
           <Route path="/intervention/:childId" element={<InterventionPage />} />
           <Route path="/carebuddy" element={<CareBuddyPage />} />
           <Route path="/knowledge" element={<KnowledgeLibraryPage />} />
+          <Route path="/test-carebuddy" element={<TestCareBuddy />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
         <Toaster />
