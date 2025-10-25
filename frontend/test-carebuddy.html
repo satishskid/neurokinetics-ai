@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test CareBuddy Integration</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; }
+        .success { background-color: #d4edda; border-color: #c3e6cb; }
+        .error { background-color: #f8d7da; border-color: #f5c6cb; }
+        .info { background-color: #d1ecf1; border-color: #bee5eb; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+        pre { background-color: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+    </style>
+</head>
+<body>
+    <h1>CareBuddy Integration Test</h1>
+    
+    <div class="test-section info">
+        <h3>Client Status</h3>
+        <div id="client-status">Checking client...</div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Test Endpoints</h3>
+        <button onclick="testStartConversation()">Test Start Conversation</button>
+        <button onclick="testSendMessage()">Test Send Message</button>
+        <div id="test-results"></div>
+    </div>
+    
+    <div class="test-section">
+        <h3>Available Services</h3>
+        <div id="services-list"></div>
+    </div>
+
+    <script type="module">
+        import client from './client.ts';
+        
+        // Check if carebuddy service exists
+        const clientStatus = document.getElementById('client-status');
+        const servicesList = document.getElementById('services-list');
+        const testResults = document.getElementById('test-results');
+        
+        try {
+            // List all available services
+            const services = Object.keys(client).filter(key => !key.startsWith('_'));
+            servicesList.innerHTML = '<h4>Available services:</h4><ul>' + 
+                services.map(service => `<li>${service}</li>`).join('') + 
+                '</ul>';
+            
+            // Check if carebuddy exists
+            if (client.carebuddy) {
+                clientStatus.innerHTML = '<div class="success">✅ CareBuddy service is available in client</div>';
+                clientStatus.className = 'success';
+            } else {
+                clientStatus.innerHTML = '<div class="error">❌ CareBuddy service is NOT available in client</div>';
+                clientStatus.className = 'error';
+            }
+            
+            // Make functions available globally for button clicks
+            window.testStartConversation = async function() {
+                try {
+                    testResults.innerHTML = '<div class="info">Testing startConversation...</div>';
+                    const result = await client.carebuddy.startConversation({});
+                    testResults.innerHTML = '<div class="success">✅ Start conversation successful:</div><pre>' + JSON.stringify(result, null, 2) + '</pre>';
+                } catch (error) {
+                    testResults.innerHTML = '<div class="error">❌ Start conversation failed:</div><pre>' + error.message + '</pre>';
+                }
+            };
+            
+            window.testSendMessage = async function() {
+                try {
+                    testResults.innerHTML = '<div class="info">Testing sendMessage...</div>';
+                    const result = await client.carebuddy.sendMessage({ conversationId: 1, content: "Hello, this is a test message" });
+                    testResults.innerHTML = '<div class="success">✅ Send message successful:</div><pre>' + JSON.stringify(result, null, 2) + '</pre>';
+                } catch (error) {
+                    testResults.innerHTML = '<div class="error">❌ Send message failed:</div><pre>' + error.message + '</pre>';
+                }
+            };
+            
+        } catch (error) {
+            clientStatus.innerHTML = '<div class="error">❌ Error initializing client: ' + error.message + '</div>';
+            clientStatus.className = 'error';
+        }
+    </script>
+</body>
+</html>
