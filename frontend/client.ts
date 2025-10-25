@@ -41,7 +41,6 @@ export class Client {
     public readonly report: report.ServiceClient
     public readonly screening: screening.ServiceClient
     public readonly user: user.ServiceClient
-    public readonly knowledge: knowledge.ServiceClient
     private readonly options: ClientOptions
     private readonly target: string
 
@@ -64,7 +63,6 @@ export class Client {
         this.report = new report.ServiceClient(base)
         this.screening = new screening.ServiceClient(base)
         this.user = new user.ServiceClient(base)
-        this.knowledge = new knowledge.ServiceClient(base)
     }
 
     /**
@@ -432,7 +430,6 @@ export namespace user {
         }
     }
 }
-
 
 
 type PickMethods<Type> = Omit<CallParameters, "method"> & { method?: Type };
@@ -1165,96 +1162,4 @@ export enum ErrCode {
     Unauthenticated = "unauthenticated",
 }
 
-/**
- * Import the endpoint handlers to derive the types for the client.
- */
-import { searchProtocols as api_knowledge_search_protocols_searchProtocols } from "~backend/knowledge/search_protocols";
-import { searchEducation as api_knowledge_search_education_searchEducation } from "~backend/knowledge/search_education";
-import { upsertProtocol as api_knowledge_upsert_protocol_upsertProtocol } from "~backend/knowledge/upsert_protocol";
-import { upsertEducation as api_knowledge_upsert_education_upsertEducation } from "~backend/knowledge/upsert_education";
-
-export namespace knowledge {
-
-    export class ServiceClient {
-        private baseClient: BaseClient
-
-        constructor(baseClient: BaseClient) {
-            this.baseClient = baseClient
-            this.searchProtocols = this.searchProtocols.bind(this)
-            this.searchEducation = this.searchEducation.bind(this)
-            this.upsertProtocol = this.upsertProtocol.bind(this)
-            this.upsertEducation = this.upsertEducation.bind(this)
-        }
-
-        /**
-         * Searches clinical protocols for providers/doctors.
-         */
-        public async searchProtocols(request?: RequestType<typeof api_knowledge_search_protocols_searchProtocols>, params?: PickMethods<"POST">): Promise<ResponseType<typeof api_knowledge_search_protocols_searchProtocols>> {
-            const url = "/knowledge/protocols/search";
-            const resp = await this.baseClient.callTypedAPI(
-              url,
-              {
-                method: "POST",
-                body: JSON.stringify(request ?? undefined),
-                ...params,
-              }
-            );
-            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_knowledge_search_protocols_searchProtocols>;
-        }
-
-        /**
-         * Searches patient education resources for parents.
-         */
-        public async searchEducation(request?: RequestType<typeof api_knowledge_search_education_searchEducation>, params?: PickMethods<"POST">): Promise<ResponseType<typeof api_knowledge_search_education_searchEducation>> {
-            const url = "/knowledge/education/search";
-            const resp = await this.baseClient.callTypedAPI(
-              url,
-              {
-                method: "POST",
-                body: JSON.stringify(request ?? undefined),
-                ...params,
-              }
-            );
-            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_knowledge_search_education_searchEducation>;
-        }
-
-        /**
-         * Creates or updates a clinical protocol (BYOK).
-         */
-        public async upsertProtocol(request?: RequestType<typeof api_knowledge_upsert_protocol_upsertProtocol>, params?: PickMethods<"POST">): Promise<ResponseType<typeof api_knowledge_upsert_protocol_upsertProtocol>> {
-            const url = "/knowledge/protocols/upsert";
-            const resp = await this.baseClient.callTypedAPI(
-              url,
-              {
-                method: "POST",
-                body: JSON.stringify(request ?? undefined),
-                ...params,
-              }
-            );
-            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_knowledge_upsert_protocol_upsertProtocol>;
-        }
-
-        /**
-         * Creates or updates a patient education resource (BYOK).
-         */
-        public async upsertEducation(request?: RequestType<typeof api_knowledge_upsert_education_upsertEducation>, params?: PickMethods<"POST">): Promise<ResponseType<typeof api_knowledge_upsert_education_upsertEducation>> {
-            const url = "/knowledge/education/upsert";
-            const resp = await this.baseClient.callTypedAPI(
-              url,
-              {
-                method: "POST",
-                body: JSON.stringify(request ?? undefined),
-                ...params,
-              }
-            );
-            return JSON.parse(await resp.text(), dateReviver) as ResponseType<typeof api_knowledge_upsert_education_upsertEducation>;
-        }
-    }
-}
-
-const __envTarget = import.meta.env.VITE_CLIENT_TARGET;
-const __target = (__envTarget && __envTarget !== "auto")
-  ? __envTarget
-  : (typeof window !== "undefined" ? window.location.origin : Local);
-
-export default new Client(__target, { requestInit: { credentials: "include" } });
+export default new Client(import.meta.env.VITE_CLIENT_TARGET, { requestInit: { credentials: "include" } });
